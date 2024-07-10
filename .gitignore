@@ -1,0 +1,5 @@
+# dependencies
+**/.vscode/**
+**/.snyk/**
+**/node_modules/**
+**/.angular/**

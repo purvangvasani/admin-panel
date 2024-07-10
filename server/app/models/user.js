@@ -9,11 +9,11 @@ const UsersSchema = new Schema({
   email: { type: String, required: true, lowercase: true, unique: true },
   password: { type: String, required: true },
   active: { type: Boolean, default: false },
-  // role: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: 'roles',
-  //   required: true
-  // },
+  role: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'roles',
+    required: true
+  },
   isPasswordChanged: { type: Boolean, default: false },
   invalidLoginAttempts: { type: Number, default: 0 },
   lastPasswordUpdatedAt: { type: Number },

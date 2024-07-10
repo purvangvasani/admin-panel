@@ -172,25 +172,25 @@ function generatedAuthentication(user, userAgent, token) {
         // if (!user.role || !user.role.roleName) {
         //     reject({ success: false, message: 'Unable to find your role.' });
         // } else {
-            // create an access token
-            let userWithToken = generateToken(user);
-            let newAuthToken = new AuthToken({
-                accessToken: userWithToken,
-                // refreshToken: userWithToken,
-                lastActivityAt: new Date(),
-                userId: user.userId,
-                idp: token && token.idp ? token.idp : null,
-                nameID: token && token.email ? token.email : null,
-                sessionIndex: token && token.sessionIndex ? token.sessionIndex : null,
-                // role: user.role.roleName,
-                userAgent: userAgent
-            });
-            try {
-                let authToken = await newAuthToken.save();
-                resolve({ success: true, user: user, auth: authToken });
-            } catch (err) {
-                reject({ success: false, message: '289-Some unhandled server error has occurred.', error: err });
-            }
+        // create an access token
+        let userWithToken = generateToken(user);
+        let newAuthToken = new AuthToken({
+            accessToken: userWithToken,
+            // refreshToken: userWithToken,
+            lastActivityAt: new Date(),
+            userId: user.userId,
+            idp: token && token.idp ? token.idp : null,
+            nameID: token && token.email ? token.email : null,
+            sessionIndex: token && token.sessionIndex ? token.sessionIndex : null,
+            // role: user.role.roleName,
+            userAgent: userAgent
+        });
+        try {
+            let authToken = await newAuthToken.save();
+            resolve({ success: true, user: user, auth: authToken });
+        } catch (err) {
+            reject({ success: false, message: '289-Some unhandled server error has occurred.', error: err });
+        }
         // }
     }
     return new Promise(promiseFunction);
@@ -213,66 +213,67 @@ function register(criteria) {
                 10,
             );
             // if (!passwordPattern.test(criteria.password)) {
-            //     return reject({ success: false, message: helper.error.message.passwordRequiredPatternFailed });
+            //     return reject({ success: false, message: helpers.error.message.passwordRequiredPatternFailed });
             // }
             let newUser = new UserCollection({
                 firstname: criteria.firstname,
                 lastname: criteria.lastname,
                 email: criteria.email,
                 password: hashPassword,
-                // role: criteria.role,
+                role: criteria.role,
                 lastPasswordUpdatedAt: new Date().getTime(),
                 //TODO: Add logic for temporarytoken to be sent via email for email confirmation
                 //temporarytoken = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '24h' }); // Create a token for activating account through e-mail
             });
             try {
-                // let role = await RoleCollection.findById(criteria.role).lean().exec();
-                // if (!role) {
-                //     reject({ success: false, message: 'No such provided role found for user.' });
-                // } else {
-                    newUser.userId = await helper.generateCounterId('userProfiles', 'userId', 'QQU');
-                    try {
-                        // let randomPass = helpers.util.passwordGenerator();
-                        // newUser['password'] = randomPass;
-                        await newUser.save();
-                        resolve({ success: true, message: 'Account registered' }); // Send success message back to controller/request        
-                        // let mailParams = {
-                        //     from: helpers.mail.mailId.support,
-                        //     email: newUser.email,
-                        //     subject: helpers.mail.subject.registration,
-                        //     userName: newUser.firstname,
-                        //     newpass: randomPass
-                        // };
-                        // helpers.mail.sendMail(helpers.mail.template.registration, mailParams,
-                        //     function () {
-                        //         console.info(new Date(), 'password : Success in sending mail');
-                        //     },
-                        //     function () {
-                        //         console.warn(new Date(), 'password : Failure in sending mail');
-                        //     }
-                        // );
-                    } catch (err) {
-                        // Check if any validation errors exists (from user model)
-                        console.log(err.errors)
-                        console.log(err.code)
-                        console.log(err.errmsg[63])
-                        if (err.errors && err.errors !== null) {
-                            if (err.errors.email) {
-                                reject({ success: false, message: err.errors.email.message }); // Display error in validation (email)
-                            } else if (err.errors.password) {
-                                reject({ success: false, message: err.errors.password.message }); // Display error in validation (password)
-                            } else {
-                                reject({ success: false, message: err }); // Display any other errors with validation
-                            }
+                let role = await RoleCollection.findById(criteria.role).lean().exec();
+                if (!role) {
+                    reject({ success: false, message: 'No such provided role found for user.' });
+                } 
+                newUser.userId = await helper.generateCounterId('users', 'userId', 'QQU');
+                console.log(newUser)
+                try {
+                    // let randomPass = helpers.util.passwordGenerator();
+                    // newUser['password'] = randomPass;
+                    await newUser.save();
+                    resolve({ success: true, message: 'Account registered' }); // Send success message back to controller/request        
+                    let mailParams = {
+                        from: helpers.mail.mailId.support,
+                        email: newUser.email,
+                        subject: helpers.mail.subject.welcomeUser,
+                        userName: newUser.firstname,
+                        // newpass: randomPass
+                    };
+                    helpers.mail.sendMail(helpers.mail.template.welcomeUser, mailParams,
+                        function () {
+                            console.info(new Date(), 'password : Success in sending mail');
+                        },
+                        function () {
+                            console.warn(new Date(), 'password : Failure in sending mail');
+                        }
+                    );
+                } catch (err) {
+                    // Check if any validation errors exists (from user model)
+                    console.log(err.errors)
+                    console.log(err.code)
+                    console.log(err.errmsg[63])
+                    if (err.errors && err.errors !== null) {
+                        if (err.errors.email) {
+                            reject({ success: false, message: err.errors.email.message }); // Display error in validation (email)
+                        } else if (err.errors.password) {
+                            reject({ success: false, message: err.errors.password.message }); // Display error in validation (password)
                         } else {
-                            // Check if duplication error exists
-                            if (err.code === 11000) {
-                                reject({ success: false, message: 'That e-mail is already taken' }); // Display error if e-mail already taken
-                            } else {
-                                reject({ success: false, message: err }); // Display any other error
-                            }
+                            reject({ success: false, message: err }); // Display any other errors with validation
+                        }
+                    } else {
+                        // Check if duplication error exists
+                        if (err.code === 11000) {
+                            reject({ success: false, message: 'That e-mail is already taken' }); // Display error if e-mail already taken
+                        } else {
+                            reject({ success: false, message: err }); // Display any other error
                         }
                     }
+                }
                 // }
             } catch (err) {
                 reject({ success: false, message: '353-Some unhandled server error has occurred', error: err });
