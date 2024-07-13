@@ -93,6 +93,7 @@ function getAuthentication(email, password, userAgent, token) {
             if (password) {
                 //Check if password matches
                 const comparePass = await bcrypt.compare(password, user.password);
+                console.log(comparePass)
                 if (!comparePass) {
                     if (user.invalidLoginAttempts === 2) {
                         try {

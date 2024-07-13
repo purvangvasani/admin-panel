@@ -6,6 +6,7 @@ import {
   cilChartPie,
   cilCursor,
   cilDescription,
+  cilDollar,
   cilDrop,
   cilNotes,
   cilPencil,
@@ -20,11 +21,39 @@ const _nav = [
     component: CNavItem,
     name: 'Dashboard',
     to: '/dashboard',
-    icon: <CIcon icon={cilSpeedometer} customClassName="nav-icon" />,
-    badge: {
-      color: 'info',
-      text: 'NEW',
-    },
+  },
+  {
+    component: CNavGroup,
+    name: 'Bank Transfer',
+    to: '/bank-transfer',
+    icon: <CIcon icon={cilDollar} customClassName="nav-icon" />,
+    items: [
+      {
+        component: CNavItem,
+        name: `List of Banks`,
+        to: '/bank-transfer/list',
+      },
+      {
+        component: CNavItem,
+        name: 'Deposit Requests',
+        to: '/bank-transfer/deposit-requests',
+      },
+      {
+        component: CNavItem,
+        name: 'Pending Deposit Requests',
+        to: '/bank-transfer/pending-deposit-requests',
+      },
+      {
+        component: CNavItem,
+        name: 'Withdrawal Requests',
+        to: '/bank-transfer/withdrawal-requests',
+      },
+      {
+        component: CNavItem,
+        name: 'Pending Withdrawal Requests',
+        to: '/bank-transfer/pending-withdrawal-requests',
+      },
+    ],
   },
   {
     component: CNavTitle,

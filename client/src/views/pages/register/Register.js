@@ -81,7 +81,7 @@ const Register = () => {
     Object.keys(hasErrors).length ? setValidation(true) : setValidation(false)
 
     if (!Object.keys(hasErrors).length) {
-      formData['role'] = 'super'
+      formData['role'] = '651d68659af8e51eeee0288b'
       const response = await AuthService.registerUser(formData)
       if (response.success) {
         navigate('/dashboard')
