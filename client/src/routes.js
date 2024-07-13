@@ -7,6 +7,7 @@ const Typography = React.lazy(() => import('./views/theme/typography/Typography'
 const Profile = React.lazy(() => import('./views/profile/Profile'))
 const Settings = React.lazy(() => import('./views/settings/Settings'))
 const Role = React.lazy(() => import('./views/settings/role/Role'))
+const Permission = React.lazy(() => import('./views/settings/permission/Permission'))
 
 // Base
 const Accordion = React.lazy(() => import('./views/base/accordion/Accordion'))
@@ -61,6 +62,7 @@ const routes = [
   { path: '/profile', name: 'Profile', element: Profile },
   { path: '/settings', name: 'Settings', element: Settings },
   { path: '/settings/role', name: 'Role', element: Role },
+  { path: '/settings/permission', name: 'Permission', element: Permission },
   { path: '/theme', name: 'Theme', element: Colors, exact: true },
   { path: '/theme/colors', name: 'Colors', element: Colors },
   { path: '/theme/typography', name: 'Typography', element: Typography },
