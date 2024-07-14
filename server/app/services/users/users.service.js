@@ -6,7 +6,9 @@ const helper = require('../../utility');
 module.exports = {
     getUsers,
     getByUserId,
-    update
+    update,
+    deleteById,
+    changePassword
 }
 
 function getUsers(criteria) {
@@ -88,4 +90,51 @@ function update(req) {
         }
     }
     return new Promise(promiseFunction);
+}
+
+function deleteById(criteria) {
+    let promiseFunction = async (resolve, reject) => {
+        try {
+            let dbTech = await UserCollection.findOne({ userId: criteria.userId }).exec();
+            if (!dbTech) {
+                return reject({ success: false, status: helper.error.status.NotFound, message: helper.error.message.NotFound });
+            }
+            try {
+                await dbTech.deleteOne();
+            } catch (e) {
+                return reject({ success: false, status: helper.error.status.InternalServerError, message: helper.error.message.InternalServerError, error: e });
+            }
+            resolve({ success: true, status: helper.success.status.OK, message: 'User deleted successfully!' });
+        } catch (err) {
+            reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
+        }
+    }
+    return new Promise(promiseFunction)
+
+}
+
+function changePassword(criteria) {
+    let promiseFunction = async (resolve, reject) => {
+        try {
+            let user = await UserCollection.findOne({ userId: criteria.user.userId }).exec();
+            if (user.password === criteria.user.oldPassword) {
+                if (criteria.user.oldPassword !== criteria.user.newPassword) {
+                    user.password = criteria.user.newPassword;
+                    user.active = true;
+                    user.isPasswordChanged = true;
+                    user = await UserCollection.findOneAndUpdate({ userId: criteria.user.userId }, user, { upsert: false }).exec();
+                } else {
+                    reject({ success: false, message: 'Please enter new password', error: err });
+                }
+
+            } else {
+                reject({ success: false, message: 'Password should not be the same', error: err });
+            }
+            resolve({ success: true, status: helper.success.status.OK, message: 'Password Changed Successfully!!', data: user });
+        } catch (err) {
+            reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
+        }
+    }
+    return new Promise(promiseFunction)
+
 }

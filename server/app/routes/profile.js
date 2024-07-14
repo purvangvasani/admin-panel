@@ -7,6 +7,7 @@ const requireAuth = passport.authenticate('jwt', {
 })
 const trimRequest = require('trim-request')
 const ProfileController = require('../controller/profile/profile')
+const PermissionsController = require('../controller/permissions/permissions.controller')
 const helper = require('../utility');
 const { roleAuthorization } = require('../controller/auth')
 
@@ -64,4 +65,6 @@ router.post(
 
 module.exports = function (router) { 
   router.post('/profile/getByUserId', helper.util.authenticationMiddleware, ProfileController.getByUserId);
+  router.post('/permission/getBy', helper.util.authenticationMiddleware, PermissionsController.getBy);
+  router.post('/permission/update', helper.util.authenticationMiddleware, PermissionsController.update);
 }

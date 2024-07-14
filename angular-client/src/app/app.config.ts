@@ -19,8 +19,10 @@ import { MessageService } from './util/message.service';
 import { LocalStorageService } from './util/local-storage.service';
 import { LoaderService } from './util/loader.service';
 import { DelegatorService } from './util/delegator.service';
+import { UtilService } from './util/util.service';
 import { ToastService } from './util/toastr.service';
-import { ToastrModule, provideToastr } from 'ngx-toastr';
+import { provideToastr } from 'ngx-toastr';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -36,12 +38,13 @@ export const appConfig: ApplicationConfig = {
       withViewTransitions(),
       withHashLocation()
     ),
-    importProvidersFrom(SidebarModule, DropdownModule),
+    importProvidersFrom(SidebarModule, DropdownModule, NgSelectModule),
     provideHttpClient(),
     Xml2JsonService,
     ToastService,
     HttpErrorHandler,
     MessageService,
+    UtilService,
     LocalStorageService,
     LoaderService,
     DelegatorService,

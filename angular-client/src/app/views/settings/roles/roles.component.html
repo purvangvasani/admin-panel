@@ -1,1 +1,119 @@
-<p>Roles Component</p>
+<div style="margin-bottom: 10px;">
+    <c-card>
+        <c-card-header>
+            <h5>Roles Form</h5>
+        </c-card-header>
+        <c-card-body>
+            <form [formGroup]="roleData">
+                <div class="form-group row mb-3">
+                    <label class="col-md-2 col-form-label">Display Name</label>
+                    <div class="col-md-4">
+                        <input type="text" formControlName="displayName" class="form-control" id="displayName"
+                            placeholder="eg: Admin / Super" required
+                            [ngStyle]="{'border': roleData.controls['displayName'].hasError('required') && roleData.controls['displayName'].touched ? '2px solid red' : '' }">
+                        <span style="color: red"
+                            *ngIf="roleData.controls['displayName'].hasError('required') && roleData.controls['displayName'].touched">
+                            Display name is required</span>
+                    </div>
+                    <label class="col-md-2 col-form-label">Role Name</label>
+                    <div class="col-md-4">
+                        <input type="text" formControlName="roleName" class="form-control" id="roleName"
+                            placeholder="eg: admin / super" required
+                            [ngStyle]="{'border': roleData.controls['roleName'].hasError('required') && roleData.controls['roleName'].touched ? '2px solid red' : '' }">
+                        <span style="color: red"
+                            *ngIf="roleData.controls['roleName'].hasError('required') && roleData.controls['roleName'].touched">
+                            Role name is required</span>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-2 col-form-label">Role Level</label>
+                    <div class="col-md-4">
+                        <input type="number" formControlName="roleLevel" class="form-control" id="roleLevel"
+                            placeholder="Role Level">
+                    </div>
+                    <label class="col-md-2 form-check-label col-form-label">Is Active</label>
+                    <div class="col-md-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="isActive" formControlName="isActive">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row mt-3">
+                    <label class="col-md-2 col-form-label">Is Deletable</label>
+                    <div class="col-md-4">
+                        <div class="form-switch">
+                            <input class="form-check-input form-control" formControlName="isDeletable" type="checkbox"
+                                role="switch" id="isDeletable">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <button [disabled]="roleData.invalid" (click)="submit()"
+                [ngClass]="(roleData.invalid) ? 'btn btn-danger submit' : 'btn btn-primary submit'">
+                Submit
+            </button>
+            <button (click)="cancel()" [ngClass]="'btn btn-default'">
+                Cancel
+            </button>
+        </c-card-body>
+    </c-card>
+</div>
+<div style="margin-bottom: 10px;">
+    <c-card>
+        <c-card-header>
+            <h5>Roles List</h5>
+        </c-card-header>
+        <c-card-body>
+            <table cTable hover responsive>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Role Name</th>
+                        <th scope="col">Role Level</th>
+                        <th scope="col">Is Active?</th>
+                        <th scope="col">Is Deletable?</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngIf="!roleList.length">
+                        <tr>
+                            <td colspan="6">No Data available</td>
+                        </tr>
+                    </ng-container>
+                    <ng-container *ngIf="roleList.length">
+                        <tr *ngFor="let role of roleList">
+                            <th scope="row">{{role.rolesId}}</th>
+                            <td>{{role.displayName}}</td>
+                            <td>{{role.roleLevel}}</td>
+                            <td>{{role.isActive ? 'Yes' : 'No'}}</td>
+                            <td>{{role.isDeletable ? 'Yes' : 'No'}}</td>
+                            <td *ngIf="role.isDeletable">
+                                <a style="cursor: pointer; text-decoration: none;" (click)="editRole(role)"><svg cIcon
+                                        class="me-2" name="cilPencil"></svg></a>
+                                <a style="cursor: pointer; text-decoration: none;" (click)="toggleDeleteModal(role)"><svg
+                                        cIcon class="me-2" name="cilTrash"></svg></a>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </c-card-body>
+    </c-card>
+</div>
+<div *ngIf="deleteModalVisible">
+    <c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal" [@.disabled]="true"
+        [visible]="deleteModalVisible" (visibleChange)="handleDeleteToggleChange($event)">
+        <c-modal-header>
+            <h5 cModalTitle>Delete Role <small>({{deleteData?.displayName}})</small></h5>
+            <button (click)="closeDeleteModal()" cButtonClose></button>
+        </c-modal-header>
+        <c-modal-body>Are you sure you want to delete the role?</c-modal-body>
+        <c-modal-footer>
+            <button (click)="closeDeleteModal()" cButton color="secondary">
+                Close
+            </button>
+            <button cButton color="danger" (click)="deleteRecord()">Delete</button>
+        </c-modal-footer>
+    </c-modal>
+</div>

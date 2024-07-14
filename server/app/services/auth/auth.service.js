@@ -86,14 +86,13 @@ function getAuthentication(email, password, userAgent, token) {
                 // then it will return error in response
                 return reject({ success: false, message: 'You have entered invalid email address and/or password.' });
             }
-            // let role = await RoleCollection.findById(user.role).lean().exec();
-            // if (role) {
-            //     user['role'] = role;
-            // }
+            let role = await RoleCollection.findById(user.role).lean().exec();
+            if (role) {
+                user['role'] = role;
+            }
             if (password) {
                 //Check if password matches
                 const comparePass = await bcrypt.compare(password, user.password);
-                console.log(comparePass)
                 if (!comparePass) {
                     if (user.invalidLoginAttempts === 2) {
                         try {
@@ -201,18 +200,17 @@ function register(criteria) {
     let promiseFunction = async (resolve, reject) => {
         if (!criteria.firstname || criteria.firstname === null || criteria.firstname === '' ||
             !criteria.lastname || criteria.lastname === null || criteria.lastname === '' ||
-            !criteria.password || criteria.password === null || criteria.password === '' ||
             !criteria.email || criteria.email === null || criteria.email === '' ||
             !criteria.role || criteria.role === null || criteria.role === '') {
             reject({
                 success: false,
-                msg: 'Ensure username, email, password and role were provided'
+                msg: 'Ensure username, email, and role were provided'
             });
         } else {
-            const hashPassword = await bcrypt.hash(
-                criteria.password,
-                10,
-            );
+            // const hashPassword = await bcrypt.hash(
+            //     criteria.password,
+            //     10,
+            // );
             // if (!passwordPattern.test(criteria.password)) {
             //     return reject({ success: false, message: helper.error.message.passwordRequiredPatternFailed });
             // }
@@ -220,43 +218,44 @@ function register(criteria) {
                 firstname: criteria.firstname,
                 lastname: criteria.lastname,
                 email: criteria.email,
-                password: hashPassword,
-                // role: criteria.role,
+                // password: hashPassword,
+                role: criteria.role,
                 lastPasswordUpdatedAt: new Date().getTime(),
                 //TODO: Add logic for temporarytoken to be sent via email for email confirmation
                 //temporarytoken = jwt.sign({ username: user.username, email: user.email }, secret, { expiresIn: '24h' }); // Create a token for activating account through e-mail
             });
             try {
-                // let role = await RoleCollection.findById(criteria.role).lean().exec();
-                // if (!role) {
-                //     reject({ success: false, message: 'No such provided role found for user.' });
-                // } else {
+                let role = await RoleCollection.findById(criteria.role).lean().exec();
+                if (!role) {
+                    reject({ success: false, message: 'No such provided role found for user.' });
+                } else {
                     newUser.userId = await helper.generateCounterId('userProfiles', 'userId', 'QQU');
                     try {
-                        // let randomPass = helpers.util.passwordGenerator();
-                        // newUser['password'] = randomPass;
+                        let randomPass = helpers.util.passwordGenerator();
+                        const hashPassword = await bcrypt.hash(
+                            randomPass,
+                            10,
+                        );
+                        newUser['password'] = hashPassword;
                         await newUser.save();
                         resolve({ success: true, message: 'Account registered' }); // Send success message back to controller/request        
-                        // let mailParams = {
-                        //     from: helpers.mail.mailId.support,
-                        //     email: newUser.email,
-                        //     subject: helpers.mail.subject.registration,
-                        //     userName: newUser.firstname,
-                        //     newpass: randomPass
-                        // };
-                        // helpers.mail.sendMail(helpers.mail.template.registration, mailParams,
-                        //     function () {
-                        //         console.info(new Date(), 'password : Success in sending mail');
-                        //     },
-                        //     function () {
-                        //         console.warn(new Date(), 'password : Failure in sending mail');
-                        //     }
-                        // );
+                        let mailParams = {
+                            from: helpers.mail.mailId.support,
+                            email: newUser.email,
+                            subject: helpers.mail.subject.registration,
+                            userName: newUser.firstname,
+                            newpass: randomPass
+                        };
+                        helpers.mail.sendMail(helpers.mail.template.registration, mailParams,
+                            function () {
+                                console.info(new Date(), 'password : Success in sending mail');
+                            },
+                            function () {
+                                console.warn(new Date(), 'password : Failure in sending mail');
+                            }
+                        );
                     } catch (err) {
                         // Check if any validation errors exists (from user model)
-                        console.log(err.errors)
-                        console.log(err.code)
-                        console.log(err.errmsg[63])
                         if (err.errors && err.errors !== null) {
                             if (err.errors.email) {
                                 reject({ success: false, message: err.errors.email.message }); // Display error in validation (email)
@@ -274,7 +273,7 @@ function register(criteria) {
                             }
                         }
                     }
-                // }
+                }
             } catch (err) {
                 reject({ success: false, message: '353-Some unhandled server error has occurred', error: err });
             }

@@ -17,7 +17,9 @@ export const routes: Routes = [
                 path: 'roles',
                 loadComponent: () => import('./roles/roles.component').then(m => m.RolesComponent),
                 data: {
-                    title: 'Roles'
+                    title: 'Roles',
+                    module: 'setting',
+                    subModule: 'role'
                 }
             },
             {
@@ -35,15 +37,10 @@ export const routes: Routes = [
                         path: '',
                         loadComponent: () => import('./users/users.component').then(m => m.UsersComponent),
                         data: {
-                            title: 'Users'
+                            title: 'Users',
+                            module: 'setting',
+                            subModule: 'users'
                         },
-                    },
-                    {
-                        path: 'view',
-                        loadComponent: () => import('./users/view/view-user.component').then(m => m.ViewUserComponent),
-                        data: {
-                            title: 'View User'
-                        },      
                     }
                 ]
             },
@@ -51,7 +48,9 @@ export const routes: Routes = [
                 path: 'permissions',
                 loadComponent: () => import('./permission/permission.component').then(m => m.PermissionComponent),
                 data: {
-                    title: 'Permissions'
+                    title: 'Permissions',
+                    module: 'setting',
+                    subModule: 'permission'
                 }
             },
         ]

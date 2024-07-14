@@ -36,7 +36,6 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    console.log(formData)
     // const hasErrors = validateForm(formData)
     // setErrors(hasErrors)
     // Object.keys(hasErrors).length ? setValidation(true) : setValidation(false)

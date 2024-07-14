@@ -13,8 +13,6 @@ export class RoleService {
   private apiUrl = `${environment.apiUrl}`;
   private handleError: HandleError;
 
-  redirectUrl: string;
-
   httpOptions = {
     headers: new HttpHeaders({
       'Content-Type': 'application/json'
@@ -29,28 +27,28 @@ export class RoleService {
     this.handleError = this.httpErrorHandler.createHandleError('AuthService')
   }
 
-  getAll(data: any, successCallback: Function, errorCallback: Function) {
+  getAll(successCallback: any, errorCallback: any) {
     const url = this.apiUrl + '/role/getAll';
-    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+    return this.delegatorService.get(url, successCallback, errorCallback);
   }
 
-  getByRoleId(data: any, successCallback: Function, errorCallback: Function) {
+  getByRoleId(data: any, successCallback: any, errorCallback: any) {
     const url = this.apiUrl + '/role/getByRoleId';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
 
-  add(data, successCallback, errorCallback) {
+  add(data: any, successCallback: any, errorCallback: any) {
     const url = this.apiUrl + '/role/add';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
   
-  update(data, successCallback, errorCallback) {
+  update(data: any, successCallback: any, errorCallback: any) {
     const url = this.apiUrl + '/role/update';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
 
-  deleteById(data, successCallback, errorCallback) {
-    const url = this.apiUrl + '/role/deleteById';
+  deleteById(data: any, successCallback: any, errorCallback: any) {
+    const url = this.apiUrl + '/role/delete';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback)
   }
   

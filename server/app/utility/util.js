@@ -3,6 +3,7 @@ const AuthTokenCollection = require('../models/authToken');
 const UserCollection = require('../models/user');
 const RoleCollection = require('../models/roles');
 const error = require('./error');
+const { ObjectId } = require('mongodb');
 
 module.exports = {
     authenticationMiddleware,
@@ -11,11 +12,10 @@ module.exports = {
 
 async function authenticationMiddleware(req, res, next) {
     let header = req.headers.authorization;
-
     if (header) {
         let prefix = header.split(' ')[0];
         let token = header.split(' ')[1];
-
+        
         // check for autheticated user
         // route middleware to verify a token
         if (prefix == 'Bearer') {
@@ -47,14 +47,17 @@ async function authenticationMiddleware(req, res, next) {
                                 let role = null;
                                 try {
                                     // Mongoose Update
-                                    role = await RoleCollection.findOne({ roleName: tokenList[0].role })
-                                        .populate({ path: 'permissionAccessesRefId', select: 'permissionAccesses' })
-                                        .lean().exec();
-                                    if (!role || !role.isActive) {
-                                        return res.status(error.status.Forbidden).json({
-                                            error: error.message.Forbidden,
-                                            message: error.message.Forbidden
-                                        });
+                                    const user = await UserCollection.findOne({userId: tokenList[0].userId }, { role: 1 });
+                                    if (user.role) {
+                                        role = await RoleCollection.findOne({ _id: new ObjectId(user.role) })
+                                            .populate({ path: 'permissionAccessesRefId', select: 'permissionAccesses' })
+                                            .lean().exec();
+                                        if (!role || !role.isActive) {
+                                            return res.status(error.status.Forbidden).json({
+                                                error: error.message.Forbidden,
+                                                message: error.message.Forbidden
+                                            });
+                                        }
                                     }
                                 } catch (e) {
                                     return sendError(e, res, next);

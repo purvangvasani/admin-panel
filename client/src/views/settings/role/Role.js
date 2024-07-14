@@ -104,7 +104,6 @@ const Role = () => {
   const handleSubmt = async (event) => {
     event.preventDefault()
     const newErrors = validateForm(formData)
-    console.log(newErrors)
     setErrors(newErrors)
 
     if (!Object.keys(newErrors).length) {

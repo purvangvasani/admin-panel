@@ -27,6 +27,8 @@ import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
 import { IconDirective } from '@coreui/icons-angular';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { delay, filter, map, tap } from 'rxjs/operators';
+import { AuthService } from 'src/app/views/pages/auth.service';
+import { UtilService } from 'src/app/util/util.service';
 
 @Component({
   selector: 'app-default-header',
@@ -52,7 +54,10 @@ export class DefaultHeaderComponent extends HeaderComponent {
     return this.colorModes.find(mode=> mode.name === currentMode)?.icon ?? 'cilSun';
   });
 
-  constructor() {
+  constructor(
+    private authService: AuthService,
+    private utilService: UtilService
+  ) {
     super();
     this.#colorModeService.localStorageItemName.set('coreui-free-angular-admin-template-theme-default');
     this.#colorModeService.eventName.set('ColorSchemeChange');
@@ -146,5 +151,10 @@ export class DefaultHeaderComponent extends HeaderComponent {
     { id: 3, title: 'Add new layouts', value: 75, color: 'info' },
     { id: 4, title: 'Angular Version', value: 100, color: 'success' }
   ];
+
+  public handleLogout = () => {
+    this.authService.logout();
+    this.utilService.goto('/login');
+  }
 
 }

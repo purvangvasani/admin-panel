@@ -6,13 +6,14 @@ import { IconSetService } from '@coreui/icons-angular';
 import { iconSubset } from './icons/icon-subset';
 import { LoaderService } from './util/loader.service';
 import { CommonModule } from '@angular/common';
+import { LoaderComponent } from './views/loader/loader.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   standalone: true,
-  imports: [RouterOutlet, CommonModule]
+  imports: [RouterOutlet, CommonModule, LoaderComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
   title = 'CoreUI Angular Admin Template';

@@ -13,7 +13,7 @@ export class ProfileService {
   private apiUrl = `${environment.apiUrl}`;
   private handleError: HandleError;
 
-  redirectUrl: string;
+  redirectUrl: string | undefined;
 
   httpOptions = {
     headers: new HttpHeaders({
@@ -29,13 +29,23 @@ export class ProfileService {
     this.handleError = this.httpErrorHandler.createHandleError('AuthService')
   }
 
-  update(data, successCallback, errorCallback) {
+  update(data?: any, successCallback?: any, errorCallback?: any) {
     const url = this.apiUrl + '/profile/update';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
 
-  getByUserId(data, successCallback, errorCallback) {
+  getByUserId(data?: any, successCallback?: any, errorCallback?: any) {
     const url = this.apiUrl + '/profile/getByUserId';
+    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+  }
+
+  permissionUpdate(data?: any, successCallback?: any, errorCallback?: any) {
+    const url = this.apiUrl + '/permission/update';
+    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+  }
+
+  permissionGetBy(data?: any, successCallback?: any, errorCallback?: any) {
+    const url = this.apiUrl + '/permission/getBy';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
 }

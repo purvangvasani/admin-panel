@@ -14,11 +14,9 @@ export class LoaderService {
   constructor() { }
 
   public showLoader() {
-    console.log("Show")
     this.loading = true;
   }
   public hideLoader() {
-    console.log("Hide")
     this.loading = false;
   }
   

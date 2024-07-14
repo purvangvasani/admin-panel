@@ -7,7 +7,6 @@ class AuthService {
     static async verifySession() {
         try {
             const response = await api.get(ApiConstants.verifySession)
-            console.log(response)
             return response
         } catch (error) {
             console.error("Error checking connection:", error)

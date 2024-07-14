@@ -36,26 +36,15 @@ export class AuthService {
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
 
+  resetPassword(data?: any, successCallback?: any, errorCallback?: any) {
+    const url = this.apiUrl + '/reset-password';
+    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+  }
+
   login(data: any, successCallback: Function, errorCallback: Function) {
     const url = this.apiUrl + '/login';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
-
-  // register(data: User) {
-  //   return this.http.post(`${this.apiUrl}/register`, data, this.httpOptions)
-  //   .pipe(
-  //     catchError(this.handleError('register', null))
-  //   )
-  // }
-
-  // login(data: any): Observable<boolean> {
-  //   return this.http.post(`${this.apiUrl}/login`, data, this.httpOptions)
-  //   .pipe(
-  //     tap(user => this.doLogin(user)),
-  //     mapTo(true),
-  //     catchError(this.handleError('login', false))
-  //   )
-  // }
   
   doLogin(user: any) {
     this.localStorageService.setValue('user', user);
@@ -86,9 +75,6 @@ export class AuthService {
 
   logout() {
     this.localStorageService.clearAllLocalStorage();
-    // localStorage.removeItem('userData');
-    // localStorage.removeItem('user');
-    // localStorage.removeItem('auth');
   }
 
 }

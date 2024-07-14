@@ -1,1 +1,104 @@
-<p>Permission Component</p>
+<div class="container" style="background-color: white; border-radius: 10px; padding: 1.5rem;">
+    <div class="d-flex" style="justify-content: space-between;">
+        <h3>Permissions</h3>
+        <ng-select [(ngModel)]="selectedRole" [items]="roleList" [multiple]="false" bindValue="roleName"
+            bindLabel="displayName" [clearable]="false" [ngModelOptions]="{standalone: true}" placeholder="Select Role"></ng-select>
+    </div>
+    <hr>
+    <table class="table table-striped" *ngIf="roleList.length">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">View</th>
+                <th scope="col">Add</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody *ngIf="permissions.length">
+            <ng-container *ngFor="let module of permissions">
+                <tr>
+                    <td><b>{{module.name}}</b></td>
+                    <td>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" role="switch" id="module.key"
+                                [(ngModel)]="module.access[selectedRole].view" [disabled]="isSuperorAdmin"
+                                (change)="changePermission(module.key, module.access, 'view')">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check form-switch" *ngIf="!(module.submodule && module.submodule.length)">
+                            <input class="form-check-input" type="checkbox" role="switch" id="module.key"
+                                [(ngModel)]="module.access[selectedRole].add" [disabled]="isSuperorAdmin"
+                                (change)="changePermission(module.key, module.access, 'add')">
+                        </div>
+                        <div *ngIf="(module.submodule && module.submodule.length)">
+                            N/A
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check form-switch" *ngIf="!(module.submodule && module.submodule.length)">
+                            <input class="form-check-input" type="checkbox" role="switch" id="module.key"
+                                [(ngModel)]="module.access[selectedRole].edit" [disabled]="isSuperorAdmin"
+                                (change)="changePermission(module.key, module.access, 'edit')">
+                        </div>
+                        <div *ngIf="(module.submodule && module.submodule.length)">
+                            N/A
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-check form-switch" *ngIf="!(module.submodule && module.submodule.length)">
+                            <input class="form-check-input" type="checkbox" role="switch" id="module.key"
+                                [(ngModel)]="module.access[selectedRole].delete" [disabled]="isSuperorAdmin"
+                                (change)="changePermission(module.key, module.access, 'delete')">
+                        </div>
+                        <div *ngIf="(module.submodule && module.submodule.length)">
+                            N/A
+                        </div>
+                    </td>
+                </tr>
+                <ng-container *ngIf="module.submodule && module.submodule.length">
+                    <tr *ngFor="let submodule of module.submodule">
+                        <td> &#x21B3; {{submodule.name}}</td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="submodule.key"
+                                    [(ngModel)]="submodule.access[selectedRole].view" [disabled]="isSuperorAdmin"
+                                    (change)="changePermission(submodule.key, submodule.access, 'view')">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="submodule.key"
+                                    [(ngModel)]="submodule.access[selectedRole].add" [disabled]="isSuperorAdmin"
+                                    (change)="changePermission(submodule.key, submodule.access, 'add')">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="submodule.key"
+                                    [(ngModel)]="submodule.access[selectedRole].edit" [disabled]="isSuperorAdmin"
+                                    (change)="changePermission(submodule.key, submodule.access, 'edit')">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="submodule.key"
+                                    [(ngModel)]="submodule.access[selectedRole].delete" [disabled]="isSuperorAdmin"
+                                    (change)="changePermission(submodule.key, submodule.access, 'delete')">
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </ng-container>
+        </tbody>
+        <tbody *ngIf="!permissions.length">
+            <tr style="text-align: center;">
+                <td colspan="5">No records available!</td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="d-flex" *ngIf="!isSuperorAdmin">
+        <button class="btn btn-primary" (click)="submit()">Submit</button>
+    </div>
+</div>

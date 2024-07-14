@@ -95,4 +95,6 @@ module.exports = function (router) {
   router.post('/user/getByUserId', helper.util.authenticationMiddleware, UserController.getByUserId);
   router.post('/user/add', helper.util.authenticationMiddleware, AuthenticationController.register);
   router.post('/user/update', helper.util.authenticationMiddleware, UserController.update);
+  router.post('/user/deleteById', helper.util.authenticationMiddleware, UserController.deleteById);
+  router.post('/user/changePassword', helper.util.authenticationMiddleware, UserController.changePassword);
 }
