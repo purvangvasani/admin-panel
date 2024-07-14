@@ -5,7 +5,7 @@ import { AuthGuard } from '../app/util/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'deposite',
+    redirectTo: 'login',
     pathMatch: 'full'
   },
   {
