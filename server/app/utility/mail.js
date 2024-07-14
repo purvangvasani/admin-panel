@@ -46,7 +46,7 @@ module.exports = {
 function sendMail(templateName, params, success, failure) {
     params['contactEmail'] = process && process.env && process.env.NOTIFICATION_EMAIL_ACC ? process.env.NOTIFICATION_EMAIL_ACC : 'purvang.vasani@nextgen-webworks.in';
     // params['portalLink'] = constants.portalLink;
-    params['portalLink'] = '-';
+    params['portalLink'] = 'http://localhost:4200/';
     params['logoUrl'] = `${params.portalLink}/assets/images/logo_white.svg`;
 
     let transportOptions = {
@@ -75,7 +75,7 @@ function sendByNodeMail(templateName, params, success, failure, transportOptions
     try {
         let rawTemplate = fs.readFileSync(path.join(__dirname, `../mail-templates/${templateName}/html.ejs`), { encoding: 'utf8' });
         // params['portalTitle'] = constants.portalTitle;
-        params['portalTitle'] = 'QuestionQraft';
+        params['portalTitle'] = 'WEB MANAGEMENT';
         let html = ejs.render(rawTemplate, params);
 
         let transporter = nodemailer.createTransport({

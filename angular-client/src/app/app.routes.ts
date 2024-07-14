@@ -23,6 +23,21 @@ export const routes: Routes = [
         canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
+        path: 'banks',
+        loadChildren: () => import('./views/banks/routes').then((m) => m.routes),
+        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+      },
+      {
+        path: 'deposit',
+        loadChildren: () => import('./views/deposite/routes').then((m) => m.routes),
+        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+      },
+      {
+        path: 'payouts',
+        loadChildren: () => import('./views/payouts/routes').then((m) => m.routes),
+        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+      },
+      {
         path: 'theme',
         loadChildren: () => import('./views/theme/routes').then((m) => m.routes)
       },

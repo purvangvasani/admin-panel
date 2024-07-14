@@ -16,7 +16,7 @@ import { LoaderComponent } from './views/loader/loader.component';
   imports: [RouterOutlet, CommonModule, LoaderComponent]
 })
 export class AppComponent implements OnInit, OnDestroy {
-  title = 'CoreUI Angular Admin Template';
+  title = 'Transaction Payments Admin';
 
   constructor(
     private router: Router,

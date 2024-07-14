@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "start": "cross-env NODE_ENV=production pm2 start index.js",
+        "start": "cross-env NODE_ENV=production nodemon --inspect=9230 index.js",
         "mocha": "nyc mocha --timeout=5000 --exit",
         "test": "npm run coverage:clean && npm run test:unit && npm run test:e2e && npm run coverage",
         "test:unit": "cross-env NODE_ENV=test jest --coverage",
@@ -52,6 +52,7 @@
         "passport": "^0.4.1",
         "passport-jwt": "^4.0.1",
         "passport-local": "^1.0.0",
+        "pm2": "^5.4.2",
         "request-ip": "^2.2.0",
         "sjcl": "^1.0.7",
         "trim-request": "^1.0.6",

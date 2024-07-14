@@ -65,7 +65,7 @@ router.get(
 // router.post('/login', login)
 
 // module.exports = router
-module.exports = function (router) { 
+module.exports = function (router) {
   router.post('/login', AuthenticationController.authenticate);
-  router.post('/register', AuthenticationController.register);
+  router.post('/register', validateRegister, AuthenticationController.register);
 }

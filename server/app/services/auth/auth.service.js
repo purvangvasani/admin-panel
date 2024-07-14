@@ -172,25 +172,25 @@ function generatedAuthentication(user, userAgent, token) {
         // if (!user.role || !user.role.roleName) {
         //     reject({ success: false, message: 'Unable to find your role.' });
         // } else {
-            // create an access token
-            let userWithToken = generateToken(user);
-            let newAuthToken = new AuthToken({
-                accessToken: userWithToken,
-                // refreshToken: userWithToken,
-                lastActivityAt: new Date(),
-                userId: user.userId,
-                idp: token && token.idp ? token.idp : null,
-                nameID: token && token.email ? token.email : null,
-                sessionIndex: token && token.sessionIndex ? token.sessionIndex : null,
-                // role: user.role.roleName,
-                userAgent: userAgent
-            });
-            try {
-                let authToken = await newAuthToken.save();
-                resolve({ success: true, user: user, auth: authToken });
-            } catch (err) {
-                reject({ success: false, message: '289-Some unhandled server error has occurred.', error: err });
-            }
+        // create an access token
+        let userWithToken = generateToken(user);
+        let newAuthToken = new AuthToken({
+            accessToken: userWithToken,
+            // refreshToken: userWithToken,
+            lastActivityAt: new Date(),
+            userId: user.userId,
+            idp: token && token.idp ? token.idp : null,
+            nameID: token && token.email ? token.email : null,
+            sessionIndex: token && token.sessionIndex ? token.sessionIndex : null,
+            // role: user.role.roleName,
+            userAgent: userAgent
+        });
+        try {
+            let authToken = await newAuthToken.save();
+            resolve({ success: true, user: user, auth: authToken });
+        } catch (err) {
+            reject({ success: false, message: '289-Some unhandled server error has occurred.', error: err });
+        }
         // }
     }
     return new Promise(promiseFunction);
@@ -212,7 +212,7 @@ function register(criteria) {
             //     10,
             // );
             // if (!passwordPattern.test(criteria.password)) {
-            //     return reject({ success: false, message: helper.error.message.passwordRequiredPatternFailed });
+            //     return reject({ success: false, message: helpers.error.message.passwordRequiredPatternFailed });
             // }
             let newUser = new UserCollection({
                 firstname: criteria.firstname,

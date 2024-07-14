@@ -1,0 +1,121 @@
+<c-container class="payouts-container" breakpoint="md">
+    <c-row class="justify-content-center">
+        <c-col lg="10" xl="10">
+            <c-card>
+                <c-card-header>
+                    <strong>Payouts</strong>
+                </c-card-header>
+                <c-card-body>
+                    <table [responsive]="true" cAlign="middle" cTable>
+                        <thead cTableColor="light">
+                            <tr>
+                                <th class="font-style" scope="col">ID</th>
+                                <th class="font-style" scope="col">Merchant ID</th>
+                                <th class="font-style" scope="col">Account</th>
+                                <th class="font-style" scope="col">Creation Date</th>
+                                <th class="font-style" scope="col">Complete Date</th>
+                                <th class="font-style" scope="col">Operation Amount</th> 
+                                <th class="font-style" scope="col">Status</th>  
+                                <th class="font-style" scope="col">Account Number</th>  
+                                <th class="font-style" scope="col">Account Name</th>
+                                <th class="font-style" scope="col">Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of payoutsList">
+                                <td class="font-style">{{ item.user_id }}</td>
+                                <td class="font-style">{{ item.order_id }}</td>
+                                <td class="font-style">{{ item.account }}</td>
+                                <td class="font-style">{{ item.created_at }}</td>
+                                <td class="font-style">{{ item.time_of_processing }}</td>
+                                <td class="font-style">{{ item.amount }}</td>
+                                <td class="font-style">{{ item.status }}</td>
+                                <td class="font-style">{{ item.accountNumber }}</td>
+                                <td class="font-style">{{ item.accountName }}</td>
+                                <!-- <td class="font-style">{{ item.comments }}</td> -->
+                                <td>
+                                    <div class="btn-group">
+                                        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
+                                            class="icon icon-xl">
+                                            <polygon fill="var(--ci-primary-color, currentColor)"
+                                                points="200.359 382.269 61.057 251.673 82.943 228.327 199.641 337.731 428.686 108.687 451.314 131.313 200.359 382.269"
+                                                class="ci-primary"></polygon>
+                                        </svg>
+                                        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
+                                            class="icon icon-xl">
+                                            <polygon fill="var(--ci-primary-color, currentColor)"
+                                                points="427.314 107.313 404.686 84.687 256 233.373 107.314 84.687 84.686 107.313 233.373 256 84.686 404.687 107.314 427.313 256 278.627 404.686 427.313 427.314 404.687 278.627 256 427.314 107.313"
+                                                class="ci-primary"></polygon>
+                                        </svg>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </c-card-body>
+            </c-card>
+        </c-col>
+        <c-col lg="2" xl="2">
+            <c-card>
+                <c-card-header>
+                    <strong class="b-strong">Filter</strong>
+                    <button cButton color="primary" (click)="handleFilterEvent()" style="float: right;">Submit</button>
+                </c-card-header>
+                <c-card-body>
+                    <form cForm [formGroup]="payoutsForm">
+                        <c-col class="mb-4">
+                            <select cSelect id="account" formControlName="account">
+                                <option>Account</option>
+                                <!-- Add options as needed -->
+                            </select>
+                        </c-col>
+                        <c-col class="mb-4">
+                            <select cSelect id="currency" formControlName="currency">
+                                <option>Currency</option>
+                                <!-- Add options as needed -->
+                            </select>
+                        </c-col>
+                        <c-col class="mb-4">
+                            <select cSelect id="status" formControlName="status">
+                                <option>Status</option>
+                                <option *ngFor="let item of status" [value]="item.value">{{ item.label }}</option>
+                            </select>
+                        </c-col> 
+                        <c-input-group class="mb-4">
+                            <input cFormControl placeholder="Operation Amount From" type="number"
+                                formControlName="operationAmountFrom" id="operationAmountFrom"
+                                name="operationAmountFrom" />
+                        </c-input-group>
+                        <c-input-group class="mb-4">
+                            <input cFormControl placeholder="Operation Amount To" type="number"
+                                formControlName="operationAmountTo" id="operationAmountTo"
+                                name="operationAmountTo" />
+                        </c-input-group>
+                        <c-col class="mb-4">
+                            <label cLabel="col" cCol for="creationDateFrom">
+                                Creation Date From
+                            </label>
+                            <input cFormControl placeholder="Creation Date From" type="date" id="creationDateFrom"
+                                name="creationDateFrom" formControlName="creationDateFrom" />
+                        </c-col>
+                        <c-col class="mb-4">
+                            <label cLabel="col" cCol for="creationDateTo">
+                                Creation Date To
+                            </label>
+                            <input cFormControl placeholder="Creation Date To" type="date" id="creationDateTo"
+                                name="creationDateTo" formControlName="creationDateTo" />
+
+                            <!-- Validation message -->
+                            <div *ngIf="payoutsForm.get('creationDateTo').hasError('dateRangeError')"
+                                class="text-danger">
+                                Creation Date To cannot be earlier than Creation Date From.
+                            </div>
+                        </c-col>
+                    </form>
+                </c-card-body>
+            </c-card>
+
+        </c-col>
+    </c-row>
+</c-container>
