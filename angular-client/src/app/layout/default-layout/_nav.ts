@@ -7,6 +7,21 @@ export const navItems: INavData[] = [
     iconComponent: { name: 'cil-speedometer' },
   },
   {
+    name: 'Deposite',
+    url: '/deposite',
+    iconComponent: { name: 'cil-notes' },
+  },
+  {
+    name: 'Payouts',
+    url: '/payouts',
+    iconComponent: { name: 'cil-notes' },
+  },
+  {
+    name: 'Banks',
+    url: '/banks',
+    iconComponent: { name: 'cil-notes' },
+  },
+  {
     name: 'Settings',
     url: '/settings',
     iconComponent: { name: 'cil-puzzle' },
