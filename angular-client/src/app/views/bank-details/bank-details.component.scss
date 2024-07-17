@@ -1,0 +1,33 @@
+/* your-component.component.css */
+.row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.col-5 {
+    flex: 1;
+    padding-right: 10px;
+}
+
+.col-2 {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+button {
+    margin: 0 5px;
+}
+
+
+/* Example CSS to ensure label appears before switch */
+.check-mb {
+    display: flex;
+    padding-left: 1rem;
+}
+
+.check-mb label {
+    margin-right: 2.8rem;
+    /* Adjust spacing between label and switch */
+}
