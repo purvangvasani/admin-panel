@@ -5,7 +5,7 @@ import { AuthGuard } from '../app/util/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: 'login',
+    redirectTo: 'banks',
     pathMatch: 'full'
   },
   {
@@ -25,6 +25,11 @@ export const routes: Routes = [
       {
         path: 'banks',
         loadChildren: () => import('./views/banks/routes').then((m) => m.routes),
+        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+      },
+      {
+        path: 'bank-details/:id',
+        loadChildren: () => import('./views/bank-details/routes').then((m) => m.routes),
         // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {

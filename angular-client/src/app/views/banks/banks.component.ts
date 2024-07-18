@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, AlignDirective, InputGroupTextDirective, InputGroupComponent, ColDirective, ButtonDirective, FormCheckLabelDirective, FormCheckInputDirective, FormCheckComponent, FormSelectDirective, FormLabelDirective, FormDirective, FormControlDirective, ContainerComponent } from '@coreui/angular';
 @Component({
   selector: 'app-banks',
@@ -11,6 +12,8 @@ import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHead
   styleUrl: './banks.component.scss'
 })
 export class BanksComponent {
+
+  constructor(private router: Router) { }
   public bankList = [
     {
       id: "91225",
@@ -19,4 +22,8 @@ export class BanksComponent {
       isActive: 'No'
     }
   ]
+
+  handleCreateEvent() {
+    this.router.navigate(['/bank-details/add']);
+  }
 }
