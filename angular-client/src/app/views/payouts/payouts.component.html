@@ -14,9 +14,9 @@
                                 <th class="font-style" scope="col">Account</th>
                                 <th class="font-style" scope="col">Creation Date</th>
                                 <th class="font-style" scope="col">Complete Date</th>
-                                <th class="font-style" scope="col">Operation Amount</th> 
-                                <th class="font-style" scope="col">Status</th>  
-                                <th class="font-style" scope="col">Account Number</th>  
+                                <th class="font-style" scope="col">Operation Amount</th>
+                                <th class="font-style" scope="col">Status</th>
+                                <th class="font-style" scope="col">Account Number</th>
                                 <th class="font-style" scope="col">Account Name</th>
                                 <th class="font-style" scope="col">Action</th>
 
@@ -35,20 +35,33 @@
                                 <td class="font-style">{{ item.accountName }}</td>
                                 <!-- <td class="font-style">{{ item.comments }}</td> -->
                                 <td>
-                                    <div class="btn-group">
-                                        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
-                                            class="icon icon-xl">
-                                            <polygon fill="var(--ci-primary-color, currentColor)"
-                                                points="200.359 382.269 61.057 251.673 82.943 228.327 199.641 337.731 428.686 108.687 451.314 131.313 200.359 382.269"
-                                                class="ci-primary"></polygon>
-                                        </svg>
-                                        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg"
-                                            class="icon icon-xl">
-                                            <polygon fill="var(--ci-primary-color, currentColor)"
-                                                points="427.314 107.313 404.686 84.687 256 233.373 107.314 84.687 84.686 107.313 233.373 256 84.686 404.687 107.314 427.313 256 278.627 404.686 427.313 427.314 404.687 278.627 256 427.314 107.313"
-                                                class="ci-primary"></polygon>
-                                        </svg>
-                                    </div>
+                                    <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+                                        <button [caret]="false" cDropdownToggle class="py-0 pe-0"
+                                            aria-label="Open user menu">
+                                            <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
+                                        </button>
+                                        <ul cDropdownMenu class="pt-0 w-auto">
+                                            <!-- <li>
+                                                <h6 cDropdownHeader
+                                                    class="bg-body-secondary text-body-secondary fw-semibold py-2">
+                                                    Settings
+                                                </h6>
+                                            </li>
+                                            <li></li> -->
+                                            <li>
+                                                <a cDropdownItem routerLink="/settings/users/view">
+                                                    <!-- <svg cIcon class="me-2" name="cilUser"></svg> -->
+                                                    Approve
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a cDropdownItem routerLink="/settings">
+                                                    <!-- <svg cIcon class="me-2" name="cilSettings"></svg> -->
+                                                    Reject
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </c-dropdown>
                                 </td>
                             </tr>
                         </tbody>
@@ -81,7 +94,7 @@
                                 <option>Status</option>
                                 <option *ngFor="let item of status" [value]="item.value">{{ item.label }}</option>
                             </select>
-                        </c-col> 
+                        </c-col>
                         <c-input-group class="mb-4">
                             <input cFormControl placeholder="Operation Amount From" type="number"
                                 formControlName="operationAmountFrom" id="operationAmountFrom"
@@ -89,8 +102,7 @@
                         </c-input-group>
                         <c-input-group class="mb-4">
                             <input cFormControl placeholder="Operation Amount To" type="number"
-                                formControlName="operationAmountTo" id="operationAmountTo"
-                                name="operationAmountTo" />
+                                formControlName="operationAmountTo" id="operationAmountTo" name="operationAmountTo" />
                         </c-input-group>
                         <c-col class="mb-4">
                             <label cLabel="col" cCol for="creationDateFrom">
