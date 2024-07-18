@@ -14,6 +14,11 @@ module.exports = {
 function getUsers(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
+            let totalPages = 0;
+            const page = parseInt(criteria.pageQuery) || 1; // Page number from the request query, default is 1
+            const pageSize = 2; // Number of records per page
+            let totalCount = 0;
+
             let condition = [];
             if (criteria) {
                 if (criteria._id) {
@@ -40,11 +45,19 @@ function getUsers(criteria) {
             } else {
                 condition.push({ $sort: { updatedAt: 1 } });
             }
+            if (criteria.pageQuery) {
+                
+                totalCount = await UserCollection.countDocuments({});
+                totalPages = Math.ceil(totalCount / pageSize);
+    
+                const skip = (page - 1) * pageSize;
+                condition.push({ $skip: skip }, { $limit: pageSize })
+            }
             let users = await UserCollection.aggregate(condition).exec();
             if (criteria && ((criteria.firstname && typeof criteria.firstname !== 'object') || criteria._id)) {
                 users = (users && users.length) ? users[0] : {};
             }
-            resolve({ success: true, message: 'success!', data: users });
+            resolve({ success: true, message: 'success!', data: users, currentPage: page, totalPages, totalCount  });
         } catch (err) {
             reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
         }

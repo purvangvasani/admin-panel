@@ -15,6 +15,11 @@ module.exports = {
 function getAll(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
+            let totalPages = 0;
+            const page = parseInt(criteria.pageQuery) || 1; // Page number from the request query, default is 1
+            const pageSize = 2; // Number of records per page
+            let totalCount = 0;
+
             let condition = [];
             if (criteria) {
                 if (criteria._id) {
@@ -44,11 +49,19 @@ function getAll(criteria) {
             } else {
                 condition.push({ $sort: { updatedAt: 1 } });
             }
+            if (criteria.pageQuery) {
+                
+                totalCount = await RoleCollection.countDocuments({});
+                totalPages = Math.ceil(totalCount / pageSize);
+    
+                const skip = (page - 1) * pageSize;
+                condition.push({ $skip: skip }, { $limit: pageSize })
+            }
             let roles = await RoleCollection.aggregate(condition).exec();
             if (criteria && ((criteria.rolename && typeof criteria.rolename !== 'object') || criteria._id)) {
                 roles = (roles && roles.length) ? roles[0] : {};
             }
-            resolve({ success: true, message: 'success!', data: roles });
+            resolve({ success: true, message: 'success!', data: roles, currentPage: page, totalPages, totalCount });
         } catch (err) {
             reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
         }

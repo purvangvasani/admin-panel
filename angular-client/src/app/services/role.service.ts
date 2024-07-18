@@ -27,9 +27,9 @@ export class RoleService {
     this.handleError = this.httpErrorHandler.createHandleError('AuthService')
   }
 
-  getAll(successCallback: any, errorCallback: any) {
+  getAll(data: any, successCallback: any, errorCallback: any) {
     const url = this.apiUrl + '/role/getAll';
-    return this.delegatorService.get(url, successCallback, errorCallback);
+    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
 
   getByRoleId(data: any, successCallback: any, errorCallback: any) {

@@ -67,6 +67,19 @@
             <h5>Users List</h5>
         </c-card-header>
         <c-card-body>
+            <c-pagination align="end">
+                <li cPageItem [disabled]="currentPage === 1" [ngStyle]="{'cursor': currentPage === 1 ? '' : 'pointer'}">
+                    <a cPageLink (click)="handlePagination(currentPage - 1)" [routerLink]>Previous</a>
+                </li>
+                <ng-container *ngFor="let n of numSequence(totalPages); let i = index;">
+                    <li cPageItem [active]="currentPage === (i+1)" [ngStyle]="{'cursor': currentPage === (i+1) ? '' : 'pointer'}">
+                        <a cPageLink (click)="currentPage === (i+1) ? null : handlePagination(i+1)" [routerLink]>{{i+1}}</a>
+                    </li>
+                </ng-container>
+                <li cPageItem [disabled]="currentPage === totalPages" [ngStyle]="{'cursor': currentPage === totalPages ? '' : 'pointer'}">
+                    <a cPageLink (click)="handlePagination(currentPage + 1)" [routerLink]>Next</a>
+                </li>
+            </c-pagination>
             <table cTable hover responsive>
                 <thead>
                     <tr>

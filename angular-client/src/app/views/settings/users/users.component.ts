@@ -1,11 +1,14 @@
 import { CommonModule, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import {
     ButtonCloseDirective, ButtonDirective, CardBodyComponent, CardComponent, CardHeaderComponent,
     ColComponent, FormCheckComponent, FormControlDirective, FormDirective, FormSelectDirective, ModalBodyComponent,
     ModalComponent, ModalFooterComponent, ModalHeaderComponent, ModalTitleDirective, ModalToggleDirective,
+    PageItemDirective,
+    PageLinkDirective,
+    PaginationComponent,
     RowComponent, TableDirective, TextColorDirective, ThemeDirective
 } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
@@ -25,7 +28,9 @@ import { NgSelectModule } from '@ng-select/ng-select';
     templateUrl: 'users.component.html',
     styleUrls: ['users.component.scss'],
     standalone: true,
-    imports: [CommonModule, FormSelectDirective, NgSelectModule, ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ThemeDirective, ButtonCloseDirective, ModalBodyComponent, ModalFooterComponent, IconDirective, LoaderComponent, TableDirective, TextColorDirective, FormCheckComponent, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormsModule, FormDirective, RowComponent, FormControlDirective, NgStyle, ColComponent],
+    imports: [PaginationComponent,
+        PageItemDirective, RouterLink,
+        PageLinkDirective, CommonModule, FormSelectDirective, NgSelectModule, ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ThemeDirective, ButtonCloseDirective, ModalBodyComponent, ModalFooterComponent, IconDirective, LoaderComponent, TableDirective, TextColorDirective, FormCheckComponent, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormsModule, FormDirective, RowComponent, FormControlDirective, NgStyle, ColComponent],
     providers: [RoleService, UserService]
 })
 export class UsersComponent implements OnInit {
@@ -34,6 +39,8 @@ export class UsersComponent implements OnInit {
     public userData: any;
     public editUserData: any;
     public deleteData: any;
+    public totalPages: number = 1;
+    public currentPage: number = 1;
     public deleteModalVisible: boolean = false;
     public displayName: any;
     public access: any = null;
@@ -133,7 +140,18 @@ export class UsersComponent implements OnInit {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching roles.')
         }
         this.loaderService.showLoader();
-        this.roleService.getAll(success, failure)
+        this.roleService.getAll({}, success, failure)
+    }
+
+    numSequence(n: number): Array<number> { 
+        return Array(n); 
+    }
+
+    public handlePagination = (pageNumber: number) => {
+        console.log(pageNumber)
+        this.currentPage = pageNumber;
+        this.userList = [];
+        this.getAll();
     }
 
     private getAll = () => {
@@ -141,6 +159,8 @@ export class UsersComponent implements OnInit {
             if (data && data.success) {
                 if (data.data && data.data.length) {
                     this.userList = data.data;
+                    this.currentPage = data.currentPage;
+                    this.totalPages = data.totalPages;
                 } else {
                     this.userList = [];
                 }
@@ -154,7 +174,7 @@ export class UsersComponent implements OnInit {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching users.')
         }
         this.loaderService.showLoader();
-        this.userService.getAll({}, success, failure)
+        this.userService.getAll({ pageQuery: this.currentPage }, success, failure)
     }
 
     public cancel = () => {

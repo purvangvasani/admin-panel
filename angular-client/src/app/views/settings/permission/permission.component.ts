@@ -70,7 +70,7 @@ export class PermissionComponent implements OnInit {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while validating credentials.')
         }
         this.loaderService.showLoader();
-        this.roleService.getAll(success, failure)
+        this.roleService.getAll({}, success, failure)
     }
 
     public changePermission = (module: any, access: any, key: any) => {

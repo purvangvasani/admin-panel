@@ -1,11 +1,14 @@
 import { CommonModule, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import {
     ButtonCloseDirective, ButtonDirective, CardBodyComponent, CardComponent, CardHeaderComponent,
     ColComponent, FormCheckComponent, FormControlDirective, FormDirective, ModalBodyComponent,
     ModalComponent, ModalFooterComponent, ModalHeaderComponent, ModalTitleDirective, ModalToggleDirective,
+    PageItemDirective,
+    PageLinkDirective,
+    PaginationComponent,
     RowComponent, TableDirective, TextColorDirective, ThemeDirective
 } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
@@ -23,7 +26,10 @@ import { LoaderComponent } from 'src/app/views/loader/loader.component';
     styleUrls: ['roles.component.scss'],
     standalone: true,
     providers: [RoleService],
-    imports: [NgTemplateOutlet, ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ThemeDirective, ButtonCloseDirective, ModalBodyComponent, ModalFooterComponent, IconDirective, LoaderComponent, TableDirective, TextColorDirective, FormCheckComponent, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormDirective, RowComponent, FormControlDirective, NgStyle, ColComponent, CommonModule]
+    imports: [PaginationComponent,
+        PageItemDirective,
+        PageLinkDirective,
+        RouterLink, NgTemplateOutlet, ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ThemeDirective, ButtonCloseDirective, ModalBodyComponent, ModalFooterComponent, IconDirective, LoaderComponent, TableDirective, TextColorDirective, FormCheckComponent, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormDirective, RowComponent, FormControlDirective, NgStyle, ColComponent, CommonModule]
 })
 export class RolesComponent implements OnInit, OnDestroy {
 
@@ -33,6 +39,8 @@ export class RolesComponent implements OnInit, OnDestroy {
     public deleteData: any;
     public roleList: any = [];
     public roleData: any;
+    public totalPages: number = 1;
+    public currentPage: number = 1;
     public access: any = null;
     public accessModule: any = null;
     public accessSubModule: any = null;
@@ -127,11 +135,24 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.buildForm(data);
     }
 
+    numSequence(n: number): Array<number> { 
+        return Array(n); 
+    }
+    
+    public handlePagination = (pageNumber: number) => {
+        console.log(pageNumber)
+        this.currentPage = pageNumber;
+        this.roleList = [];
+        this.getAll();
+    }
+
     public getAll = () => {
         let success = (data: any) => {
             if (data && data.success) {
                 if (data.data && data.data.length) {
                     this.roleList = data.data;
+                    this.currentPage = data.currentPage;
+                    this.totalPages = data.totalPages;
                 } else {
                     this.roleList = [];
                 }
@@ -149,7 +170,7 @@ export class RolesComponent implements OnInit, OnDestroy {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while validating credentials.')
         }
         this.loaderService.showLoader();
-        this.roleService.getAll(success, failure)
+        this.roleService.getAll({ pageQuery: this.currentPage }, success, failure)
     }
 
     public openModal = (data: any) => {
