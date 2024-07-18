@@ -12,26 +12,34 @@
                             Banks
                         </button>
                         <button cTab [itemKey]="1" (click)="handleTabsEvent('Deposits')">
-                            <svg cIcon class="me-2" name="cilUser"></svg>
+                            <svg cIcon class="me-2" name="cilDollar"></svg>
                             Deposits
                         </button>
                         <button cTab [itemKey]="2" (click)="handleTabsEvent('Withdrawls')">
-                            <svg cIcon class="me-2" name="cilUser"></svg>
+                            <svg cIcon class="me-2" name="cilDollar"></svg>
                             Withdrawls
                         </button>
                     </c-tabs-list>
                     <c-tabs-content>
                         <c-tab-panel [itemKey]="0" class="p-3">
                             <form cForm [formGroup]="bankForm">
-                                <div class="row">
-                                    <div class="col-10">
+                                <c-row class="row">
+                                    <c-col sm="12" xs="12" md="6" lg="4">
                                         <label cLabel="col" for="bankLabel">
                                             Bank Name
                                         </label>
                                         <input cFormControl placeholder="Bank Name" type="text"
                                             formControlName="bankName" id="bankLabel" name="bankName" />
-                                    </div>
-                                    <div class="col-2">
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4">
+                                        <label cLabel="col" for="ref">
+                                            Ref
+                                        </label>
+                                        <ng-select formControlName="ref" name="ref" [items]="refList" [multiple]="false"
+                                            bindValue="value" [clearable]="false" bindLabel="label"
+                                            placeholder="Select Role"></ng-select>
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4">
                                         <label cLabel="col" for="isActive">
                                         </label>
                                         <c-form-check sizing="lg" switch>
@@ -39,43 +47,37 @@
                                                 id="isActive" name="isActive" />
                                             <label cFormCheckLabel> Active?</label>
                                         </c-form-check>
-                                    </div>
-                                </div>
+                                    </c-col>
+                                </c-row>
+                                <div style="margin: 2rem;"></div>
                                 <div class="row">
-                                    <div class="col-10">
-                                        <label cLabel="col" for="ref">
-                                            Ref
-                                        </label>
-                                        <ng-select formControlName="ref" name="ref" [items]="refList" [multiple]="false"
-                                            bindValue="value" [clearable]="false" bindLabel="label"
-                                            placeholder="Select Role"></ng-select>
-                                    </div>
-                                </div>
-                                <div class="row">
+                                    <c-row class="row">
+                                        <c-col sm="12" xs="12" md="3" lg="3">
+                                            <h5>Upload Details</h5>
+                                        </c-col>
+                                        <c-col sm="12" xs="12" md="2" lg="2" style="float: right;">
+                                            <button cButton color="primary" (click)="addBankItem()">+</button>
+                                        </c-col>
+                                    </c-row>
                                     <div formArrayName="details">
-                                        <div *ngFor="let item of details.controls; let i = index" [formGroupName]="i"
-                                            class="row">
-                                            <div class="col-5">
-                                                <label for="name">Name</label>
-                                                <input cFormControl placeholder="Name" type="text"
-                                                    formControlName="name" id="name" name="name" />
-                                            </div>
-                                            <div class="col-5">
-                                                <label for="value">Value</label>
-                                                <input cFormControl placeholder="Value" type="text"
-                                                    formControlName="value" id="value" name="value" />
-                                            </div>
-                                            <div class="col-2 d-flex align-items-center">
-                                                <button cButton color="secondary" (click)="removeBankItem(i)"
-                                                    *ngIf="details.length > 1">-</button>
-                                            </div>
+                                        <div *ngFor="let item of details.controls; let i = index" [formGroupName]="i">
+                                            <c-row class="row">
+                                                <c-col sm="12" xs="12" md="5" lg="5">
+                                                    <label for="name">Name</label>
+                                                    <input cFormControl placeholder="Name" type="text"
+                                                        formControlName="name" id="name" name="name" />
+                                                </c-col>
+                                                <c-col sm="12" xs="12" md="5" lg="5">
+                                                    <label for="value">Value</label>
+                                                    <input cFormControl placeholder="Value" type="text"
+                                                        formControlName="value" id="value" name="value" />
+                                                </c-col>
+                                                <c-col sm="12" xs="12" md="2" lg="2">
+                                                    <button cButton color="secondary" (click)="removeBankItem(i)"
+                                                        *ngIf="details.length > 1">-</button>
+                                                </c-col>
+                                            </c-row>
                                         </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-                                    <div class="col-auto">
-                                        <button cButton color="primary" (click)="addBankItem()">+</button>
                                     </div>
                                 </div>
                                 <div class="row" style="float: right;">
@@ -89,17 +91,15 @@
                             <form cForm [formGroup]="depositForm">
                                 <div formArrayName="depositFields">
                                     <div *ngFor="let item of depositFields.controls; let i = index" [formGroupName]="i">
-                                        <div class="row">
-                                            <div class="col-10">
+                                        <c-row class="row">
+                                            <c-col sm="12" xs="12" md="6" lg="4">
                                                 <label cLabel="col" for="fieldName">
                                                     Field Name
                                                 </label>
                                                 <input cFormControl placeholder="Field Name" type="text"
                                                     formControlName="fieldName" id="fieldName" name="fieldName" />
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-10">
+                                            </c-col>
+                                            <c-col sm="12" xs="12" md="6" lg="4">
                                                 <label cLabel="col" for="ref">
                                                     Display Mode
                                                 </label>
@@ -107,41 +107,36 @@
                                                     [items]="displayModeList" [multiple]="false" bindValue="value"
                                                     [clearable]="false" bindLabel="label"
                                                     placeholder="Select Display Mode"></ng-select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-10">
+                                            </c-col>
+                                            <c-col sm="12" xs="12" md="6" lg="4">
                                                 <label cLabel="col" for="ref">
                                                     Field:
                                                 </label>
                                                 <ng-select formControlName="field" name="field" [items]="fieldList"
                                                     [multiple]="false" bindValue="value" [clearable]="false"
                                                     bindLabel="label" placeholder="Select Field"></ng-select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <c-form-check class="check-mb" sizing="lg" switch>
-                                                <label cFormCheckLabel for="required">Required Field?</label>
-                                                <input cFormCheckInput type="checkbox" formControlName="required"
-                                                    id="required" name="required" />
-                                            </c-form-check>
-
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-10">
-                                                <label cLabel="col" for="placeHolder">
-                                                    PlaceHolder
+                                            </c-col>
+                                        </c-row>
+                                        <c-row class="row">
+                                            <c-col sm="12" xs="12" md="5" lg="5">
+                                                <c-form-check class="check-mb" sizing="lg" switch>
+                                                    <label cFormCheckLabel for="required">Required Field?</label>
+                                                    <input cFormCheckInput type="checkbox" formControlName="required"
+                                                        id="required" name="required" />
+                                                </c-form-check>
+                                            </c-col>
+                                            <c-col sm="12" xs="12" md="5" lg="5">
+                                                <label cLabel="col" for="ref">
+                                                    Placeholder
                                                 </label>
                                                 <input cFormControl placeholder="PlaceHolder" type="text"
                                                     formControlName="placeHolder" id="placeHolder" name="placeHolder" />
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-2 d-flex align-items-center">
+                                            </c-col>
+                                            <c-col sm="12" xs="12" md="2" lg="2">
                                                 <button cButton color="secondary" (click)="removeDepositItem(i)"
                                                     *ngIf="depositFields.length > 1">-</button>
-                                            </div>
-                                        </div>
+                                            </c-col>
+                                        </c-row>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -161,17 +156,15 @@
                                 <div formArrayName="withdrawlFields">
                                     <div *ngFor="let item of withdrawlFields.controls; let i = index"
                                         [formGroupName]="i">
-                                        <div class="row">
-                                            <div class="col-10">
+                                        <c-row class="row">
+                                            <c-col sm="12" xs="12" md="6" lg="4">
                                                 <label cLabel="col" for="fieldName">
                                                     Field Name
                                                 </label>
                                                 <input cFormControl placeholder="Field Name" type="text"
                                                     formControlName="fieldName" id="fieldName" name="fieldName" />
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-10">
+                                            </c-col>
+                                            <c-col sm="12" xs="12" md="6" lg="4">
                                                 <label cLabel="col" for="ref">
                                                     Display Mode
                                                 </label>
@@ -179,41 +172,36 @@
                                                     [items]="displayModeList" [multiple]="false" bindValue="value"
                                                     [clearable]="false" bindLabel="label"
                                                     placeholder="Select Display Mode"></ng-select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-10">
+                                            </c-col>
+                                            <c-col sm="12" xs="12" md="6" lg="4">
                                                 <label cLabel="col" for="ref">
                                                     Field:
                                                 </label>
                                                 <ng-select formControlName="field" name="field" [items]="fieldList"
                                                     [multiple]="false" bindValue="value" [clearable]="false"
                                                     bindLabel="label" placeholder="Select Field"></ng-select>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <c-form-check class="check-mb" sizing="lg" switch>
-                                                <label cFormCheckLabel for="required">Required Field?</label>
-                                                <input cFormCheckInput type="checkbox" formControlName="required"
-                                                    id="required" name="required" />
-                                            </c-form-check>
-
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-10">
+                                            </c-col>
+                                        </c-row>
+                                        <c-row class="row">
+                                            <c-col sm="12" xs="12" md="5" lg="5">
+                                                <c-form-check class="check-mb" sizing="lg" switch>
+                                                    <label cFormCheckLabel for="required">Required Field?</label>
+                                                    <input cFormCheckInput type="checkbox" formControlName="required"
+                                                        id="required" name="required" />
+                                                </c-form-check>
+                                            </c-col>
+                                            <c-col sm="12" xs="12" md="5" lg="5">
                                                 <label cLabel="col" for="placeHolder">
                                                     PlaceHolder
                                                 </label>
                                                 <input cFormControl placeholder="PlaceHolder" type="text"
                                                     formControlName="placeHolder" id="placeHolder" name="placeHolder" />
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-2 d-flex align-items-center">
+                                            </c-col>
+                                            <c-col sm="12" xs="12" md="2" lg="2">
                                                 <button cButton color="secondary" (click)="removewithdrawlItem(i)"
                                                     *ngIf="withdrawlFields.length > 1">-</button>
-                                            </div>
-                                        </div>
+                                            </c-col>
+                                        </c-row>
                                     </div>
                                 </div>
                                 <div class="row">
