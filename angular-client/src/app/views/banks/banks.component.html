@@ -1,59 +1,87 @@
-<c-container class="banks-container" breakpoint="md">
-    <c-row class="justify-content-center">
-        <c-col class="mb-4">
+
+<div style="margin-bottom: 10px;">
+    <c-row>
+        <c-col>
             <button cButton color="primary"  (click)="handleCreateEvent()" style="float: left;">Create</button>
         </c-col>
     </c-row>
-    <c-row class="justify-content-center">
-        <c-col lg="12" xl="12">
-            <c-card>
-                <c-card-header>
-                    <strong>List Of Banks</strong>
-                </c-card-header>
-                <c-card-body>
-                    <table [responsive]="true" cAlign="middle" cTable>
-                        <thead cTableColor="light">
-                            <tr>
-                                <th class="font-style" scope="col">ID</th>
-                                <th class="font-style" scope="col">Bank Name</th>
-                                <th class="font-style" scope="col">Date Of Creation</th>
-                                <th class="font-style" scope="col">Active?</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of bankList">
-                                <td class="font-style">{{ item.id }}</td>
-                                <td class="font-style">{{ item.bankName }}</td>
-                                <td class="font-style">{{ item.dateOfCreation }}</td>
-                                <td class="font-style">{{ item.isActive }}</td>
-                                <td>
-                                    <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
-                                        <button [caret]="false" cDropdownToggle class="py-0 pe-0"
-                                            aria-label="Open user menu">
-                                            <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
-                                        </button>
-                                        <ul cDropdownMenu class="pt-0 w-auto">
-                                            <li>
-                                                <a cDropdownItem routerLink="/settings/users/view">
-                                                    <!-- <svg cIcon class="me-2" name="cilUser"></svg> -->
-                                                    Edit
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a cDropdownItem routerLink="/settings">
-                                                    <!-- <svg cIcon class="me-2" name="cilSettings"></svg> -->
-                                                    Delete
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </c-dropdown>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </c-card-body>
-            </c-card>
-        </c-col>
-    </c-row>
-</c-container>
+</div>
+<div style="margin-bottom: 10px;">
+    <c-card>
+        <c-card-header>
+            <h5>Banks List</h5>   
+        </c-card-header>
+        <c-card-body>
+            <c-pagination align="end">
+                <li cPageItem [disabled]="currentPage === 1" [ngStyle]="{'cursor': currentPage === 1 ? '' : 'pointer'}">
+                    <a cPageLink (click)="handlePagination(currentPage - 1)" [routerLink]>Previous</a>
+                </li>
+                <ng-container *ngFor="let n of numSequence(totalPages); let i = index;">
+                    <li cPageItem [active]="currentPage === (i+1)" [ngStyle]="{'cursor': currentPage === (i+1) ? '' : 'pointer'}">
+                        <a cPageLink (click)="currentPage === (i+1) ? null : handlePagination(i+1)" [routerLink]>{{i+1}}</a>
+                    </li>
+                </ng-container>
+                <li cPageItem [disabled]="currentPage === totalPages" [ngStyle]="{'cursor': currentPage === totalPages ? '' : 'pointer'}">
+                    <a cPageLink (click)="handlePagination(currentPage + 1)" [routerLink]>Next</a>
+                </li>
+            </c-pagination>
+            <table cTable hover responsive>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Bank Name</th>
+                        <th scope="col">Is Active?</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngIf="!bankList.length">
+                        <tr style="text-align: center;">
+                            <td colspan="6">No Data available</td>
+                        </tr>
+                    </ng-container>
+                    <ng-container *ngIf="bankList.length">
+                        <tr *ngFor="let bank of bankList">
+                            <th scope="row">{{bank.bankId}}</th>
+                            <td>{{bank.bankName}}</td>
+                            <td>{{bank.active ? 'Yes' : 'No'}}</td>
+                            <td>
+                                <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+                                    <button [caret]="false" cDropdownToggle class="py-0 pe-0"
+                                        aria-label="Open user menu">
+                                        <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
+                                    </button>
+                                    <ul cDropdownMenu class="pt-0 w-auto">
+                                        <li>
+                                            <a cDropdownItem style="cursor: pointer; text-decoration: none;" (click)="editBank(bank)"><svg cIcon
+                                                class="me-2" name="cilPencil"></svg>Edit</a>
+                                        </li>
+                                        <li>
+                                            <a cDropdownItem style="cursor: pointer; text-decoration: none;" (click)="toggleDeleteModal(bank)"><svg cIcon class="me-2" name="cilTrash"></svg>Delete</a>
+                                        </li>
+                                    </ul>
+                                </c-dropdown>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </c-card-body>
+    </c-card>
+</div>
+<div *ngIf="deleteModalVisible">
+    <c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal" [@.disabled]="true"
+        [visible]="deleteModalVisible" (visibleChange)="handleDeleteToggleChange($event)">
+        <c-modal-header>
+            <h5 cModalTitle>Delete Bank <small>({{deleteData?.bankName}})</small></h5>
+            <button (click)="closeDeleteModal()" cButtonClose></button>
+        </c-modal-header>
+        <c-modal-body>Are you sure you want to delete the bank?</c-modal-body>
+        <c-modal-footer>
+            <button (click)="closeDeleteModal()" cButton color="secondary">
+                Close
+            </button>
+            <button cButton color="danger" (click)="deleteRecord()">Delete</button>
+        </c-modal-footer>
+    </c-modal>
+</div>

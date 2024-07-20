@@ -1,11 +1,15 @@
 
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, AlignDirective, InputGroupTextDirective, InputGroupComponent, ColDirective, ButtonDirective, FormCheckLabelDirective, FormCheckInputDirective, FormCheckComponent, FormSelectDirective, FormLabelDirective, FormDirective, FormControlDirective, ContainerComponent, TabDirective, TabPanelComponent, TabsComponent, TabsContentComponent, TabsListComponent, RoundedDirective } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { Subscription } from 'rxjs';
+import { BankService } from 'src/app/services/bank.service';
+import { ToastService } from 'src/app/util/toastr.service';
+import { UtilService } from 'src/app/util/util.service';
 
 @Component({
   selector: 'app-bank-details',
@@ -28,11 +32,10 @@ import { NgSelectModule } from '@ng-select/ng-select';
   templateUrl: './bank-details.component.html',
   styleUrl: './bank-details.component.scss'
 })
-export class BankDetailsComponent implements OnInit {
+export class BankDetailsComponent implements OnInit, OnDestroy {
   public bankForm: FormGroup | any;
   public depositForm: FormGroup | any;
   public withdrawlForm: FormGroup | any;
-
   public refList = [{ label: "All Partners", value: 'allPartners' }, { label: "22bet.com", value: '22bet.com' }];
   public displayModeList = [
     { label: 'input', value: 'input' },
@@ -54,21 +57,72 @@ export class BankDetailsComponent implements OnInit {
     { label: 'null', value: 'null' },
 
   ]
-  constructor(private router: Router, private fb: FormBuilder) { }
-  handleTabsEvent(event: any) {
-    console.log(event)
-  }
-  ngOnInit(): void {
-    this.buildForm();
 
+  public deleteModalVisible = false;
+  public deleteData: any;
+  public bankData: any;
+  public totalPages: number = 1;
+  public currentPage: number = 1;
+  public access: any = null;
+  public accessModule: any = null;
+  public accessSubModule: any = null;
+  public currentUserRole: any = this.utilService.getCurrentUserRole();
+  public editBankData: any;
+  private params: Subscription;
+  public bankId: any;
+
+  constructor(
+    private fb: FormBuilder,
+    private toastrService: ToastService,
+    private bankService: BankService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private utilService: UtilService,
+  ) {
+    this.params = this.route.params.subscribe((params: Params) => {
+      if (params['bankId']) {
+        this.bankId = params['bankId'];
+      }
+    });
+    if(this.bankId){
+      this.getById();
+    }
+    this.buildForm();
   }
+
+  ngOnInit(): void { }
+
+  ngOnDestroy() {
+    try {
+      if (this.params) {
+        this.params.unsubscribe();
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  private getById = () => {
+    let success = (data: any) => {
+      if (data && data.success && data.data) {
+        this.editBankData = data.data;
+        this.buildForm(data.data);
+      } else {
+        this.toastrService.showError('Error!', data.message)
+      }
+    }
+    let failure = (error: any) => {
+      this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching bank details.')
+    }
+    this.bankService.getById({ bankId: this.bankId }, success, failure)
+  }
+
   buildForm(data?: any): void {
     this.bankForm = this.fb.group({
       bankName: [data && data.bankName ? data.bankName : ''],
-      isActive: [data && data.isActive ? data.isActive : false],
-      value: [data && data.value ? data.value : ''],
+      active: [data && data.active ? data.active : false],
       ref: [data && data.ref ? data.ref : ''],
-      details: this.fb.array([this.bankItem()])
+      uploadDetails: this.fb.array([this.bankItem()]),
     });
 
     this.depositForm = this.fb.group({
@@ -80,25 +134,46 @@ export class BankDetailsComponent implements OnInit {
   }
 
   // Bank Items
-  get details(): FormArray {
-    return this.bankForm.get('details') as FormArray;
+  get uploadDetails(): FormArray {
+    return this.bankForm.get('uploadDetails') as FormArray;
   }
+
   bankItem(): FormGroup {
     return this.fb.group({
       name: [''],
       value: ['']
     });
   }
+
   addBankItem(): void {
-    this.details.push(this.bankItem());
-  }
-  removeBankItem(index: number): void {
-    this.details.removeAt(index);
+    this.uploadDetails.push(this.bankItem());
   }
 
-  onBankSubmit(): void {
-    console.log(this.bankForm.value);
-    // Handle form submission, including file handling
+  removeBankItem(index: number): void {
+    this.uploadDetails.removeAt(index);
+  }
+
+  public onBankSubmit = () => {
+    let success = (data: any) => {
+      if (data && data.success) {
+        this.toastrService.showSuccess("Success!", data.message);
+        this.utilService.goto('/banks/list')
+      } else {
+        this.toastrService.showError('Error!', data && data?.message ? data?.message : 'Error while saving bank record.')
+      }
+    }
+    let failure = (error: any) => {
+      this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while saving bank record.')
+    }
+    let bankData = this.bankForm.value;
+    bankData['deposits'] = this.depositForm.value.depositFields;
+    bankData['withdrawals'] = this.withdrawlForm.value.withdrawlFields;
+    if (this.editBankData?.bankId) {
+      bankData['bankId'] = this.editBankData.bankId;
+      this.bankService.update(bankData, success, failure)
+    } else {
+      this.bankService.add(bankData, success, failure)
+    }
   }
 
   // Deposit Items
@@ -151,6 +226,5 @@ export class BankDetailsComponent implements OnInit {
   }
   onwithdrawlSubmit(): void {
     console.log(this.withdrawlForm.value);
-    // Handle form submission, including file handling
   }
 }
