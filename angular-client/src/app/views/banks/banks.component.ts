@@ -1,9 +1,9 @@
 import { CommonModule, NgStyle } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
 import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, AlignDirective, InputGroupTextDirective, InputGroupComponent, ColDirective, ButtonDirective, FormCheckLabelDirective, FormCheckInputDirective, FormCheckComponent, FormSelectDirective, FormLabelDirective, FormDirective, FormControlDirective, ContainerComponent, DropdownItemDirective, DropdownMenuDirective, DropdownToggleDirective, DropdownComponent } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
+import { UtilService } from 'src/app/util/util.service';
 @Component({
   selector: 'app-banks',
   standalone: true,
@@ -23,10 +23,11 @@ export class BanksComponent {
     }
   ]
 
-  constructor(private router: Router) {
+  constructor(
+    private utilService: UtilService) {
   }
 
   handleCreateEvent() {
-    this.router.navigate(['/bank-details/add']);
+    this.utilService.goto('/banks/add');
   }
 }

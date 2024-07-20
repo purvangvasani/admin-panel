@@ -3,10 +3,30 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./payouts.component').then(m => m.PayoutsComponent),
     data: {
-      title: $localize`Payouts`
-    }
+      title: 'Withdrawal'
+    },
+    children: [
+      {
+        path: '',
+        redirectTo: 'list',
+        pathMatch: 'full'
+      },
+      {
+        path: 'list',
+        loadComponent: () => import('./payouts.component').then(m => m.PayoutsComponent),
+        data: {
+          title: $localize`List`
+        }
+      },
+      {
+        path: 'add',
+        loadComponent: () => import('./add/withdrawal-add.component').then(m => m.WithdrawalAddComponent),
+        data: {
+          title: $localize`Add`
+        }
+      }
+    ]
   }
 ];
 

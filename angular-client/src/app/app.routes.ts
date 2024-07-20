@@ -25,22 +25,17 @@ export const routes: Routes = [
       {
         path: 'banks',
         loadChildren: () => import('./views/banks/routes').then((m) => m.routes),
-        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
-      },
-      {
-        path: 'bank-details/:id',
-        loadChildren: () => import('./views/bank-details/routes').then((m) => m.routes),
-        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+        canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
         path: 'deposit',
         loadChildren: () => import('./views/deposite/routes').then((m) => m.routes),
-        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+        canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
         path: 'payouts',
         loadChildren: () => import('./views/payouts/routes').then((m) => m.routes),
-        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+        canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
         path: 'theme',
@@ -114,6 +109,14 @@ export const routes: Routes = [
     data: {
       title: 'Forgot Password'
     }
+  },
+  {
+    path: 'deposit-add',
+    loadComponent: () => import('./views/deposite/add/deposit-add.component').then((m) => m.DepositAddComponent),
+  },
+  {
+    path: 'withdrawal-add',
+    loadComponent: () => import('./views/payouts/add/withdrawal-add.component').then((m) => m.WithdrawalAddComponent),
   },
   { path: '**', redirectTo: '404' }
 ];
