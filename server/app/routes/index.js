@@ -8,7 +8,7 @@ const profileRoutes = require('./profile');
 const rolesRoutes = require('./roles');
 const userRoutes = require('./users');
 const express = require('express');
-const depositeRoutes = require('./deposite');
+const transactionRoutes = require('./transactionRequest');
 const pauoutsRoutes = require('./payouts');
 module.exports = function (app) {
   // get an instance of the router for api routes
@@ -18,7 +18,7 @@ module.exports = function (app) {
   profileRoutes(apiRoutes);
   rolesRoutes(apiRoutes);
   userRoutes(apiRoutes);
-  depositeRoutes(apiRoutes);
+  transactionRoutes(apiRoutes);
   pauoutsRoutes(apiRoutes);
 
   // Add prefix to routes

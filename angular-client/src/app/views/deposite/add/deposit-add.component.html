@@ -26,7 +26,7 @@
                                         <label cLabel="col" for="account">
                                             Amount
                                         </label>
-                                        <input cFormControl placeholder="Amount" type="text"
+                                        <input cFormControl placeholder="Amount" type="number"
                                             formControlName="amount" id="amount" name="amount" />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
@@ -46,7 +46,7 @@
                                 </c-row>
                                 <c-row>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <button cButton class="px-4" color="primary">
+                                        <button (click)="addTransaction()" cButton class="px-4" color="primary">
                                             Submit
                                         </button>
                                     </c-col>

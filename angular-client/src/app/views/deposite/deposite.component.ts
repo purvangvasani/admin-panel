@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, AlignDirective, InputGroupTextDirective, InputGroupComponent, ColDirective, ButtonDirective, FormCheckLabelDirective, FormCheckInputDirective, FormCheckComponent, FormSelectDirective, FormLabelDirective, FormDirective, FormControlDirective, ContainerComponent, DropdownItemDirective, DropdownMenuDirective, DropdownComponent, DropdownToggleDirective } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
-import { DepositeService } from 'src/app/services/deposite.service';
+import { TransactionService } from 'src/app/services/transactionRequest.service';
 @Component({
   selector: 'app-deposite',
   standalone: true,
@@ -19,7 +19,7 @@ export class DepositeComponent implements OnInit {
   deposite: any = {};
   public depositeForm: FormGroup | any;
 
-  constructor(private depositeService: DepositeService, private fb: FormBuilder) { }
+  constructor(private TransactionService: TransactionService, private fb: FormBuilder) { }
   public status = [{ label: 'Processing', value: 'processing' },
   { label: 'Rejected', value: 'rejected' },
   { label: 'Approved', value: 'approved' },
@@ -71,7 +71,7 @@ export class DepositeComponent implements OnInit {
     const errorCallback = (error: any) => {
       this.deositeList = [];
     }
-    this.depositeService.getAll(successCallback, errorCallback);
+    this.TransactionService.getAll(successCallback, errorCallback);
   }
   onChange(event: any) {
     this.deposite.operationAccountFrom = event.target.value;

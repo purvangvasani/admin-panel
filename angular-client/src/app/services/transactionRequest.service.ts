@@ -8,7 +8,7 @@ import { DelegatorService } from '../util/delegator.service';
 @Injectable({
     providedIn: 'root'
 })
-export class DepositeService {
+export class TransactionService {
 
     private apiUrl = `${environment.apiUrl}`;
     private handleError: HandleError;
@@ -28,8 +28,11 @@ export class DepositeService {
     }
 
     getAll(successCallback: Function, errorCallback: Function) {
-        const url = this.apiUrl + '/deposite/getAll';
+        const url = this.apiUrl + '/transactionRequest/getAll';
         return this.delegatorService.get(url, successCallback, errorCallback);
     }
-
+    addTransaction(data: any, successCallback: any, errorCallback: any) {
+        const url = this.apiUrl + '/transactionRequest/addTransaction';
+        return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+    }
 }
