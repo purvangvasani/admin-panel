@@ -16,7 +16,8 @@ export const routes: Routes = [
         path: 'list',
         loadComponent: () => import('./banks.component').then(m => m.BanksComponent),
         data: {
-          title: $localize`List`
+          title: $localize`List`,
+          module: 'banks',
         }
       },
       {
@@ -24,6 +25,13 @@ export const routes: Routes = [
         loadComponent: () => import('../bank-details/bank-details.component').then(m => m.BankDetailsComponent),
         data: {
           title: $localize`Add`
+        }
+      },
+      {
+        path: 'edit',
+        loadComponent: () => import('../bank-details/bank-details.component').then(m => m.BankDetailsComponent),
+        data: {
+          title: $localize`Edit`
         }
       }
     ]
