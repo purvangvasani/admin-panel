@@ -5,18 +5,26 @@ const helper = require('../../middleware/utils');
 
 module.exports = {
     getAll,
-    addTransaction
+    addTransaction,
+    updateTransaction,
 }
 
-function getAll() {
+function getAll(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
-            // let deposites = await DepositeCollection.find({}).exec();
-            let transactions = PREDEFINEDDATA.data;
-            if (transactions && !transactions.length) {
-                return reject({ success: false, status: helpers.error.status.Forbidden, message: 'No Data found' });
+            if (criteria?.type) {
+                let condition = [];
+                condition.push({ $match: { type: criteria.type } });
+                let transactions = await TransactionCollection.aggregate(condition).exec();
+                // let transactions = PREDEFINEDDATA.data;
+                if (transactions && !transactions.length) {
+                    return reject({ success: false, status: helpers.error.status.Forbidden, message: 'No Data found' });
+                }
+                resolve({ success: true, message: 'Transaction Requests fetch successfully.', data: transactions });
+            } else {
+                reject({ success: false, message: 'Transaction criteria is not provided' });
+                return;
             }
-            resolve({ success: true, message: 'Transaction Requests fetch successfully.', data: transactions });
         } catch (err) {
             reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
         }
@@ -41,7 +49,8 @@ function addTransaction(criteria) {
                     user_id: criteria.user_id,
                     merchant_id: criteria.merchantId,
                     transaction_id: criteria.transactionId,
-                    account: criteria.account,
+                    accountName: criteria.accountName,
+                    accountNumber: criteria.accountNumber,
                     amount: criteria.amount,
                     operationType: criteria.operationType,
                     status: criteria.status,
@@ -64,5 +73,23 @@ function addTransaction(criteria) {
         }
     }
     return new Promise(promiseFunction)
+}
+
+function updateTransaction(criteria) {
+    let promiseFunction = async (resolve, reject) => {
+        if (criteria && criteria._id) {
+            let q = { _id: criteria._id };
+            try {
+                let result = await TransactionCollection.findOneAndUpdate(q, criteria, { upsert: false }).exec();
+                result = result.toJSON();
+                resolve({ success: true, message: 'Transaction updated successfully!', data: result });
+            } catch (err) {
+                reject({ success: false, message: err && err.message ? err.message : helper.error.message.InternalServerError, error: err });
+            }
+        } else {
+            reject({ success: false, message: helper.error.message.insufficientData, error: '' });
+        }
+    }
+    return new Promise(promiseFunction);
 }
 

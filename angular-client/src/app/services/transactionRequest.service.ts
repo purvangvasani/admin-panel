@@ -27,12 +27,16 @@ export class TransactionService {
         this.handleError = this.httpErrorHandler.createHandleError('AuthService')
     }
 
-    getAll(successCallback: Function, errorCallback: Function) {
+    getAll(data: any, successCallback: Function, errorCallback: Function) {
         const url = this.apiUrl + '/transactionRequest/getAll';
-        return this.delegatorService.get(url, successCallback, errorCallback);
+        return this.delegatorService.post(data, url, null, successCallback, errorCallback);
     }
     addTransaction(data: any, successCallback: any, errorCallback: any) {
         const url = this.apiUrl + '/transactionRequest/addTransaction';
+        return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+    }
+    updateTransaction(data: any, successCallback: any, errorCallback: any) {
+        const url = this.apiUrl + '/transactionRequest/updateTransaction';
         return this.delegatorService.post(data, url, null, successCallback, errorCallback);
     }
 }

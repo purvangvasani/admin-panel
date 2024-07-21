@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, AlignDirective, InputGroupTextDirective, InputGroupComponent, ColDirective, ButtonDirective, FormCheckLabelDirective, FormCheckInputDirective, FormCheckComponent, FormSelectDirective, FormLabelDirective, FormDirective, FormControlDirective, ContainerComponent, DropdownItemDirective, DropdownMenuDirective, DropdownComponent, DropdownToggleDirective } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
 import { TransactionService } from 'src/app/services/transactionRequest.service';
+import { LoaderService } from 'src/app/util/loader.service';
+import { ToastService } from 'src/app/util/toastr.service';
 @Component({
   selector: 'app-deposite',
   standalone: true,
@@ -19,7 +21,9 @@ export class DepositeComponent implements OnInit {
   deposite: any = {};
   public depositeForm: FormGroup | any;
 
-  constructor(private TransactionService: TransactionService, private fb: FormBuilder) { }
+  constructor(private TransactionService: TransactionService, private fb: FormBuilder,
+    private loaderService: LoaderService, private toastrService: ToastService,
+  ) { }
   public status = [{ label: 'Processing', value: 'processing' },
   { label: 'Rejected', value: 'rejected' },
   { label: 'Approved', value: 'approved' },
@@ -29,6 +33,24 @@ export class DepositeComponent implements OnInit {
     this.getAllDeposite();
     this.buildForm();
 
+  }
+
+  public getHoursDifference(createdAt: string, updatedAt: string, type?: string): string {
+    // Parse the input createdAt date (assumed to be in UTC)
+    const createdDate = new Date(createdAt);
+    const updatedDate = type !== 'Processing' ? new Date(updatedAt) : new Date();
+    // Calculate the difference in milliseconds
+    const differenceInMilliseconds = updatedDate.getTime() - createdDate.getTime();
+    // Convert milliseconds to hours, minutes, and seconds
+    const totalSeconds = Math.floor(differenceInMilliseconds / 1000);
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+    // Format the result as HH:MM:SS
+    return `${this.pad(hours)}:${this.pad(minutes)}:${this.pad(seconds)} Hrs`;
+  }
+  private pad(num: number): string {
+    return num.toString().padStart(2, '0');
   }
   buildForm(data?: any): void {
     this.depositeForm = this.fb.group({
@@ -62,6 +84,7 @@ export class DepositeComponent implements OnInit {
   public getAllDeposite = () => {
     const successCallback = (response: any) => {
       if (response && response.success) {
+        this.loaderService.hideLoader();
         if (response.data && response.data.length) {
           this.deositeList = response.data || [];
           console.log(this.deositeList)
@@ -69,12 +92,39 @@ export class DepositeComponent implements OnInit {
       }
     }
     const errorCallback = (error: any) => {
+      this.loaderService.hideLoader();
       this.deositeList = [];
     }
-    this.TransactionService.getAll(successCallback, errorCallback);
+    this.loaderService.showLoader();
+    const criteria = {
+      type: 'deposite',
+    }
+    this.TransactionService.getAll(criteria, successCallback, errorCallback);
   }
   onChange(event: any) {
     this.deposite.operationAccountFrom = event.target.value;
+  }
+
+  public handleToggleEvent = (data: any, status: any) => {
+    let success = (data: any) => {
+      if (data && data.success) {
+        this.toastrService.showSuccess("Success!", data.message);
+        this.loaderService.hideLoader();
+        this.getAllDeposite();
+      } else {
+        this.loaderService.hideLoader();
+        this.toastrService.showError('Error!', data && data?.message ? data?.message : 'Error while saving role record.')
+      }
+    }
+    let failure = (error: any) => {
+      this.loaderService.hideLoader();
+      this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while saving role record.')
+    }
+    this.loaderService.showLoader();
+    if (data) {
+      data.status = status;
+      this.TransactionService.updateTransaction(data, success, failure);
+    }
   }
   handleFilterEvent() {
     const filters = this.depositeForm.value;

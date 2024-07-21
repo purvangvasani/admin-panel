@@ -11,30 +11,36 @@
                             <tr>
                                 <th class="font-style" scope="col">ID</th>
                                 <th class="font-style" scope="col">Merchant ID</th>
-                                <th class="font-style" scope="col">Account</th>
                                 <th class="font-style" scope="col">Creation Date</th>
                                 <th class="font-style" scope="col">Complete Date</th>
                                 <th class="font-style" scope="col">Operation Amount</th>
                                 <th class="font-style" scope="col">Status</th>
                                 <th class="font-style" scope="col">Account Number</th>
                                 <th class="font-style" scope="col">Account Name</th>
+                                <th class="font-style" scope="col">Time of Processing</th>
                                 <th class="font-style" scope="col">Action</th>
 
                             </tr>
                         </thead>
                         <tbody>
                             <tr *ngFor="let item of payoutsList">
-                                <td class="font-style">{{ item.user_id }}</td>
-                                <td class="font-style">{{ item.order_id }}</td>
-                                <td class="font-style">{{ item.account }}</td>
-                                <td class="font-style">{{ item.created_at }}</td>
-                                <td class="font-style">{{ item.time_of_processing }}</td>
+                                <td class="font-style">{{ item.id }}</td>
+                                <td class="font-style">{{ item.merchant_id }}</td>
+                                <td class="font-style">{{ item.createdAt }}</td>
+                                <td class="font-style" *ngIf="item.status !=='Processing';else processing">{{
+                                    item.updatedAt }}</td>
+                                <ng-template #processing>
+                                    <td></td>
+                                </ng-template>
                                 <td class="font-style">{{ item.amount }}</td>
                                 <td class="font-style">{{ item.status }}</td>
                                 <td class="font-style">{{ item.accountNumber }}</td>
                                 <td class="font-style">{{ item.accountName }}</td>
+                                <td class="font-style"> {{ getHoursDifference(item.createdAt,
+                                    item.updatedAt,item.status) }}
+                                </td>
                                 <!-- <td class="font-style">{{ item.comments }}</td> -->
-                                <td>
+                                <td *ngIf="item.status ==='Processing';">
                                     <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
                                         <button [caret]="false" cDropdownToggle class="py-0 pe-0"
                                             aria-label="Open user menu">
@@ -49,13 +55,13 @@
                                             </li>
                                             <li></li> -->
                                             <li>
-                                                <a cDropdownItem routerLink="/settings/users/view">
+                                                <a cDropdownItem (click)="handleToggleEvent(item,'Approved')">
                                                     <!-- <svg cIcon class="me-2" name="cilUser"></svg> -->
                                                     Approve
                                                 </a>
                                             </li>
                                             <li>
-                                                <a cDropdownItem routerLink="/settings">
+                                                <a cDropdownItem (click)="handleToggleEvent(item,'Rejected')">
                                                     <!-- <svg cIcon class="me-2" name="cilSettings"></svg> -->
                                                     Reject
                                                 </a>
