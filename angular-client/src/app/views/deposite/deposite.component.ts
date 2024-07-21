@@ -78,9 +78,6 @@ export class DepositeComponent implements OnInit {
     }
   };
 
-
-
-
   public getAllDeposite = () => {
     const successCallback = (response: any) => {
       if (response && response.success) {
@@ -97,7 +94,7 @@ export class DepositeComponent implements OnInit {
     }
     this.loaderService.showLoader();
     const criteria = {
-      type: 'deposite',
+      type: 'Deposit',
     }
     this.TransactionService.getAll(criteria, successCallback, errorCallback);
   }

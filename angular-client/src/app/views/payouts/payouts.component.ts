@@ -89,7 +89,7 @@ export class PayoutsComponent {
     }
     this.loaderService.showLoader();
     const criteria = {
-      type: 'withdrawal',
+      type: 'Withdrawal',
     }
     this.TransactionService.getAll(criteria, successCallback, errorCallback);
   }
