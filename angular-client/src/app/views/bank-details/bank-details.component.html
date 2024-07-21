@@ -63,14 +63,14 @@
                                         <div *ngFor="let item of uploadDetails.controls; let i = index" [formGroupName]="i">
                                             <c-row class="row">
                                                 <c-col sm="12" xs="12" md="5" lg="5">
-                                                    <label for="name">Name</label>
+                                                    <label for="uploadName">Name</label>
                                                     <input cFormControl placeholder="Name" type="text"
-                                                        formControlName="name" id="name" name="name" />
+                                                        formControlName="uploadName" id="uploadName" name="uploadName" />
                                                 </c-col>
                                                 <c-col sm="12" xs="12" md="5" lg="5">
-                                                    <label for="value">Value</label>
+                                                    <label for="uploadValue">Value</label>
                                                     <input cFormControl placeholder="Value" type="text"
-                                                        formControlName="value" id="value" name="value" />
+                                                        formControlName="uploadValue" id="uploadValue" name="uploadValue" />
                                                 </c-col>
                                                 <c-col sm="12" xs="12" md="2" lg="2">
                                                     <button cButton color="secondary" (click)="removeBankItem(i)"

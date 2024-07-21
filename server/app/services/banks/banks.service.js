@@ -79,7 +79,11 @@ function add(criteria) {
                     bankId: bankId,
                     active: criteria.active || false,
                 });
-
+                for (let i = 0; i < criteria.uploadDetails.length; i++) {
+                    delete criteria.uploadDetails['_id'];
+                }
+                bankData['uploadDetails'] = criteria.uploadDetails
+                console.log(bankData)
                 await bankData.save();
 
                 resolve({ success: true, message: 'Bank Saved Succesfully!' })
@@ -166,11 +170,15 @@ function getById(criteria) {
                     }
                 }
                 condition.push(withdrawalLookup)
-                let bank = await BankCollection.aggregate(condition).exec();
-                if (criteria && ((criteria.bankName && typeof criteria.bankName !== 'object') || criteria.bankId)) {
-                    bank = (bank && bank.length) ? bank[0] : {};
-                }
-                resolve({ success: true, message: 'success!', data: bank });
+                let item = await BankCollection.findOne({ bankId: criteria.bankId })
+                .populate('deposits', 'withdrawals')
+                .lean().exec();
+                console.log(item)
+                // let bank = await BankCollection.aggregate(condition).exec();
+                // if (criteria && ((criteria.bankName && typeof criteria.bankName !== 'object') || criteria.bankId)) {
+                //     bank = (bank && bank.length) ? bank[0] : {};
+                // }
+                resolve({ success: true, message: 'success!', data: item });
             } else {
                 reject({ success: false, message: 'Bank Id is not provided' });
                 return;

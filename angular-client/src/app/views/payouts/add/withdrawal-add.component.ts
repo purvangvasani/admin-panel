@@ -39,7 +39,7 @@ export class WithdrawalAddComponent implements OnInit {
       transactionId: new FormControl(data && data.transactionId ? data.transactionId : null),
       operationType: new FormControl(data && data.operationType ? data.operationType : null),
       status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
-      type: new FormControl('withdrawal'),
+      type: new FormControl('Withdrawal'),
 
     });
   }

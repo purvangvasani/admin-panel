@@ -122,7 +122,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
       bankName: [data && data.bankName ? data.bankName : ''],
       active: [data && data.active ? data.active : false],
       ref: [data && data.ref ? data.ref : ''],
-      uploadDetails: this.fb.array([this.bankItem()]),
+      uploadDetails: this.fb.array([this.bankItem(data?.uploadDetails || null)]),
     });
 
     this.depositForm = this.fb.group({
@@ -138,15 +138,15 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     return this.bankForm.get('uploadDetails') as FormArray;
   }
 
-  bankItem(): FormGroup {
+  bankItem(data: any): FormGroup {
     return this.fb.group({
-      name: [''],
-      value: ['']
+      uploadName: [data?.uploadName ? data?.uploadName : ''],
+      uploadValue: [data?.uploadValue ? data?.uploadValue : '']
     });
   }
 
   addBankItem(): void {
-    this.uploadDetails.push(this.bankItem());
+    this.uploadDetails.push(this.bankItem(null));
   }
 
   removeBankItem(index: number): void {

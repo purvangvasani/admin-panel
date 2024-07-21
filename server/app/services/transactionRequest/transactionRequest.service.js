@@ -51,7 +51,7 @@ function addTransaction(criteria) {
 
                 transactionData['id'] = Id;
                 await transactionData.save();
-                resolve({ success: true, message: 'Transaction Saved Succesfully!' });
+                resolve({ success: true, message: criteria.type + ' Request Submitted!' });
             }
             else {
                 reject({ success: false, message: 'Some unhandled server error has occurred' });

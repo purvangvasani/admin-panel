@@ -39,7 +39,7 @@ export class DepositAddComponent implements OnInit {
       transactionId: new FormControl(data && data.transactionId ? data.transactionId : null),
       operationType: new FormControl(data && data.operationType ? data.operationType : null),
       status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
-      type: new FormControl('deposite'),
+      type: new FormControl('Deposit'),
     });
   }
   public addTransaction = () => {
@@ -47,24 +47,18 @@ export class DepositAddComponent implements OnInit {
       if (data && data.success) {
         this.toastrService.showSuccess("Success!", data.message);
         this.loaderService.hideLoader();
-        // this.getAll();
         this.cancel();
       } else {
         this.loaderService.hideLoader();
-        this.toastrService.showError('Error!', data && data?.message ? data?.message : 'Error while saving role record.')
+        this.toastrService.showError('Error!', data && data?.message ? data?.message : 'Something Went Wrong.')
       }
     }
     let failure = (error: any) => {
       this.loaderService.hideLoader();
-      this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while saving role record.')
+      this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Something Went Wrong.')
     }
     this.loaderService.showLoader();
-    // if (this.editRoleData?.rolesId) {
-    //   this.roleData.value['rolesId'] = this.editRoleData.rolesId;
-    //   this.roleService.update(this.roleData.value, success, failure)
-    // } else {
     this.transactionService.addTransaction(this.depositForm.value, success, failure)
-    // }
   }
 
   public cancel = () => {
