@@ -8,7 +8,7 @@ const TransactionTypeSchema = new Schema({
         fieldName: { type: String },
         displayMode: { type: String },
         fieldType: { type: String },
-        placeholder: { type: String },
+        placeHolder: { type: String },
         required: { type: Boolean, default: false },
     }],
     userId: { type: String, required: true }

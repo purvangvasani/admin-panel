@@ -38,7 +38,9 @@ async function add(req, res, next) {
 
 async function update(req, res, next) {
     try {
-        let result = await BankService.update(req.body);
+        let criteria = req.body;
+        criteria['userId'] = req.headers.userid;
+        let result = await BankService.update(criteria);
         res.json(result);
     } catch (e) {
         res.json(e);
