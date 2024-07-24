@@ -84,7 +84,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
         this.bankId = params['bankId'];
       }
     });
-    if(this.bankId){
+    if (this.bankId) {
       this.getById();
     }
     this.buildForm();

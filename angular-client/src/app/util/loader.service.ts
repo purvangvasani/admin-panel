@@ -19,5 +19,4 @@ export class LoaderService {
   public hideLoader() {
     this.loading = false;
   }
-  
 }

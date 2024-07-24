@@ -49,7 +49,8 @@ export class BanksComponent implements OnInit, OnDestroy {
     private bankService: BankService,
     private utilService: UtilService,
     private route: ActivatedRoute,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private loaderService: LoaderService,
   ) {
     const params = this.route.data.subscribe((data: Params) => {
       this.accessModule = data['module'];
@@ -108,13 +109,16 @@ export class BanksComponent implements OnInit, OnDestroy {
         } else {
           this.bankList = [];
         }
+        this.loaderService.hideLoader(); 
       } else {
         this.toastrService.showError('Error!', data.message)
       }
     }
     let failure = (error: any) => {
+      this.loaderService.hideLoader();
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while validating credentials.')
     }
+    this.loaderService.showLoader();
     this.bankService.getAll({ pageQuery: this.currentPage }, success, failure)
   }
 
@@ -159,7 +163,7 @@ export class BanksComponent implements OnInit, OnDestroy {
   }
 
   public editBank = (data: any) => {
-    this.utilService.goto('/banks/edit', {bankId: data.bankId});
+    this.utilService.goto('/banks/edit', { bankId: data.bankId });
   }
 
   handleCreateEvent() {

@@ -1,4 +1,3 @@
-<div id="loading" class="fade show">
-    <i class="spinner-grow spinner-grow-sm"></i>
-    <span class="m-1">Loading...</span>
-</div>
+<div *ngIf="loaderService.loading" class="loader-overlay">
+    <div class="loader"></div>
+  </div>
