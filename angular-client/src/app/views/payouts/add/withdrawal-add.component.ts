@@ -50,7 +50,6 @@ export class WithdrawalAddComponent implements OnInit {
       if (data && data.success) {
         this.toastrService.showSuccess("Success!", data.message);
         this.loaderService.hideLoader();
-        // this.getAll();
         this.cancel();
       } else {
         this.loaderService.hideLoader();

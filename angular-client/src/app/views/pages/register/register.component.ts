@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastService } from 'src/app/util/toastr.service';
 import { AuthService } from '../auth.service';
+import { LoaderService } from 'src/app/util/loader.service';
 
 interface User {
   id: number;
@@ -36,7 +37,8 @@ export class RegisterComponent {
     private router: Router,
     private fb: FormBuilder,
     private toastrService: ToastService,
-    private authService: AuthService
+    private authService: AuthService,
+    private loaderService: LoaderService
   ) {
     this.title = "Create an account";
     this.buildForm();
@@ -53,6 +55,7 @@ export class RegisterComponent {
 
   public onSubmit= ()=> {
     let success = (data: any) => {
+      this.loaderService.hideLoader();
       if (data && data.success) {
         this.toastrService.showSuccess('Success!', data.message ? data.message : 'Successfully Registered.');
         this.router.navigateByUrl('/login');
@@ -61,9 +64,10 @@ export class RegisterComponent {
       }
     }
     let failure = (error: any) => {
-      console.log(error)
+      this.loaderService.hideLoader();
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while validating credentials.')
     }
+    this.loaderService.showLoader();
     this.authService.register(this.signupForm.value, success, failure)
   }
 

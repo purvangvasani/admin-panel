@@ -8,6 +8,7 @@ import { IconDirective } from '@coreui/icons-angular';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Subscription } from 'rxjs';
 import { BankService } from 'src/app/services/bank.service';
+import { LoaderService } from 'src/app/util/loader.service';
 import { ToastService } from 'src/app/util/toastr.service';
 import { UtilService } from 'src/app/util/util.service';
 
@@ -75,9 +76,9 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private toastrService: ToastService,
     private bankService: BankService,
-    private router: Router,
     private route: ActivatedRoute,
     private utilService: UtilService,
+    private loaderService: LoaderService
   ) {
     this.params = this.route.params.subscribe((params: Params) => {
       if (params['bankId']) {
@@ -104,6 +105,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
 
   private getById = () => {
     let success = (data: any) => {
+      this.loaderService.hideLoader();
       if (data && data.success && data.data) {
         this.editBankData = data.data;
         this.buildForm(data.data);
@@ -112,8 +114,10 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
       }
     }
     let failure = (error: any) => {
+      this.loaderService.hideLoader();
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching bank details.')
     }
+    this.loaderService.showLoader();
     this.bankService.getById({ bankId: this.bankId }, success, failure)
   }
 
@@ -155,6 +159,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
 
   public onBankSubmit = () => {
     let success = (data: any) => {
+      this.loaderService.hideLoader();
       if (data && data.success) {
         this.toastrService.showSuccess("Success!", data.message);
         this.utilService.goto('/banks/list')
@@ -163,8 +168,10 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
       }
     }
     let failure = (error: any) => {
+      this.loaderService.hideLoader();
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while saving bank record.')
     }
+    this.loaderService.showLoader();
     let bankData = this.bankForm.value;
     bankData['deposits'] = this.depositForm.value.depositFields;
     bankData['withdrawals'] = this.withdrawlForm.value.withdrawlFields;

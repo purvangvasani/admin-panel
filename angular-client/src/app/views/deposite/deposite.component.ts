@@ -24,6 +24,7 @@ export class DepositeComponent implements OnInit {
   constructor(private TransactionService: TransactionService, private fb: FormBuilder,
     private loaderService: LoaderService, private toastrService: ToastService,
   ) { }
+  
   public status = [{ label: 'Processing', value: 'processing' },
   { label: 'Rejected', value: 'rejected' },
   { label: 'Approved', value: 'approved' },
@@ -80,8 +81,8 @@ export class DepositeComponent implements OnInit {
 
   public getAllDeposite = () => {
     const successCallback = (response: any) => {
+      this.loaderService.hideLoader();
       if (response && response.success) {
-        this.loaderService.hideLoader();
         if (response.data && response.data.length) {
           this.deositeList = response.data || [];
           console.log(this.deositeList)

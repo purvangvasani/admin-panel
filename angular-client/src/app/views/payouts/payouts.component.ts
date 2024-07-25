@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, AlignDirective, InputGroupTextDirective, InputGroupComponent, ColDirective, ButtonDirective, FormCheckLabelDirective, FormCheckInputDirective, FormCheckComponent, FormSelectDirective, FormLabelDirective, FormDirective, FormControlDirective, ContainerComponent, DropdownItemDirective, DropdownMenuDirective, DropdownToggleDirective, DropdownComponent } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
-import { PayoutsService } from 'src/app/services/payouts.service';
 import { TransactionService } from 'src/app/services/transactionRequest.service';
 import { LoaderService } from 'src/app/util/loader.service';
 import { ToastService } from 'src/app/util/toastr.service';
@@ -24,6 +23,7 @@ export class PayoutsComponent {
   constructor(private TransactionService: TransactionService, private fb: FormBuilder,
     private loaderService: LoaderService, private toastrService: ToastService,
   ) { }
+
   public status = [{ label: 'Done', value: 'done' },
   { label: 'Rejected', value: 'rejected' },
 
@@ -75,8 +75,8 @@ export class PayoutsComponent {
   };
   public getAllDeposite = () => {
     const successCallback = (response: any) => {
+      this.loaderService.hideLoader();
       if (response && response.success) {
-        this.loaderService.hideLoader();
 
         if (response.data && response.data.length) {
           this.payoutsList = response.data || [];

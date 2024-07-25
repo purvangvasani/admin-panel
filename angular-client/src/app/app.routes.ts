@@ -15,7 +15,7 @@ export const routes: Routes = [
       {
         path: 'dashboard',
         loadChildren: () => import('./views/dashboard/routes').then((m) => m.routes),
-        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+        canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
         path: 'settings',
@@ -30,12 +30,12 @@ export const routes: Routes = [
       {
         path: 'deposit',
         loadChildren: () => import('./views/deposite/routes').then((m) => m.routes),
-        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+        canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
         path: 'payouts',
         loadChildren: () => import('./views/payouts/routes').then((m) => m.routes),
-        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+        canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
         path: 'theme',

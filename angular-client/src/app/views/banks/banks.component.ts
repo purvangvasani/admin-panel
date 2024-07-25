@@ -101,6 +101,7 @@ export class BanksComponent implements OnInit, OnDestroy {
 
   public getAll = () => {
     let success = (data: any) => {
+      this.loaderService.hideLoader(); 
       if (data && data.success) {
         if (data.data && data.data.length) {
           this.bankList = data.data;
@@ -109,7 +110,6 @@ export class BanksComponent implements OnInit, OnDestroy {
         } else {
           this.bankList = [];
         }
-        this.loaderService.hideLoader(); 
       } else {
         this.toastrService.showError('Error!', data.message)
       }
@@ -148,6 +148,7 @@ export class BanksComponent implements OnInit, OnDestroy {
 
   public deleteRecord = () => {
     let success = (data: any) => {
+    this.loaderService.hideLoader();
       if (data && data.success) {
         this.toastrService.showSuccess('Success!', data.message)
         this.closeDeleteModal()
@@ -157,8 +158,10 @@ export class BanksComponent implements OnInit, OnDestroy {
       }
     }
     let failure = (error: any) => {
+    this.loaderService.hideLoader();
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while deleting record.')
     }
+    this.loaderService.showLoader();
     this.bankService.deleteById({ bankId: this.deleteData.bankId }, success, failure)
   }
 

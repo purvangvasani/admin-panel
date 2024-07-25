@@ -149,6 +149,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     public getAll = () => {
         let success = (data: any) => {
             if (data && data.success) {
+                this.loaderService.hideLoader();
                 if (data.data && data.data.length) {
                     this.roleList = data.data;
                     this.currentPage = data.currentPage;
@@ -156,10 +157,6 @@ export class RolesComponent implements OnInit, OnDestroy {
                 } else {
                     this.roleList = [];
                 }
-                setTimeout(() => {
-
-                    this.loaderService.hideLoader();
-                }, 2000);
             } else {
                 this.loaderService.hideLoader();
                 this.toastrService.showError('Error!', data.message)
