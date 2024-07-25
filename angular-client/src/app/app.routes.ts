@@ -25,7 +25,7 @@ export const routes: Routes = [
       {
         path: 'banks',
         loadChildren: () => import('./views/banks/routes').then((m) => m.routes),
-        canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
         path: 'deposit',

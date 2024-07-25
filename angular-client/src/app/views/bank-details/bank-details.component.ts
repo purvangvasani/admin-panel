@@ -126,20 +126,32 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
       bankName: [data && data.bankName ? data.bankName : ''],
       active: [data && data.active ? data.active : false],
       ref: [data && data.ref ? data.ref : ''],
-      uploadDetails: this.fb.array([this.bankItem(data?.uploadDetails || null)]),
+      uploadDetails: this.fb.array(this.initUploadDetails(data?.uploadDetails || []))
     });
 
     this.depositForm = this.fb.group({
-      depositFields: this.fb.array([this.depositItem(data)])
+      depositFields: this.fb.array(
+        data?.deposits && data.deposits.length > 0
+          ? this.initdepositDetails(data.deposits[0].typeDetails)
+          : [this.depositItem()]
+      )
     });
     this.withdrawlForm = this.fb.group({
-      withdrawlFields: this.fb.array([this.withdrawlItem(data)])
+      withdrawlFields: this.fb.array(
+        data?.withdrawals && data.withdrawals.length > 0
+          ? this.initwithdrawDetails(data.withdrawals[0].typeDetails)
+          : [this.withdrawlItem()]
+      )
     });
   }
 
   // Bank Items
   get uploadDetails(): FormArray {
     return this.bankForm.get('uploadDetails') as FormArray;
+  }
+
+  initUploadDetails(details: any[]): FormGroup[] {
+    return details.map(detail => this.bankItem(detail));
   }
 
   bankItem(data: any): FormGroup {
@@ -173,8 +185,21 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     }
     this.loaderService.showLoader();
     let bankData = this.bankForm.value;
-    bankData['deposits'] = this.depositForm.value.depositFields;
-    bankData['withdrawals'] = this.withdrawlForm.value.withdrawlFields;
+    // bankData['deposits'] = this.depositForm.value.depositFields;
+    // bankData['withdrawals'] = this.withdrawlForm.value.withdrawlFields;
+    const allwithdrawlFormFilled = this.withdrawlForm.value.withdrawlFields.every((field: any) => {
+      return field.fieldName && field.displayMode && field.fieldType && field.placeHolder && (field.required !== undefined);
+    });
+    const allwdepositsFormFilled = this.depositForm.value.depositFields.every((field: any) => {
+      return field.fieldName && field.displayMode && field.fieldType && field.placeHolder && (field.required !== undefined);
+    });
+    if (allwithdrawlFormFilled) {
+      bankData['withdrawals'] = this.withdrawlForm.value.withdrawlFields;
+    }
+    if (allwdepositsFormFilled) {
+      bankData['deposits'] = this.depositForm.value.depositFields;
+    }
+    console.log(bankData)
     if (this.editBankData?.bankId) {
       bankData['bankId'] = this.editBankData.bankId;
       this.bankService.update(bankData, success, failure)
@@ -188,14 +213,17 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     return this.depositForm.get('depositFields') as FormArray;
   }
 
+  initdepositDetails(depositDetails: any[]): FormGroup[] {
+    return depositDetails.map(depositDetail => this.depositItem(depositDetail));
+  }
+
   depositItem(data?: any): FormGroup {
     return this.fb.group({
       fieldName: [data && data.fieldName ? data.fieldName : ''],
       displayMode: [data && data.displayMode ? data.displayMode : ''],
-      field: [data && data.field ? data.field : ''],
+      fieldType: [data && data.fieldType ? data.fieldType : ''],
       placeHolder: [data && data.placeHolder ? data.placeHolder : ''],
-      required: [data && data.required ? data.required : false],
-
+      required: [data && data.required ? data.required : false]
     });
   }
 
@@ -214,12 +242,14 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
   get withdrawlFields(): FormArray {
     return this.withdrawlForm.get('withdrawlFields') as FormArray;
   }
-
+  initwithdrawDetails(depositDetails: any[]): FormGroup[] {
+    return depositDetails.map(depositDetails => this.withdrawlItem(depositDetails));
+  }
   withdrawlItem(data?: any): FormGroup {
     return this.fb.group({
       fieldName: [data && data.fieldName ? data.fieldName : ''],
       displayMode: [data && data.displayMode ? data.displayMode : ''],
-      field: [data && data.field ? data.field : ''],
+      fieldType: [data && data.fieldType ? data.fieldType : ''],
       placeHolder: [data && data.placeHolder ? data.placeHolder : ''],
       required: [data && data.required ? data.required : false],
 

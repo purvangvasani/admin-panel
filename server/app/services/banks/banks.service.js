@@ -2,6 +2,7 @@ const BankCollection = require('../../models/banks');
 const ObjectId = require('mongoose').Types.ObjectId;
 const helper = require('../../middleware/utils');
 const helpers = require('../../utility');
+const TransactionType = require('../../models/transactionType');
 
 module.exports = {
     getAll,
@@ -40,10 +41,10 @@ function getAll(criteria) {
                 condition.push({ $sort: { updatedAt: 1 } });
             }
             if (criteria.pageQuery) {
-                
+
                 totalCount = await BankCollection.countDocuments({});
                 totalPages = Math.ceil(totalCount / pageSize);
-    
+
                 const skip = (page - 1) * pageSize;
                 condition.push({ $skip: skip }, { $limit: pageSize })
             }
@@ -82,8 +83,35 @@ function add(criteria) {
                 for (let i = 0; i < criteria.uploadDetails.length; i++) {
                     delete criteria.uploadDetails['_id'];
                 }
-                bankData['uploadDetails'] = criteria.uploadDetails
-                console.log(bankData)
+                bankData['uploadDetails'] = criteria.uploadDetails;
+
+                // Process deposits
+                if (criteria.deposits) {
+                    let depositTransactionType = new TransactionType({
+                        typeId: await helper.generateCounterId('transactionType', 'typeId', 'TTY_'),
+                        type: 'deposit',
+                        typeDetails: criteria.deposits,
+                        userId: criteria.userId
+                    });
+                    await depositTransactionType.save();
+                    bankData.deposits = depositTransactionType._id;
+                } else {
+                    delete criteria.deposits;
+                }
+
+                // Process withdrawals
+                if (criteria.withdrawals) {
+                    let withdrawalTransactionType = new TransactionType({
+                        typeId: await helper.generateCounterId('transactionType', 'typeId', 'TTY_'),
+                        type: 'withdrawal',
+                        typeDetails: criteria.withdrawals,
+                        userId: criteria.userId
+                    });
+                    await withdrawalTransactionType.save();
+                    bankData.withdrawals = withdrawalTransactionType._id;
+                } else {
+                    delete criteria.withdrawals;
+                }
                 await bankData.save();
 
                 resolve({ success: true, message: 'Bank Saved Succesfully!' })
@@ -103,12 +131,57 @@ function add(criteria) {
 function update(criteria) {
     let promiseFunction = async (resolve, reject) => {
         if (criteria && criteria.bankId) {
-            delete criteria._id;
             delete criteria.__v;
-            delete criteria.deposits;
-            delete criteria.withdrawals;
             let q = { bankId: criteria.bankId };
             try {
+                let existingBank = await BankCollection.findOne(q).exec();
+                if (!existingBank) {
+                    reject({ success: false, message: 'Bank not found' });
+                    return;
+                }
+
+                // Process deposits
+                if (criteria.deposits) {
+                    let depositTransactionType = await TransactionType.findOne({ _id: existingBank.deposits });
+                    if (!depositTransactionType) {
+                        depositTransactionType = new TransactionType({
+                            typeId: await helper.generateCounterId('transactionType', 'typeId', 'TTY_'),
+                            type: 'deposit',
+                            typeDetails: criteria.deposits,
+                            userId: criteria.userId
+                        });
+                        await depositTransactionType.save();
+                        criteria.deposits = depositTransactionType._id;
+                    } else {
+                        depositTransactionType.typeDetails = criteria.deposits;
+                        depositTransactionType.userId = criteria.userId;
+                        await depositTransactionType.save();
+                    }
+                    criteria.deposits = depositTransactionType._id;
+                } else {
+                    delete criteria.deposits;
+                }
+
+                // Process withdrawals
+                if (criteria.withdrawals) {
+                    let withdrawalTransactionType = await TransactionType.findOne({ _id: existingBank.withdrawals });
+                    if (!withdrawalTransactionType) {
+                        withdrawalTransactionType = new TransactionType({
+                            typeId: await helper.generateCounterId('transactionType', 'typeId', 'TTY_'),
+                            type: 'withdrawal',
+                            typeDetails: criteria.withdrawals,
+                            userId: criteria.userId
+                        });
+                        await withdrawalTransactionType.save();
+                    } else {
+                        withdrawalTransactionType.typeDetails = criteria.withdrawals;
+                        withdrawalTransactionType.userId = criteria.userId;
+                        await withdrawalTransactionType.save();
+                    }
+                    criteria.withdrawals = withdrawalTransactionType._id;
+                } else {
+                    delete criteria.withdrawals;
+                }
                 let result = await BankCollection.findOneAndUpdate(q, criteria, { upsert: false }).exec();
                 result = result.toJSON();
                 resolve({ success: true, message: 'Bank updated successfully!', data: result });
@@ -148,6 +221,7 @@ function getById(criteria) {
         try {
             if (criteria && criteria.bankId) {
                 let condition = [];
+                condition.push({ $match: { bankId: criteria.bankId } })
                 let depositLookup = {
                     $lookup:
                     {
@@ -170,15 +244,15 @@ function getById(criteria) {
                     }
                 }
                 condition.push(withdrawalLookup)
-                let item = await BankCollection.findOne({ bankId: criteria.bankId })
-                .populate('deposits', 'withdrawals')
-                .lean().exec();
-                console.log(item)
-                // let bank = await BankCollection.aggregate(condition).exec();
-                // if (criteria && ((criteria.bankName && typeof criteria.bankName !== 'object') || criteria.bankId)) {
-                //     bank = (bank && bank.length) ? bank[0] : {};
-                // }
-                resolve({ success: true, message: 'success!', data: item });
+                // let item = await BankCollection.findOne({ bankId: criteria.bankId })
+                //     .populate('deposits', 'withdrawals')
+                //     .lean().exec();
+                // console.log(item)
+                let bank = await BankCollection.aggregate(condition).exec();
+                if (criteria && ((criteria.bankName && typeof criteria.bankName !== 'object') || criteria.bankId)) {
+                    bank = (bank && bank.length) ? bank[0] : {};
+                }
+                resolve({ success: true, message: 'success!', data: bank });
             } else {
                 reject({ success: false, message: 'Bank Id is not provided' });
                 return;
