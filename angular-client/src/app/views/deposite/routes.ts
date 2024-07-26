@@ -16,7 +16,8 @@ export const routes: Routes = [
         path: 'list',
         loadComponent: () => import('./deposite.component').then(m => m.DepositeComponent),
         data: {
-          title: $localize`List`
+          title: $localize`List`,
+          module: 'deposit',
         }
       },
       {

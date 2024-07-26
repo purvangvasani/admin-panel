@@ -1,12 +1,16 @@
 import { CommonModule, NgStyle, NgTemplateOutlet } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, AlignDirective, InputGroupTextDirective, InputGroupComponent, ColDirective, ButtonDirective, FormCheckLabelDirective, FormCheckInputDirective, FormCheckComponent, FormSelectDirective, FormLabelDirective, FormDirective, FormControlDirective, ContainerComponent, DropdownItemDirective, DropdownMenuDirective, DropdownToggleDirective, DropdownComponent } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
+import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/services/transactionRequest.service';
 import { LoaderService } from 'src/app/util/loader.service';
 import { ToastService } from 'src/app/util/toastr.service';
-
+import { UtilService } from 'src/app/util/util.service';
+import { LocalStorageService } from 'src/app/util/local-storage.service';
+import { appConstants } from 'src/app/util/app.constant';
+import { ActivatedRoute, Params } from '@angular/router';
 @Component({
   selector: 'app-payouts',
   standalone: true,
@@ -16,13 +20,47 @@ import { ToastService } from 'src/app/util/toastr.service';
   templateUrl: './payouts.component.html',
   styleUrl: './payouts.component.scss'
 })
-export class PayoutsComponent {
+export class PayoutsComponent implements OnInit, OnDestroy {
   public payoutsList: any[] = [];
   public payoutsForm: FormGroup | any;
-
-  constructor(private TransactionService: TransactionService, private fb: FormBuilder,
-    private loaderService: LoaderService, private toastrService: ToastService,
-  ) { }
+  public access: any = null;
+  public accessModule: any = null;
+  public accessSubModule: any = null;
+  public currentUserRole: any = this.utilService.getCurrentUserRole();
+  private paramsubscriptions: Subscription[] = [];
+  private params: Subscription | undefined;
+  constructor(private TransactionService: TransactionService,
+    private fb: FormBuilder,
+    private route: ActivatedRoute,
+    private loaderService: LoaderService,
+    private toastrService: ToastService,
+    private utilService: UtilService,
+    private localStorageService: LocalStorageService,
+  ) {
+    const params = this.route.data.subscribe((data: Params) => {
+      this.accessModule = data['module'];
+      this.accessSubModule = data['subModule'];
+      if (this.accessModule) {
+        let access = this.localStorageService.getValue('user')?.permissions ? JSON.parse(this.localStorageService.getValue('user').permissions) : appConstants.permissionList;
+        if (access && access.length) {
+          let item = access.filter((a: any) => a.key === this.accessModule)[0];
+          if (item && item.submodule && item.submodule.length) {
+            this.access = item.submodule.filter((b: any) => b.key === this.accessSubModule)[0].access;
+          } else {
+            this.access = item.access;
+          }
+          this.access = this.access[this.currentUserRole];
+          if (!(this.access && this.access.view)) {
+            this.toastrService.showWarning('Warning!', "You donot have permission to view this page. Please contact to administrator!");
+            this.utilService.goto('/dashboard');
+          } else {
+            this.getAllDeposite();
+          }
+        }
+      }
+    })
+    this.paramsubscriptions.push(params);
+  }
 
   public status = [{ label: 'Done', value: 'done' },
   { label: 'Rejected', value: 'rejected' },
@@ -31,7 +69,24 @@ export class PayoutsComponent {
   ngOnInit(): void {
     this.getAllDeposite();
     this.buildForm();
-
+  }
+  ngOnDestroy(): void {
+    try {
+      if (this.paramsubscriptions) {
+        for (let i = 0; i < this.paramsubscriptions.length; i++) {
+          this.paramsubscriptions[i].unsubscribe()
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    try {
+      if (this.params) {
+        this.params.unsubscribe();
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
   buildForm(data?: any): void {
     this.payoutsForm = this.fb.group({
