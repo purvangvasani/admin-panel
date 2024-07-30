@@ -1,15 +1,15 @@
-
 <div style="margin-bottom: 10px;">
     <c-row>
         <c-col>
-            <button cButton color="primary"  (click)="handleCreateEvent()" style="float: left;">Create</button>
+            <button cButton color="primary" (click)="handleCreateEvent()" *ngIf="access.add"
+                style="float: left;">Create</button>
         </c-col>
     </c-row>
 </div>
 <div style="margin-bottom: 10px;">
     <c-card>
         <c-card-header>
-            <h5>Banks List</h5>   
+            <h5>Banks List</h5>
         </c-card-header>
         <c-card-body>
             <c-pagination align="end">
@@ -17,11 +17,14 @@
                     <a cPageLink (click)="handlePagination(currentPage - 1)" [routerLink]>Previous</a>
                 </li>
                 <ng-container *ngFor="let n of numSequence(totalPages); let i = index;">
-                    <li cPageItem [active]="currentPage === (i+1)" [ngStyle]="{'cursor': currentPage === (i+1) ? '' : 'pointer'}">
-                        <a cPageLink (click)="currentPage === (i+1) ? null : handlePagination(i+1)" [routerLink]>{{i+1}}</a>
+                    <li cPageItem [active]="currentPage === (i+1)"
+                        [ngStyle]="{'cursor': currentPage === (i+1) ? '' : 'pointer'}">
+                        <a cPageLink (click)="currentPage === (i+1) ? null : handlePagination(i+1)"
+                            [routerLink]>{{i+1}}</a>
                     </li>
                 </ng-container>
-                <li cPageItem [disabled]="currentPage === totalPages" [ngStyle]="{'cursor': currentPage === totalPages ? '' : 'pointer'}">
+                <li cPageItem [disabled]="currentPage === totalPages"
+                    [ngStyle]="{'cursor': currentPage === totalPages ? '' : 'pointer'}">
                     <a cPageLink (click)="handlePagination(currentPage + 1)" [routerLink]>Next</a>
                 </li>
             </c-pagination>
@@ -46,18 +49,24 @@
                             <td>{{bank.bankName}}</td>
                             <td>{{bank.active ? 'Yes' : 'No'}}</td>
                             <td>
-                                <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+                                <c-dropdown *ngIf="access.edit || access.delete"
+                                    [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
                                     <button [caret]="false" cDropdownToggle class="py-0 pe-0"
                                         aria-label="Open user menu">
                                         <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
                                     </button>
                                     <ul cDropdownMenu class="pt-0 w-auto">
-                                        <li>
-                                            <a cDropdownItem style="cursor: pointer; text-decoration: none;" (click)="editBank(bank)"><svg cIcon
-                                                class="me-2" name="cilPencil"></svg>Edit</a>
+                                        <li *ngIf="access.edit">
+                                            <a cDropdownItem style="cursor: pointer; text-decoration: none;"
+                                                (click)="editBank(bank)">
+                                                <svg cIcon class="me-2" name="cilPencil"></svg>Edit
+                                            </a>
                                         </li>
-                                        <li>
-                                            <a cDropdownItem style="cursor: pointer; text-decoration: none;" (click)="toggleDeleteModal(bank)"><svg cIcon class="me-2" name="cilTrash"></svg>Delete</a>
+                                        <li *ngIf="access.delete">
+                                            <a cDropdownItem style="cursor: pointer; text-decoration: none;"
+                                                (click)="toggleDeleteModal(bank)">
+                                                <svg cIcon class="me-2" name="cilTrash"></svg>Delete
+                                            </a>
                                         </li>
                                     </ul>
                                 </c-dropdown>

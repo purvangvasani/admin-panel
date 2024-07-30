@@ -45,7 +45,8 @@
                             <c-col sm="12" xs="12" md="6" lg="4">
                                 <c-input-group>
                                     <input cFormControl placeholder="Operation Amount To" type="number"
-                                        formControlName="operationAmountTo" id="operationAmountTo" name="operationAmountTo" />
+                                        formControlName="operationAmountTo" id="operationAmountTo"
+                                        name="operationAmountTo" />
                                 </c-input-group>
                             </c-col>
                         </c-row>
@@ -63,7 +64,7 @@
                                 </label>
                                 <input cFormControl placeholder="Creation Date To" type="date" id="creationDateTo"
                                     name="creationDateTo" formControlName="creationDateTo" />
-    
+
                                 <!-- Validation message -->
                                 <div *ngIf="depositeForm.get('creationDateTo').hasError('dateRangeError')"
                                     class="text-danger">
@@ -122,7 +123,8 @@
                                 </td>
 
                                 <td *ngIf="item.status ==='Processing';">
-                                    <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+                                    <c-dropdown *ngIf="access.edit" [popperOptions]="{ placement: 'bottom-start' }"
+                                        variant="nav-item">
                                         <button [caret]="false" cDropdownToggle class="py-0 pe-0"
                                             aria-label="Open user menu">
                                             <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>

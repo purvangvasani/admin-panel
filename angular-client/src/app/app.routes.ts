@@ -30,7 +30,7 @@ export const routes: Routes = [
       {
         path: 'merchant',
         loadChildren: () => import('./views/merchant/routes').then((m) => m.routes),
-        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+        canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
         path: 'deposit',
