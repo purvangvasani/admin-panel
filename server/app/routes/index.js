@@ -11,6 +11,7 @@ const express = require('express');
 const transactionRoutes = require('./transactionRequest');
 const pauoutsRoutes = require('./payouts');
 const banksRoutes = require('./banks');
+const merchantRoutes = require('./merchant');
 
 module.exports = function (app) {
   // get an instance of the router for api routes
@@ -23,6 +24,7 @@ module.exports = function (app) {
   transactionRoutes(apiRoutes);
   pauoutsRoutes(apiRoutes);
   banksRoutes(apiRoutes);
+  merchantRoutes(apiRoutes);
 
   // Add prefix to routes
   app.use('/admin-panel/', apiRoutes); // Assign name to end points (e.g., '/api/management/', '/api/users' ,etc. )

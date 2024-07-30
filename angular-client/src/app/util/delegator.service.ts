@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { Xml2JsonService } from './xml2json.service';
 import { LocalStorageService } from './local-storage.service';
 import { environment } from '../../environments/environment';
+import { LoaderService } from './loader.service';
 
 
 interface RequestConfig {
@@ -34,6 +35,7 @@ export class DelegatorService {
     constructor(
         private _http: HttpClient,
         private _router: Router,
+        private loaderService: LoaderService,
         private xml2jsonService: Xml2JsonService,
         private localStorageService: LocalStorageService
     ) {
@@ -336,6 +338,7 @@ export class DelegatorService {
             },
             (error: any) => {
                 try {
+                    this.loaderService.hideLoader();
                     let err = error;
                     try {
                         try {
@@ -358,7 +361,8 @@ export class DelegatorService {
                         return;
                     }
                     if (error.status === 419 && !this.lockedForRefresh) { // Session Time Out
-                        this.interceptSessionExpired();
+                        this._router.navigate(['login']);
+                        // this.interceptSessionExpired();
                     } else if (error.status === 401) {
                         delete this.runningRequests[tracker.requestId];
                         this.localStorageService.clearLocalStorage();

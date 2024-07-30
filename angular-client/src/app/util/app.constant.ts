@@ -78,6 +78,44 @@ const permissionList: any = [
             }
         }
     },
+    {
+        key: 'merchant',
+        name: 'Merchant',
+        access: {
+            super: {
+                view: true,
+                add: true,
+                edit: true,
+                delete: true,
+                download: true,
+                upload: true,
+            },
+            admin: {
+                view: true,
+                add: true,
+                edit: true,
+                delete: true,
+                download: true,
+                upload: true,
+            },
+            viewer: {
+                view: true,
+                add: false,
+                edit: false,
+                delete: false,
+                download: false,
+                upload: false,
+            },
+            editor: {
+                view: true,
+                add: true,
+                edit: true,
+                delete: false,
+                download: false,
+                upload: false,
+            }
+        }
+    },
     // {
     //     key: 'new-wave',
     //     name: 'New Wave',

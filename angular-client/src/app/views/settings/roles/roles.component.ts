@@ -12,6 +12,8 @@ import {
     RowComponent, TableDirective, TextColorDirective, ThemeDirective
 } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
+import { AgGridAngular } from 'ag-grid-angular';
+import { ColDef } from 'ag-grid-community';
 import { Subscription } from 'rxjs';
 import { RoleService } from 'src/app/services/role.service';
 import { appConstants } from 'src/app/util/app.constant';
@@ -26,7 +28,7 @@ import { LoaderComponent } from 'src/app/views/loader/loader.component';
     styleUrls: ['roles.component.scss'],
     standalone: true,
     providers: [RoleService],
-    imports: [PaginationComponent,
+    imports: [PaginationComponent, AgGridAngular,
         PageItemDirective,
         PageLinkDirective,
         RouterLink, NgTemplateOutlet, ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ThemeDirective, ButtonCloseDirective, ModalBodyComponent, ModalFooterComponent, IconDirective, LoaderComponent, TableDirective, TextColorDirective, FormCheckComponent, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormDirective, RowComponent, FormControlDirective, NgStyle, ColComponent, CommonModule]
@@ -48,6 +50,32 @@ export class RolesComponent implements OnInit, OnDestroy {
     private paramsubscriptions: Subscription[] = [];
     public editRoleData: any;
     private params: Subscription | undefined
+
+    rowData = [
+        { make: 'Tesla', model: 'Model Y', price: 64950, electric: true },
+        { make: 'Ford', model: 'F-Series', price: 33850, electric: false },
+        { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
+        { make: 'Mercedes', model: 'EQA', price: 48890, electric: true },
+        { make: 'Fiat', model: '500', price: 15774, electric: false },
+        { make: 'Nissan', model: 'Juke', price: 20675, electric: false },
+        { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
+        { make: 'Mercedes', model: 'EQA', price: 48890, electric: true },
+        { make: 'Fiat', model: '500', price: 15774, electric: false },
+        { make: 'Nissan', model: 'Juke', price: 20675, electric: false },
+        { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
+        { make: 'Mercedes', model: 'EQA', price: 48890, electric: true },
+        { make: 'Fiat', model: '500', price: 15774, electric: false },
+        { make: 'Nissan', model: 'Juke', price: 20675, electric: false },
+    ];
+    themeClass =
+    "ag-theme-quartz";
+    defaultColDef: ColDef = {
+        flex: 1,
+    };
+    colDef = [{ field: 'make', lockVisible: true, filter: true, floatingFilter: true  }, { field: 'model', lockVisible: true, filter: true, floatingFilter: true  }, { field: 'price', lockVisible: true }, { field: 'electric', lockVisible: true }];
+    pagination = true;
+    paginationPageSize = 5;
+    paginationPageSizeSelector = [5, 10, 20];
 
     constructor(
         private toastrService: ToastService,
@@ -135,10 +163,10 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.buildForm(data);
     }
 
-    numSequence(n: number): Array<number> { 
-        return Array(n); 
+    numSequence(n: number): Array<number> {
+        return Array(n);
     }
-    
+
     public handlePagination = (pageNumber: number) => {
         console.log(pageNumber)
         this.currentPage = pageNumber;

@@ -28,6 +28,11 @@ export const routes: Routes = [
         canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
       {
+        path: 'merchant',
+        loadChildren: () => import('./views/merchant/routes').then((m) => m.routes),
+        // canActivate: [AuthGuard], canActivateChild: [AuthGuard],
+      },
+      {
         path: 'deposit',
         loadChildren: () => import('./views/deposite/routes').then((m) => m.routes),
         canActivate: [AuthGuard], canActivateChild: [AuthGuard],
