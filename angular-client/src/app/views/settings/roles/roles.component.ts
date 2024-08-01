@@ -12,8 +12,8 @@ import {
     RowComponent, TableDirective, TextColorDirective, ThemeDirective
 } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
-import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-community';
+import { AgGridAngular, } from 'ag-grid-angular';
+import { ColDef, ColGroupDef, GridApi, ICellRendererParams } from 'ag-grid-community';
 import { Subscription } from 'rxjs';
 import { RoleService } from 'src/app/services/role.service';
 import { appConstants } from 'src/app/util/app.constant';
@@ -22,6 +22,7 @@ import { LocalStorageService } from 'src/app/util/local-storage.service';
 import { ToastService } from 'src/app/util/toastr.service';
 import { UtilService } from 'src/app/util/util.service';
 import { LoaderComponent } from 'src/app/views/loader/loader.component';
+import { IServerSideDatasource, GridOptions, IServerSideGetRowsParams, IServerSideGetRowsRequest } from 'ag-grid-community';
 
 @Component({
     templateUrl: 'roles.component.html',
@@ -36,7 +37,7 @@ import { LoaderComponent } from 'src/app/views/loader/loader.component';
 export class RolesComponent implements OnInit, OnDestroy {
 
     @ViewChild('loader') loaderComponent!: LoaderComponent;
-
+    private gridApi!: GridApi;
     public deleteModalVisible = false;
     public deleteData: any;
     public roleList: any = [];
@@ -51,31 +52,69 @@ export class RolesComponent implements OnInit, OnDestroy {
     public editRoleData: any;
     private params: Subscription | undefined
 
-    rowData = [
-        { make: 'Tesla', model: 'Model Y', price: 64950, electric: true },
-        { make: 'Ford', model: 'F-Series', price: 33850, electric: false },
-        { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
-        { make: 'Mercedes', model: 'EQA', price: 48890, electric: true },
-        { make: 'Fiat', model: '500', price: 15774, electric: false },
-        { make: 'Nissan', model: 'Juke', price: 20675, electric: false },
-        { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
-        { make: 'Mercedes', model: 'EQA', price: 48890, electric: true },
-        { make: 'Fiat', model: '500', price: 15774, electric: false },
-        { make: 'Nissan', model: 'Juke', price: 20675, electric: false },
-        { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
-        { make: 'Mercedes', model: 'EQA', price: 48890, electric: true },
-        { make: 'Fiat', model: '500', price: 15774, electric: false },
-        { make: 'Nissan', model: 'Juke', price: 20675, electric: false },
-    ];
-    themeClass =
-    "ag-theme-quartz";
-    defaultColDef: ColDef = {
-        flex: 1,
-    };
-    colDef = [{ field: 'make', lockVisible: true, filter: true, floatingFilter: true  }, { field: 'model', lockVisible: true, filter: true, floatingFilter: true  }, { field: 'price', lockVisible: true }, { field: 'electric', lockVisible: true }];
-    pagination = true;
-    paginationPageSize = 5;
-    paginationPageSizeSelector = [5, 10, 20];
+    public datatableState: {
+        clientSide: {
+            id?: string,
+            gridOptions: GridOptions,
+            columnDefs: (ColDef | ColGroupDef)[]
+        },
+    } = {
+            clientSide: {
+                columnDefs: [],
+                gridOptions: {}
+            }
+        };
+    // gridOptions: GridOptions = {
+    //     columnDefs: [
+    //         { headerName: 'roleId', field: 'roleId', filter: 'agTextColumnFilter' },
+    //         { headerName: 'roleName', field: 'roleName', filter: 'agTextColumnFilter' },
+    //         { headerName: 'roleLevel', field: 'roleLevel', filter: 'agNumberColumnFilter' },
+    //         { headerName: 'isActive', field: 'isActive', filter: 'agNumberColumnFilter' }
+
+    //     ],
+    //     defaultColDef: {
+    //         sortable: true,
+    //         filter: true,
+    //         flex: 1,
+    //     },
+    //     pagination: true,
+    //     paginationPageSize: 10,
+    //     animateRows: true,
+    //     onGridReady: this.onGridReady.bind(this),
+    // };
+
+    // rowData = [
+    //     { make: 'Tesla', model: 'Model Y', price: 64950, electric: true },
+    //     { make: 'Ford', model: 'F-Series', price: 33850, electric: false },
+    //     { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
+    //     { make: 'Mercedes', model: 'EQA', price: 48890, electric: true },
+    //     { make: 'Fiat', model: '500', price: 15774, electric: false },
+    //     { make: 'Nissan', model: 'Juke', price: 20675, electric: false },
+    //     { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
+    //     { make: 'Mercedes', model: 'EQA', price: 48890, electric: true },
+    //     { make: 'Fiat', model: '500', price: 15774, electric: false },
+    //     { make: 'Nissan', model: 'Juke', price: 20675, electric: false },
+    //     { make: 'Toyota', model: 'Corolla', price: 29600, electric: false },
+    //     { make: 'Mercedes', model: 'EQA', price: 48890, electric: true },
+    //     { make: 'Fiat', model: '500', price: 15774, electric: false },
+    //     { make: 'Nissan', model: 'Juke', price: 20675, electric: false },
+    // ];
+    themeClass = "ag-theme-quartz";
+    // defaultColDef: ColDef = {
+    //     flex: 1,
+    // };
+    // colDef = [{ field: 'roleId', lockVisible: true, filter: true, floatingFilter: true },
+    // { field: 'roleName', lockVisible: true, filter: true, floatingFilter: true },
+    // { field: 'roleLevel', lockVisible: true },
+    // { field: 'isActive', lockVisible: true },
+    // { field: 'isActive', lockVisible: true }
+
+    // ];
+    // pagination = true;
+    // paginationPageSize = 5;
+    // paginationPageSizeSelector = [5, 10, 20];
+    // serverSideDatasource!: IServerSideDatasource;
+
 
     constructor(
         private toastrService: ToastService,
@@ -113,8 +152,111 @@ export class RolesComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.buildForm();
+        this.setDatatableClientSideMode();
+        // this.serverSideDatasource = this.createServerSideDatasource();
     }
+    onGridReady(params: any) {
+        this.gridApi = params.api;
+        params.setDatasource(this.roleList);
+    }
+    createServerSideDatasource(): IServerSideDatasource {
+        // return {
+        //     getRows: (params: IServerSideGetRowsParams) => {
+        //         const request: IServerSideGetRowsRequest = params.request;
 
+        //         const criteria = {
+        //             pageQuery: (request.startRow / (request.endRow - request.startRow)) + 1,
+        //             pageSize: request.endRow - request.startRow,
+        //             sort: request.sortModel.length > 0 ? { [request.sortModel[0].colId]: request.sortModel[0].sort === 'asc' ? 1 : -1 } : {},
+        //             filterModel: request.filterModel
+        //         };
+
+        //         this.roleService.getAll(criteria).subscribe(response => {
+        //             params.successCallback(response.data, response.totalCount);
+        //         }, error => {
+        //             params.failCallback();
+        //         });
+        //     }
+        // };
+        return {
+            getRows: (params: IServerSideGetRowsParams) => {
+                const promiseFunction = (resolve: Function, reject: Function) => {
+                    debugger
+                    const records: {
+                        data: Array<any>,
+                        recordsFiltered: number,
+                        recordsTotal: number
+                    } = {
+                        data: [],
+                        recordsFiltered: 0,
+                        recordsTotal: 0
+                    };
+                    const successCallback = (response: any) => {
+                        if (response?.success) {
+                            records.data = response.data ? response.data : [];
+                            records.recordsFiltered = response.recordsFiltered || records.data.length;
+                            records.recordsTotal = response.recordsTotal || records.data.length;
+                        }
+                        resolve({ data: response.data, recordsFiltered: response.recordsFiltered || 0, recordsTotal: response.recordsTotal || 0 });
+                    }
+                    const errorCallback = (error: any) => {
+                        resolve({ data: [], recordsFiltered: 0, recordsTotal: 0 });
+                    }
+                    const criteria = {
+                        dataTablesParameters: params,
+                    };
+                    this.roleService.getAll(criteria, successCallback, errorCallback);
+                };
+                return new Promise(promiseFunction);
+            }
+        }
+    }
+    public setDatatableClientSideMode = () => {
+        const columnDefs: (ColDef | ColGroupDef)[] = [];
+        columnDefs.push(
+            { headerName: '#', field: 'rolesId', filter: 'agTextColumnFilter' },
+            { headerName: 'Role Name', field: 'roleName', filter: 'agTextColumnFilter' },
+            { headerName: 'Role Level', field: 'roleLevel', filter: 'agNumberColumnFilter' },
+            { headerName: 'isActive?', field: 'isActive', filter: 'agSetColumnFilter' },
+            {
+                headerName: 'isDeletable?',
+                field: 'isDeletable',
+                filter: 'agSetColumnFilter',
+            }
+        );
+        this.datatableState.clientSide.gridOptions = {
+            pagination: true,
+            paginationPageSize: 5,
+            paginationPageSizeSelector: [1, 10, 20],
+            columnDefs: columnDefs,
+            rowData: this.roleList,
+            onPaginationChanged: this.onPaginationChanged.bind(this), // Bind the event handler          
+
+        };
+    }
+    onPaginationChanged(event: any) {
+        const api = event.api;
+
+        // Get the current page and total pages from the API
+        const currentPage = api.paginationGetCurrentPage();
+        const totalPages = api.paginationGetTotalPages();
+
+        // Calculate previous and next page values
+        const prevPage = currentPage > 0 ? currentPage - 1 : null;
+        const nextPage = currentPage < totalPages - 1 ? currentPage + 1 : null;
+
+        // Log or use these values as needed
+        console.log('Current Page:', currentPage);
+        console.log('Total Pages:', totalPages);
+        console.log('Previous Page:', prevPage);
+        console.log('Next Page:', nextPage);
+    }
+    onPagePrevious() {
+        const currentPage = this.gridApi.paginationGetCurrentPage();
+        if (currentPage > 0) {
+            this.gridApi.paginationGoToPage(currentPage - 1);
+        }
+    }
     ngOnDestroy(): void {
         try {
             if (this.paramsubscriptions) {

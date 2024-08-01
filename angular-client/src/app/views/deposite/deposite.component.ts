@@ -70,6 +70,9 @@ export class DepositeComponent implements OnInit, OnDestroy {
   { label: 'Approved', value: 'approved' },
 
   ]
+  handleRefreshEvent(): void {
+    this.getAllDeposite();
+  }
   ngOnInit(): void {
     this.getAllDeposite();
     this.buildForm();

@@ -31,7 +31,6 @@ export class RoleService {
     const url = this.apiUrl + '/role/getAll';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
-
   getByRoleId(data: any, successCallback: any, errorCallback: any) {
     const url = this.apiUrl + '/role/getByRoleId';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
@@ -41,7 +40,6 @@ export class RoleService {
     const url = this.apiUrl + '/role/add';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
-  
   update(data: any, successCallback: any, errorCallback: any) {
     const url = this.apiUrl + '/role/update';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
@@ -51,5 +49,4 @@ export class RoleService {
     const url = this.apiUrl + '/role/delete';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback)
   }
-  
 }

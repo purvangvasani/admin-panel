@@ -3,8 +3,15 @@
         <c-col lg="12" xl="12">
             <c-card>
                 <c-card-header>
-                    <strong class="b-strong">Filter</strong>
-                    <button cButton color="primary" (click)="handleFilterEvent()" style="float: right;">Submit</button>
+                    <div class="header-container">
+                        <div class="left-header">
+                            <strong class="b-strong">Filter</strong>
+                        </div>
+                        <div class="right-header">
+                            <button cButton color="primary" (click)="handleFilterEvent()">Submit</button>
+                            <button cButton color="primary" (click)="handleRefreshEvent()">Refresh Data</button>
+                        </div>
+                    </div>
                 </c-card-header>
                 <c-card-body>
                     <form cForm [formGroup]="payoutsForm">

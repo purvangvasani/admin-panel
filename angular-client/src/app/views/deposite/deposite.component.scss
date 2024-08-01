@@ -2,4 +2,15 @@
     .b-strong {
         line-height: 2.5;
     }
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        /* Space between left and right sections */
+        align-items: center; 
+        /* Space below the header container */
+    }
+    .right-header button {
+        margin-left: 10px; /* Space between buttons */
+    }
 }

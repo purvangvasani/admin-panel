@@ -70,6 +70,9 @@ export class PayoutsComponent implements OnInit, OnDestroy {
     this.getAllDeposite();
     this.buildForm();
   }
+  handleRefreshEvent(): void {
+    this.getAllDeposite();
+  }
   ngOnDestroy(): void {
     try {
       if (this.paramsubscriptions) {
