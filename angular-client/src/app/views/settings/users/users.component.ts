@@ -23,12 +23,24 @@ import { LoaderComponent } from 'src/app/views/loader/loader.component';
 import { AuthService } from '../../pages/auth.service';
 import { UserService } from '../../../services/user.service';
 import { NgSelectModule } from '@ng-select/ng-select';
-
+import { AgGridAngular } from 'ag-grid-angular';
+import {
+    ClientSideRowModelModule,
+    ColDef,
+    ColGroupDef,
+    GridApi,
+    GridOptions,
+    GridReadyEvent,
+    ModuleRegistry,
+    ValueFormatterParams,
+    createGrid,
+} from "ag-grid-community";
+// ModuleRegistry.registerModules([ClientSideRowModelModule]);
 @Component({
     templateUrl: 'users.component.html',
     styleUrls: ['users.component.scss'],
     standalone: true,
-    imports: [PaginationComponent,
+    imports: [AgGridAngular, PaginationComponent,
         PageItemDirective, RouterLink,
         PageLinkDirective, CommonModule, FormSelectDirective, NgSelectModule, ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ThemeDirective, ButtonCloseDirective, ModalBodyComponent, ModalFooterComponent, IconDirective, LoaderComponent, TableDirective, TextColorDirective, FormCheckComponent, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormsModule, FormDirective, RowComponent, FormControlDirective, NgStyle, ColComponent],
     providers: [RoleService, UserService]
@@ -53,6 +65,51 @@ export class UsersComponent implements OnInit {
     public roleList: any;
     public selectedRole: any;
     private params: Subscription | undefined
+
+    private gridApi!: GridApi<any>;
+
+    public columnDefs: ColDef[] = [
+        // this row just shows the row index, doesn't use any data from the row
+        {
+            headerName: "#",
+            valueFormatter: (params: ValueFormatterParams) => {
+                return `${params.node!.data.userId}`;
+            }, suppressMovable: true
+        },
+        { headerName: "First Name", field: "firstname", suppressMovable: true },
+        { headerName: "Last Name", field: "lastname", suppressMovable: true },
+        { headerName: "Email", field: "email", suppressMovable: true },
+        {
+            headerName: "Is Active?",
+            valueFormatter: (params: ValueFormatterParams) => {
+                return `${params.node!.data.active ? 'Yes' : 'No'}`;
+            }, suppressMovable: true
+        },
+        {
+            headerName: 'Action',
+            valueFormatter: (params: ValueFormatterParams) => {
+                return `${params.node!.data}`;
+            }, 
+            cellRenderer: (params: any) => {
+                return `<a title="Reset Password" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;" (click)="editUser(${params.node!.data})"><svg cIcon class="me-2" name="cilLockLocked"></svg></a>
+                                // <a title="Edit" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;"
+                                //     (click)="editUser(${params.node!.data})"><svg cIcon class="me-2" name="cilPencil"></svg></a>
+                                // <a title="Delete" *ngIf="access.delete" style="cursor: pointer; text-decoration: none;"
+                                //     (click)="toggleDeleteModal(${params.node!.data})"><svg cIcon class="me-2"
+                                //         name="cilTrash"></svg></a>
+                `
+            }
+        }
+    ];
+    public defaultColDef: ColDef = {
+        filter: true,
+    };
+    public rowSelection: "single" | "multiple" = "multiple";
+    public paginationPageSize = 10;
+    public paginationPageSizeSelector: number[] | boolean = [10, 20, 50];
+    public rowData!: any[];
+    public themeClass: string =
+        "ag-theme-quartz";
 
     constructor(
         private toastrService: ToastService,
@@ -143,8 +200,8 @@ export class UsersComponent implements OnInit {
         this.roleService.getAll({}, success, failure)
     }
 
-    numSequence(n: number): Array<number> { 
-        return Array(n); 
+    numSequence(n: number): Array<number> {
+        return Array(n);
     }
 
     public handlePagination = (pageNumber: number) => {
@@ -159,6 +216,7 @@ export class UsersComponent implements OnInit {
             if (data && data.success) {
                 if (data.data && data.data.length) {
                     this.userList = data.data;
+                    this.rowData = data.data;
                     this.currentPage = data.currentPage;
                     this.totalPages = data.totalPages;
                 } else {
@@ -174,7 +232,7 @@ export class UsersComponent implements OnInit {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching users.')
         }
         this.loaderService.showLoader();
-        this.userService.getAll({ pageQuery: this.currentPage }, success, failure)
+        this.userService.getAll({ pageQuery: this.currentPage, pageSize: this.paginationPageSize }, success, failure)
     }
 
     public cancel = () => {
@@ -266,4 +324,52 @@ export class UsersComponent implements OnInit {
             this.userService.add(this.userForm.value, success, failure)
         }
     }
+    onPaginationChanged = (event: any) => {
+        console.log("onPaginationPageLoaded");
+        // Workaround for bug in events order
+        
+    }
+
+    onBtFirst = () => {
+        this.gridApi.paginationGoToFirstPage();
+    }
+
+    onBtLast = () => {
+        this.gridApi.paginationGoToLastPage();
+    }
+
+    onBtNext = () => {
+        this.gridApi.paginationGoToNextPage();
+    }
+
+    onBtPrevious = () => {
+        this.gridApi.paginationGoToPreviousPage();
+    }
+
+    onBtPageFive = () => {
+        // we say page 4, as the first page is zero
+        this.gridApi.paginationGoToPage(4);
+    }
+
+    onBtPageFifty = () => {
+        // we say page 49, as the first page is zero
+        this.gridApi.paginationGoToPage(49);
+    }
+
+    onGridReady = (params: GridReadyEvent<any>) => {
+        this.gridApi = params.api;
+        this.getAll();
+        // this.http
+        //   .get<
+        //     IOlympicData[]
+        //   >("https://www.ag-grid.com/example-assets/olympic-winners.json")
+        //   .subscribe((data) => (this.rowData = data));
+    }
 }
+
+function setText(selector: string, text: any) {
+    (document.querySelector(selector) as any).innerHTML = text;
+}
+// function setLastButtonDisabled(disabled: boolean) {
+//     (document.querySelector("#btLast") as any).disabled = disabled;
+// }

@@ -16,7 +16,7 @@ function getUsers(criteria) {
         try {
             let totalPages = 0;
             const page = parseInt(criteria.pageQuery) || 1; // Page number from the request query, default is 1
-            const pageSize = 2; // Number of records per page
+            const pageSize = criteria.pageSize || 5; // Number of records per page
             let totalCount = 0;
 
             let condition = [];
