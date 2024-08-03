@@ -6,12 +6,22 @@ module.exports = {
     add,
     update,
     deleteById,
-    getById
+    getById,
+    getBankID
 }
 
 async function getAll(req, res, next) {
     try {
         let result = await BankService.getAll(req.body);
+        res.json(result);
+    } catch (e) {
+        res.json(e);
+    }
+}
+
+async function getBankID(req, res, next) {
+    try {
+        let result = await BankService.getBankID(req.body);
         res.json(result);
     } catch (e) {
         res.json(e);

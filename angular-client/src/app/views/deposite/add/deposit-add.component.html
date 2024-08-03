@@ -51,14 +51,27 @@
                                             formControlName="operationType" id="operationType" name="operationType" />
                                     </c-col>
                                 </c-row>
-                                <c-row>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <button (click)="addTransaction()" cButton class="px-4" color="primary">
-                                            Submit
-                                        </button>
-                                    </c-col>
-                                </c-row>
                             </form>
+                            <c-row class="row mt-2">
+                                <ng-container *ngIf="depositFields.length">
+                                    <ng-container *ngFor="let fields of depositFields">
+                                        <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                            <label cLabel="col" [for]="fields.fieldName">
+                                                {{fields.fieldName}}
+                                            </label>
+                                            <input cFormControl [placeholder]="fields.placeHolder" [type]="fields.fieldType" (ngModelChange)="handleFieldEvents($event)"
+                                                [(ngModel)]="fields['value']" [id]="fields.fieldName" [name]="fields.fieldName" [required]="fields.required" />
+                                        </c-col>
+                                    </ng-container>
+                                </ng-container>
+                            </c-row>
+                            <c-row class="row mt-2">
+                                <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                    <button (click)="addTransaction()" cButton class="px-4" color="primary">
+                                        Submit
+                                    </button>
+                                </c-col>
+                            </c-row>
                         </c-card-body>
                     </c-card>
                 </c-card-group>

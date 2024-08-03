@@ -9,7 +9,8 @@ module.exports = {
     add,
     update,
     deleteById,
-    getById
+    getById,
+    getBankID
 }
 
 function getAll(criteria) {
@@ -53,6 +54,21 @@ function getAll(criteria) {
                 banks = (banks && banks.length) ? banks[0] : {};
             }
             resolve({ success: true, message: 'success!', data: banks, currentPage: page, totalPages, totalCount });
+        } catch (err) {
+            reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
+        }
+    }
+    return new Promise(promiseFunction);
+}
+
+function getBankID(criteria) {
+    let promiseFunction = async (resolve, reject) => {
+        try {
+            let banks = await BankCollection.find({}, {ref: 1}).exec();
+            if (criteria && ((criteria.bankName && typeof criteria.bankName !== 'object') || criteria._id)) {
+                banks = (banks && banks.length) ? banks[0] : {};
+            }
+            resolve({ success: true, message: 'success!', data: banks });
         } catch (err) {
             reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
         }

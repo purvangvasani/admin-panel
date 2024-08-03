@@ -73,7 +73,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
   private params: Subscription;
   public bankId: any;
   public merchantList: any = [];
-
+  public bankIdList: any = [];
   constructor(
     private fb: FormBuilder,
     private toastrService: ToastService,
@@ -131,6 +131,9 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
       if (data && data.success) {
         if (data.data && data.data.length) {
           this.merchantList = data.data;
+          if (!this.bankId) {
+            this.getBankID();
+          }
         } else {
           this.merchantList = [];
         }
@@ -145,6 +148,33 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     }
     this.loaderService.showLoader();
     this.merchantService.getAll({  }, success, failure)
+  }
+
+  private differenceById = (arr1: any, arr2: any) => {
+    const ids2 = new Set(arr2.map((item: any) => item.ref));
+    return arr1.filter((item: any) => !ids2.has(item.merchantId));
+  }
+
+  public getBankID = () => {
+    let success = (data: any) => {
+      this.loaderService.hideLoader(); 
+      if (data && data.success) {
+        if (data.data && data.data.length) {
+          this.bankIdList = data.data;
+          this.merchantList = this.differenceById(this.merchantList, data.data);
+        } else {
+          this.bankIdList = [];
+        }
+      } else {
+        this.toastrService.showError('Error!', data.message)
+      }
+    }
+    let failure = (error: any) => {
+      this.loaderService.hideLoader();
+      this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while validating credentials.')
+    }
+    this.loaderService.showLoader();
+    this.bankService.getBankID({}, success, failure)
   }
 
   buildForm(data?: any): void {
