@@ -20,10 +20,10 @@ function getAll(criteria) {
                 condition.push({ $match: { type: criteria.type } });
 
                 if (criteria.pageQuery) {
-                
+
                     totalCount = await TransactionCollection.countDocuments({});
                     totalPages = Math.ceil(totalCount / pageSize);
-        
+
                     const skip = (page - 1) * pageSize;
                     condition.push({ $skip: skip }, { $limit: pageSize })
                 }
@@ -57,22 +57,44 @@ function addTransaction(criteria) {
 
             let Id = await helper.generateCounterId('transactionRequest', 'id', 'TRR_');
             if (Id) {
-
-                let transactionData = await TransactionCollection({
-                    user_id: criteria.user_id,
-                    merchant_id: criteria.merchantId,
-                    transaction_id: criteria.transactionId,
-                    accountName: criteria.accountName,
-                    accountNumber: criteria.accountNumber,
-                    amount: criteria.amount,
-                    operationType: criteria.operationType,
-                    status: criteria.status,
-                    type: criteria.type,
-                    comments: criteria.comments,
+                if (criteria.merchantId) {
+                    criteria.merchant_id = atob(criteria.merchantId);
+                    delete criteria.merchantId;
+                }
+                if (criteria.transactionId) {
+                    criteria.transaction_id = criteria.transactionId;
+                    delete criteria.transactionId;
+                }
+                const transactionData = {};
+                const dynamicFields = {};
+                const staticFields = [
+                    'user_id', 'merchant_id', 'transaction_id', 'accountName',
+                    'accountNumber', 'amount', 'operationType', 'status',
+                    'type', 'comments'
+                ];
+                Object.keys(criteria).forEach(key => {
+                    if (staticFields.includes(key)) {
+                        transactionData[key] = criteria[key];
+                    } else {
+                        dynamicFields[key] = criteria[key];
+                    }
                 });
-
-                transactionData['id'] = Id;
-                await transactionData.save();
+                transactionData.dynamicFields = dynamicFields;
+                // let transactionData = await TransactionCollection({
+                //     user_id: criteria.user_id,
+                //     merchant_id: criteria.merchantId,
+                //     transaction_id: criteria.transactionId,
+                //     accountName: criteria.accountName,
+                //     accountNumber: criteria.accountNumber,
+                //     amount: criteria.amount,
+                //     operationType: criteria.operationType,
+                //     status: criteria.status,
+                //     type: criteria.type,
+                //     comments: criteria.comments,
+                // }); 
+                const newTransaction = new TransactionCollection(transactionData);
+                newTransaction['id'] = Id;
+                await newTransaction.save();
                 resolve({ success: true, message: criteria.type + ' Request Submitted!' });
             }
             else {

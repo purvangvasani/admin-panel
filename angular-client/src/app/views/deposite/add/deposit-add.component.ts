@@ -23,6 +23,7 @@ export class DepositAddComponent implements OnInit {
   public merchant = "";
   public depositFields: any = [];
   // public deposits: any = {};
+  public id: any;
 
   constructor(
     private fb: FormBuilder,
@@ -37,6 +38,7 @@ export class DepositAddComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe((params: Params) => {
       if (params['id']) {
+        this.id = params['id'];
         this.getMerchantById(params['id']);
       } else {
         this.toastrService.showWarning('Warning!', "You donot have permission to view this page!")
@@ -48,6 +50,7 @@ export class DepositAddComponent implements OnInit {
 
   private buildForm = (data?: any) => {
     this.depositForm = this.fb.group({
+      merchantId: new FormControl(data && data.merchantId ? data.merchantId : null),
       accountName: new FormControl(data && data.accountName ? data.accountName : null),
       accountNumber: new FormControl(data && data.accountNumber ? data.accountNumber : null),
       amount: new FormControl(data && data.amount ? data.amount : null),
@@ -56,6 +59,7 @@ export class DepositAddComponent implements OnInit {
       status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
       type: new FormControl('Deposit'),
     });
+    this.depositForm.get('merchantId')?.disable();
   }
   public addTransaction = () => {
     let success = (data: any) => {
@@ -73,13 +77,20 @@ export class DepositAddComponent implements OnInit {
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Something Went Wrong.')
     }
     this.loaderService.showLoader();
-    let criteria = {
-      form: this.depositForm.value,
-      extraFields: this.depositFields
-    }
-    this.transactionService.addTransaction(criteria, success, failure)
+    const updatedData = this.mergeAdditionalFields(this.depositForm.value, this.depositFields);
+    updatedData['merchantId'] = this.id;
+    // let criteria = {
+    //   form: this.depositForm.value,
+    //   extraFields: this.depositFields
+    // }
+    this.transactionService.addTransaction(updatedData, success, failure)
   }
-
+  public mergeAdditionalFields = (data: any, fields: any) => {
+    fields.forEach((field: any) => {
+      data[field.fieldName] = field.value;
+    });
+    return data;
+  };
   public handleFieldEvents = (events: any) => {
     console.log(this.depositFields)
   }
@@ -108,6 +119,11 @@ export class DepositAddComponent implements OnInit {
 
   public cancel = () => {
     this.depositForm = null;
+    this.depositFields.forEach((it: any) => {
+      if (it.value !== '' && it.value !== null && it.value !== undefined) {
+        it.value = '';
+      }
+    });
     this.buildForm();
   }
 }

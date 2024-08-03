@@ -12,7 +12,7 @@
                                         <label cLabel="col" for="merchantId">
                                             Merchant Id
                                         </label>
-                                        <input cFormControl placeholder="Merchant Id" type="text"
+                                        <input cFormControl placeholder="Merchant Id" type="text" value={{merchant}}
                                             formControlName="merchantId" id="merchantId" name="merchantId" />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
@@ -33,8 +33,8 @@
                                         <label cLabel="col" for="account">
                                             Amount
                                         </label>
-                                        <input cFormControl placeholder="Amount" type="text"
-                                            formControlName="amount" id="amount" name="amount" />
+                                        <input cFormControl placeholder="Amount" type="text" formControlName="amount"
+                                            id="amount" name="amount" />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
                                         <label cLabel="col" for="transactionId">
@@ -51,14 +51,29 @@
                                             formControlName="operationType" id="operationType" name="operationType" />
                                     </c-col>
                                 </c-row>
-                                <c-row>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <button cButton (click)="addTransaction()"  class="px-4" color="primary">
-                                            Submit
-                                        </button>
-                                    </c-col>
-                                </c-row>
                             </form>
+                            <c-row class="row mt-2">
+                                <ng-container *ngIf="withdrawalFields.length">
+                                    <ng-container *ngFor="let fields of withdrawalFields">
+                                        <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                            <label cLabel="col" [for]="fields.fieldName">
+                                                {{fields.fieldName}}
+                                            </label>
+                                            <input cFormControl [placeholder]="fields.placeHolder"
+                                                [type]="fields.fieldType" (ngModelChange)="handleFieldEvents($event)"
+                                                [(ngModel)]="fields['value']" [id]="fields.fieldName"
+                                                [name]="fields.fieldName" [required]="fields.required" />
+                                        </c-col>
+                                    </ng-container>
+                                </ng-container>
+                            </c-row>
+                            <c-row>
+                                <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                    <button cButton (click)="addTransaction()" class="px-4" color="primary">
+                                        Submit
+                                    </button>
+                                </c-col>
+                            </c-row>
                         </c-card-body>
                     </c-card>
                 </c-card-group>

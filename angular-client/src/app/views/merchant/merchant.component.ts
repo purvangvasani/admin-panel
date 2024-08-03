@@ -192,14 +192,17 @@ export class MerchantComponent implements OnInit, OnDestroy {
         this.merchantService.getAll({ pageQuery: this.currentPage }, success, failure)
     }
 
-    public copyText = (text: any) => {
+    public copyText = (text: any, type: any) => {
         var copyText = text;
         // Select the text field
         // copyText.select();
         // copyText.setSelectionRange(0, 99999); // For mobile devices
-        
         // Copy the text inside the text field
         // this.router.navigate(['/deposit-add'], {queryParams:  { id: copyText.url }})
-        navigator.clipboard.writeText(environment.UIURL + "/deposit-add;id=" + btoa(copyText.merchantId));
+        if (type === 'withdrawal') {
+            navigator.clipboard.writeText(environment.UIURL + "/withdrawal-add;id=" + btoa(copyText.merchantId));
+        } else {
+            navigator.clipboard.writeText(environment.UIURL + "/deposit-add;id=" + btoa(copyText.merchantId));
+        }
     }
 }
