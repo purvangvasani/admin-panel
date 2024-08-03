@@ -32,6 +32,11 @@ export class BankService {
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
 
+  getBankID(data: any, successCallback: any, errorCallback: any) {
+    const url = this.apiUrl + '/banks/getBankID';
+    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+  }
+
   getById(data: any, successCallback: any, errorCallback: any) {
     const url = this.apiUrl + '/banks/getById';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
