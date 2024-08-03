@@ -12,8 +12,8 @@
                                         <label cLabel="col" for="merchantId">
                                             Merchant
                                         </label>
-                                        <input cFormControl placeholder="Merchant Id" type="text"
-                                            value={{merchant}} id="merchantId" name="merchantId" disabled />
+                                        <input cFormControl placeholder="Merchant Id" type="text" value={{merchant}}
+                                            formControlName="merchantId" id="merchantId" name="merchantId" />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
                                         <label cLabel="col" for="accountName">
@@ -33,8 +33,8 @@
                                         <label cLabel="col" for="account">
                                             Amount
                                         </label>
-                                        <input cFormControl placeholder="Amount" type="number"
-                                            formControlName="amount" id="amount" name="amount" />
+                                        <input cFormControl placeholder="Amount" type="number" formControlName="amount"
+                                            id="amount" name="amount" />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
                                         <label cLabel="col" for="transactionId">
@@ -59,15 +59,17 @@
                                             <label cLabel="col" [for]="fields.fieldName">
                                                 {{fields.fieldName}}
                                             </label>
-                                            <input cFormControl [placeholder]="fields.placeHolder" [type]="fields.fieldType" (ngModelChange)="handleFieldEvents($event)"
-                                                [(ngModel)]="fields['value']" [id]="fields.fieldName" [name]="fields.fieldName" [required]="fields.required" />
+                                            <input cFormControl [placeholder]="fields.placeHolder"
+                                                [type]="fields.fieldType" (ngModelChange)="handleFieldEvents($event)"
+                                                [(ngModel)]="fields['value']" [id]="fields.fieldName"
+                                                [name]="fields.fieldName" [required]="fields.required" />
                                         </c-col>
                                     </ng-container>
                                 </ng-container>
                             </c-row>
                             <c-row class="row mt-2">
                                 <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                    <button (click)="addTransaction()" cButton class="px-4" color="primary">
+                                    <button (click)="cancel()" cButton class="px-4" color="primary">
                                         Submit
                                     </button>
                                 </c-col>

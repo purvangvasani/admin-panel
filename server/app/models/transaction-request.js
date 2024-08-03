@@ -13,6 +13,7 @@ const depositeSchema = new Schema({
     status: { type: String },
     type: { type: String, required: true },
     comments: { type: String },
+    dynamicFields: { type: Schema.Types.Mixed } // Field to store dynamic data 
 }, { collection: 'transactionRequest', timestamps: true })
 
 module.exports = mongoose.model('transactionRequest', depositeSchema);

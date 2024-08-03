@@ -75,7 +75,8 @@
                             <td>{{record.merchantname}}</td>
                             <td>
                                 {{record.depositURL.substring(1, 30)}}...
-                                <a style="text-decoration: none; cursor: pointer;" title="Copy URL" (click)="copyText(record)">
+                                <a style="text-decoration: none; cursor: pointer;" title="Copy URL"
+                                    (click)="copyText(record,'deposit')">
                                     <svg fill="#000000" height="22px" width="22px" version="1.1" id="Layer_1"
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                         viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
@@ -109,7 +110,8 @@
                             </td>
                             <td>
                                 {{record.withdrawalURL.substring(1, 30)}}...
-                                <a style="text-decoration: none; cursor: pointer;" title="Copy URL">
+                                <a style="text-decoration: none; cursor: pointer;" title="Copy URL"
+                                    (click)="copyText(record,'withdrawal')">
                                     <svg fill="#000000" height="22px" width="22px" version="1.1" id="Layer_1"
                                         xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                         viewBox="0 0 64 64" enable-background="new 0 0 64 64" xml:space="preserve">
