@@ -86,7 +86,7 @@
     </c-row>
     <c-row class="justify-content-center">
         <c-col lg="12" xl="12">
-            <c-card>
+            <!-- <c-card>
                 <c-card-header>
                     <strong>Deposit</strong>
                 </c-card-header>
@@ -137,22 +137,14 @@
                                             <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
                                         </button>
                                         <ul cDropdownMenu class="pt-0 w-auto">
-                                            <!-- <li>
-                                                <h6 cDropdownHeader
-                                                    class="bg-body-secondary text-body-secondary fw-semibold py-2">
-                                                    Settings
-                                                </h6>
-                                            </li>
-                                            <li></li> -->
+                                            
                                             <li>
                                                 <a cDropdownItem (click)="handleToggleEvent(item,'Approve')">
-                                                    <!-- <svg cIcon class="me-2" name="cilUser"></svg> -->
                                                     Approve
                                                 </a>
                                             </li>
                                             <li>
                                                 <a cDropdownItem (click)="handleToggleEvent(item,'Reject')">
-                                                    <!-- <svg cIcon class="me-2" name="cilSettings"></svg> -->
                                                     Reject
                                                 </a>
                                             </li>
@@ -163,7 +155,39 @@
                         </tbody>
                     </table>
                 </c-card-body>
-            </c-card>
+            </c-card> -->
+            <div class="example-wrapper">
+                <div class="example-header">
+
+                    <div style="margin-top: 6px">
+                        <div style="float: right;">
+                            <c-pagination align="end" size="sm">
+                                <li cPageItem [disabled]="currentPage === 1"
+                                    [ngStyle]="{'cursor': currentPage === 1 ? '' : 'pointer'}">
+                                    <a cPageLink (click)="handlePagination(currentPage - 1)" [routerLink]>Previous</a>
+                                </li>
+                                <ng-container *ngFor="let n of numSequence(totalPages); let i = index;">
+                                    <li cPageItem [active]="currentPage === (i+1)"
+                                        [ngStyle]="{'cursor': currentPage === (i+1) ? '' : 'pointer'}">
+                                        <a cPageLink (click)="currentPage === (i+1) ? null : handlePagination(i+1)"
+                                            [routerLink]>{{i+1}}</a>
+                                    </li>
+                                </ng-container>
+                                <li cPageItem [disabled]="currentPage === totalPages"
+                                    [ngStyle]="{'cursor': currentPage === totalPages ? '' : 'pointer'}">
+                                    <a cPageLink (click)="handlePagination(currentPage + 1)" [routerLink]>Next</a>
+                                </li>
+                            </c-pagination>
+                        </div>
+                    </div>
+                </div>
+                <ag-grid-angular style="width: 100%; height: 300px;" [columnDefs]="columnDefs"
+                    [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
+                    [paginationPageSize]="paginationPageSize" [paginationPageSizeSelector]="paginationPageSizeSelector"
+                    [pagination]="true" [suppressPaginationPanel]="true" [suppressScrollOnNewData]="true"
+                    [rowData]="rowData" [class]="themeClass" (paginationChanged)="onPaginationChanged($event)"
+                    (gridReady)="onGridReady($event)" />
+            </div>
         </c-col>
     </c-row>
 </c-container>

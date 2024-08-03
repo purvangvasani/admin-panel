@@ -35,9 +35,8 @@
                                         <label cLabel="col" for="ref">
                                             Ref
                                         </label>
-                                        <ng-select formControlName="ref" name="ref" [items]="refList" [multiple]="false"
-                                            bindValue="value" [clearable]="false" bindLabel="label"
-                                            placeholder="Select Role"></ng-select>
+                                        <ng-select formControlName="ref" name="ref" [items]="merchantList" [multiple]="false"
+                                            bindValue="merchantId" [clearable]="false" bindLabel="merchantname"></ng-select>
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4">
                                         <label cLabel="col" for="active">

@@ -91,7 +91,7 @@
         [suppressScrollOnNewData]="true" [rowData]="rowData" [class]="themeClass"
         (paginationChanged)="onPaginationChanged($event)" (gridReady)="onGridReady($event)" />
 </div>
-<div style="margin-bottom: 10px;">
+<!-- <div style="margin-bottom: 10px;">
     <c-card>
         <c-card-header>
             <h5>Users List</h5>
@@ -146,18 +146,6 @@
                                 <a title="Delete" *ngIf="access.delete" style="cursor: pointer; text-decoration: none;"
                                     (click)="toggleDeleteModal(record)"><svg cIcon class="me-2"
                                         name="cilTrash"></svg></a>
-
-                                <!-- <a title="RESET PASSWORD" style="margin-right: 4px; cursor: pointer; color: green;">
-                                    <i class="fa fa-repeat" aria-hidden="true"></i>
-                                </a>
-                                <a title="EDIT" *ngIf="access.edit"
-                                    style="padding-right: 2px; cursor: pointer; color: blue;">
-                                    <i class="fa fa-pencil" aria-hidden="true"></i>
-                                </a>
-                                <a title="DELETE" *ngIf="access.delete"
-                                    style="padding-right: 2px; cursor: pointer; color: red">
-                                    <i class="ti ti-trash"></i>
-                                </a> -->
                             </td>
                         </tr>
                     </ng-container>
@@ -165,7 +153,7 @@
             </table>
         </c-card-body>
     </c-card>
-</div>
+</div> -->
 <div *ngIf="deleteModalVisible">
     <c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal" [@.disabled]="true"
         [visible]="deleteModalVisible" (visibleChange)="handleDeleteToggleChange($event)">

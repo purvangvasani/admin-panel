@@ -2,6 +2,7 @@ const ObjectId = require('mongoose').Types.ObjectId;
 const helper = require('../middleware/utils');
 const helpers = require('../utility');
 const MerchantCollection = require('../models/merchant');
+const BankCollection = require('../models/banks');
 const bcrypt = require('bcrypt');
 
 module.exports = {
@@ -158,12 +159,43 @@ function getById(criteria) {
 
                 let merchant = null;
                 if (criteria?.for === 'public') {
-                    merchant = await MerchantCollection.find({ merchantId: atob(criteria.merchantId)}, {merchantname: 1}).exec();
+                    merchant = await MerchantCollection.findOne({ merchantId: atob(criteria.merchantId)}, {merchantname: 1}).exec();
+                    if (criteria?.get === 'bankDeposits') {
+                        let newCondition = [];
+                        newCondition.push({ $match: { ref: atob(criteria.merchantId) } })
+                        let depositLookup = {
+                            $lookup:
+                            {
+                                from: 'transactionType',
+                                // let: {type: 'deposit' },
+                                localField: 'deposits',
+                                foreignField: '_id',
+                                as: 'deposits'
+                            }
+                        }
+                        newCondition.push(depositLookup)
+                        let withdrawalLookup = {
+                            $lookup:
+                            {
+                                from: 'transactionType',
+                                // let: {type: 'withdrawal' },
+                                localField: 'withdrawals',
+                                foreignField: '_id',
+                                as: 'withdrawals'
+                            }
+                        }
+                        newCondition.push(withdrawalLookup)
+                        let bank = await BankCollection.aggregate(newCondition).exec();
+                        if (bank.length) {
+                            bank = (bank && bank.length) ? bank[0] : {};
+                            merchant._doc['depositFields'] = bank;
+                        }
+                    }
                 } else {
                     merchant = await MerchantCollection.aggregate(condition).exec();
                 }
                 if (criteria && ((criteria.merchantname && typeof criteria.merchantname !== 'object') || criteria.merchantId)) {
-                    merchant = (merchant && merchant.length) ? merchant[0] : {};
+                    merchant = (merchant && merchant.length) ? merchant[0] : merchant;
                 }
                 resolve({ success: true, message: 'success!', data: merchant });
             } else {

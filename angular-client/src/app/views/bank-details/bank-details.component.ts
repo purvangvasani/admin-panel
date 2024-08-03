@@ -8,6 +8,7 @@ import { IconDirective } from '@coreui/icons-angular';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { Subscription } from 'rxjs';
 import { BankService } from 'src/app/services/bank.service';
+import { MerchantService } from 'src/app/services/merchant.service';
 import { LoaderService } from 'src/app/util/loader.service';
 import { ToastService } from 'src/app/util/toastr.service';
 import { UtilService } from 'src/app/util/util.service';
@@ -71,6 +72,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
   public editBankData: any;
   private params: Subscription;
   public bankId: any;
+  public merchantList: any = [];
 
   constructor(
     private fb: FormBuilder,
@@ -78,7 +80,8 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     private bankService: BankService,
     private route: ActivatedRoute,
     private utilService: UtilService,
-    private loaderService: LoaderService
+    private loaderService: LoaderService,
+    private merchantService: MerchantService
   ) {
     this.params = this.route.params.subscribe((params: Params) => {
       if (params['bankId']) {
@@ -91,7 +94,9 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     this.buildForm();
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.getMerchantList();
+  }
 
   ngOnDestroy() {
     try {
@@ -119,6 +124,27 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     }
     this.loaderService.showLoader();
     this.bankService.getById({ bankId: this.bankId }, success, failure)
+  }
+
+  private getMerchantList = () => {
+    let success = (data: any) => {
+      if (data && data.success) {
+        if (data.data && data.data.length) {
+          this.merchantList = data.data;
+        } else {
+          this.merchantList = [];
+        }
+      } else {
+        this.toastrService.showError('Error!', data.message)
+      }
+      this.loaderService.hideLoader();
+    }
+    let failure = (error: any) => {
+      this.loaderService.hideLoader();
+      this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching merchant.')
+    }
+    this.loaderService.showLoader();
+    this.merchantService.getAll({  }, success, failure)
   }
 
   buildForm(data?: any): void {

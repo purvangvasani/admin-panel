@@ -1,6 +1,4 @@
 const TransactionCollection = require('../../models/transaction-request');
-const ObjectId = require('mongoose').Types.ObjectId;
-const PREDEFINEDDATA = require('./predefined-data.json');
 const helper = require('../../middleware/utils');
 
 module.exports = {
@@ -12,15 +10,30 @@ module.exports = {
 function getAll(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
+            let totalPages = 0;
+            const page = parseInt(criteria.pageQuery) || 1; // Page number from the request query, default is 1
+            const pageSize = criteria.pageSize || 5; // Number of records per page
+            let totalCount = 0;
+
             if (criteria?.type) {
                 let condition = [];
                 condition.push({ $match: { type: criteria.type } });
+
+                if (criteria.pageQuery) {
+                
+                    totalCount = await TransactionCollection.countDocuments({});
+                    totalPages = Math.ceil(totalCount / pageSize);
+        
+                    const skip = (page - 1) * pageSize;
+                    condition.push({ $skip: skip }, { $limit: pageSize })
+                }
+
                 let transactions = await TransactionCollection.aggregate(condition).exec();
                 // let transactions = PREDEFINEDDATA.data;
                 if (transactions && !transactions.length) {
                     return reject({ success: false, status: helpers.error.status.Forbidden, message: 'No Data found' });
                 }
-                resolve({ success: true, message: 'Transaction Requests fetch successfully.', data: transactions });
+                resolve({ success: true, message: 'Transaction Requests fetch successfully.', data: transactions, currentPage: page, totalPages, totalCount });
             } else {
                 reject({ success: false, message: 'Transaction criteria is not provided' });
                 return;

@@ -72,6 +72,8 @@ export class UsersComponent implements OnInit {
         // this row just shows the row index, doesn't use any data from the row
         {
             headerName: "#",
+            filter: false,
+            sortable: false,
             valueFormatter: (params: ValueFormatterParams) => {
                 return `${params.node!.data.userId}`;
             }, suppressMovable: true
@@ -81,12 +83,16 @@ export class UsersComponent implements OnInit {
         { headerName: "Email", field: "email", suppressMovable: true },
         {
             headerName: "Is Active?",
+            filter: false,
+            sortable: false,
             valueFormatter: (params: ValueFormatterParams) => {
                 return `${params.node!.data.active ? 'Yes' : 'No'}`;
             }, suppressMovable: true
         },
         {
             headerName: 'Action',
+            filter: false,
+            sortable: false,
             valueFormatter: (params: ValueFormatterParams) => {
                 return `${params.node!.data}`;
             }, 
@@ -326,50 +332,10 @@ export class UsersComponent implements OnInit {
     }
     onPaginationChanged = (event: any) => {
         console.log("onPaginationPageLoaded");
-        // Workaround for bug in events order
-        
-    }
-
-    onBtFirst = () => {
-        this.gridApi.paginationGoToFirstPage();
-    }
-
-    onBtLast = () => {
-        this.gridApi.paginationGoToLastPage();
-    }
-
-    onBtNext = () => {
-        this.gridApi.paginationGoToNextPage();
-    }
-
-    onBtPrevious = () => {
-        this.gridApi.paginationGoToPreviousPage();
-    }
-
-    onBtPageFive = () => {
-        // we say page 4, as the first page is zero
-        this.gridApi.paginationGoToPage(4);
-    }
-
-    onBtPageFifty = () => {
-        // we say page 49, as the first page is zero
-        this.gridApi.paginationGoToPage(49);
     }
 
     onGridReady = (params: GridReadyEvent<any>) => {
         this.gridApi = params.api;
         this.getAll();
-        // this.http
-        //   .get<
-        //     IOlympicData[]
-        //   >("https://www.ag-grid.com/example-assets/olympic-winners.json")
-        //   .subscribe((data) => (this.rowData = data));
     }
 }
-
-function setText(selector: string, text: any) {
-    (document.querySelector(selector) as any).innerHTML = text;
-}
-// function setLastButtonDisabled(disabled: boolean) {
-//     (document.querySelector("#btLast") as any).disabled = disabled;
-// }

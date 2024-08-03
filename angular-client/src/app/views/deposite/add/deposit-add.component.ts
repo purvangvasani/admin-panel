@@ -23,6 +23,7 @@ export class DepositAddComponent implements OnInit {
 
   public depositForm: FormGroup | any;
   public merchant = "";
+  public depositFields: any = [];
 
   constructor(
     private fb: FormBuilder,
@@ -82,6 +83,7 @@ export class DepositAddComponent implements OnInit {
       if (data && data.success) {
         if (data.data.merchantname) {
           this.merchant = data.data.merchantname;
+          this.depositFields = data.data.deposits[0]
         } else {
           console.log(data.data)
         }
@@ -95,7 +97,7 @@ export class DepositAddComponent implements OnInit {
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching merchant.')
     }
     this.loaderService.showLoader();
-    this.merchantService.getById({ merchantId: id, for: "public" }, success, failure)
+    this.merchantService.getById({ merchantId: id, for: "public", get: 'bankDeposits' }, success, failure)
   }
 
   public cancel = () => {

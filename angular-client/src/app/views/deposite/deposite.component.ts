@@ -1,8 +1,8 @@
 import { CommonModule, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
-import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, AlignDirective, InputGroupTextDirective, InputGroupComponent, ColDirective, ButtonDirective, FormCheckLabelDirective, FormCheckInputDirective, FormCheckComponent, FormSelectDirective, FormLabelDirective, FormDirective, FormControlDirective, ContainerComponent, DropdownItemDirective, DropdownMenuDirective, DropdownComponent, DropdownToggleDirective } from '@coreui/angular';
+import { ActivatedRoute, Params, RouterLink } from '@angular/router';
+import { RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, AlignDirective, InputGroupTextDirective, InputGroupComponent, ColDirective, ButtonDirective, FormCheckLabelDirective, FormCheckInputDirective, FormCheckComponent, FormSelectDirective, FormLabelDirective, FormDirective, FormControlDirective, ContainerComponent, DropdownItemDirective, DropdownMenuDirective, DropdownComponent, DropdownToggleDirective, PageLinkDirective, PageItemDirective, PaginationComponent } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/services/transactionRequest.service';
@@ -11,10 +11,13 @@ import { ToastService } from 'src/app/util/toastr.service';
 import { UtilService } from 'src/app/util/util.service';
 import { LocalStorageService } from 'src/app/util/local-storage.service';
 import { appConstants } from 'src/app/util/app.constant';
+import { ColDef, GridApi, GridReadyEvent, ValueFormatterParams } from 'ag-grid-community';
+import { AgGridAngular } from 'ag-grid-angular';
 @Component({
   selector: 'app-deposite',
   standalone: true,
-  imports: [CommonModule, ContainerComponent, FormsModule, ReactiveFormsModule, RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, FormControlDirective, FormDirective, FormLabelDirective, FormSelectDirective, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, ButtonDirective, ColDirective, InputGroupComponent, InputGroupTextDirective, AlignDirective,
+  imports: [AgGridAngular, PaginationComponent, PageItemDirective, RouterLink,
+    PageLinkDirective, CommonModule, ContainerComponent, FormsModule, ReactiveFormsModule, RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, FormControlDirective, FormDirective, FormLabelDirective, FormSelectDirective, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, ButtonDirective, ColDirective, InputGroupComponent, InputGroupTextDirective, AlignDirective,
     IconDirective, DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, NgStyle
   ],
   templateUrl: './deposite.component.html',
@@ -32,6 +35,57 @@ export class DepositeComponent implements OnInit, OnDestroy {
   public currentUserRole: any = this.utilService.getCurrentUserRole();
   private paramsubscriptions: Subscription[] = [];
   private params: Subscription | undefined;
+
+  private gridApi!: GridApi<any>;
+
+  public columnDefs: ColDef[] = [
+    // this row just shows the row index, doesn't use any data from the row
+    {
+      headerName: "#",
+      filter: false,
+      sortable: false,
+      valueFormatter: (params: ValueFormatterParams) => {
+        return `${params.node!.data.id}`;
+      }, suppressMovable: true
+    },
+    { headerName: "Merchant Id", field: "merchant_id", suppressMovable: true },
+    { headerName: "Created At", field: "createdAt", suppressMovable: true },
+    { headerName: "Operation Type", field: "operationType", suppressMovable: true },
+    { headerName: "Transaction Id", field: "transaction_id", suppressMovable: true },
+    { headerName: "Amount", field: "amount", suppressMovable: true },
+    { headerName: "Status", field: "status", suppressMovable: true },
+    { headerName: "Account Number", field: "accountNumber", suppressMovable: true },
+    { headerName: "Account Name", field: "accountName", suppressMovable: true },
+    {
+      headerName: 'Action',
+      filter: false,
+      sortable: false,
+      valueFormatter: (params: ValueFormatterParams) => {
+        return `${params.node!.data}`;
+      },
+      cellRenderer: (params: any) => {
+        return `<a title="Reset Password" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;" (click)="editUser(${params.node!.data})"><svg cIcon class="me-2" name="cilLockLocked"></svg></a>
+                                // <a title="Edit" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;"
+                                //     (click)="editUser(${params.node!.data})"><svg cIcon class="me-2" name="cilPencil"></svg></a>
+                                // <a title="Delete" *ngIf="access.delete" style="cursor: pointer; text-decoration: none;"
+                                //     (click)="toggleDeleteModal(${params.node!.data})"><svg cIcon class="me-2"
+                                //         name="cilTrash"></svg></a>
+                `
+      }
+    }
+  ];
+  public defaultColDef: ColDef = {
+    filter: true,
+  };
+  public rowSelection: "single" | "multiple" = "multiple";
+  public paginationPageSize = 10;
+  public paginationPageSizeSelector: number[] | boolean = [10, 20, 50];
+  public rowData!: any[];
+  public themeClass: string =
+    "ag-theme-quartz";
+  public totalPages: number = 1;
+  public currentPage: number = 1;
+
   constructor(private TransactionService: TransactionService,
     private route: ActivatedRoute,
     private fb: FormBuilder,
@@ -146,6 +200,9 @@ export class DepositeComponent implements OnInit, OnDestroy {
       if (response && response.success) {
         if (response.data && response.data.length) {
           this.deositeList = response.data || [];
+          this.rowData = response.data;
+          this.currentPage = response.currentPage;
+          this.totalPages = response.totalPages;
         }
       }
     }
@@ -155,6 +212,7 @@ export class DepositeComponent implements OnInit, OnDestroy {
     }
     this.loaderService.showLoader();
     const criteria = {
+      pageQuery: this.currentPage, pageSize: this.paginationPageSize,
       type: 'Deposit',
     }
     this.TransactionService.getAll(criteria, successCallback, errorCallback);
@@ -237,5 +295,24 @@ export class DepositeComponent implements OnInit, OnDestroy {
     });
 
     return this.deositeList;
+  }
+
+  onPaginationChanged = (event: any) => {
+    console.log("onPaginationPageLoaded");
+  }
+
+  onGridReady = (params: GridReadyEvent<any>) => {
+    this.gridApi = params.api;
+    this.getAllDeposite();
+  }
+
+  numSequence(n: number): Array<number> {
+    return Array(n);
+  }
+
+  public handlePagination = (pageNumber: number) => {
+    this.currentPage = pageNumber;
+    this.deositeList = [];
+    this.getAllDeposite();
   }
 }
