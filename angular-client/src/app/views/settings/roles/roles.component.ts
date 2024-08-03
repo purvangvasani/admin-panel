@@ -22,7 +22,7 @@ import { LocalStorageService } from 'src/app/util/local-storage.service';
 import { ToastService } from 'src/app/util/toastr.service';
 import { UtilService } from 'src/app/util/util.service';
 import { LoaderComponent } from 'src/app/views/loader/loader.component';
-import { IServerSideDatasource, GridOptions, IServerSideGetRowsParams, IServerSideGetRowsRequest } from 'ag-grid-community';
+import { ToggleDropdownComponent } from '../../toggle-dropdown/toggle-dropdown.component';
 
 @Component({
     templateUrl: 'roles.component.html',
@@ -51,7 +51,9 @@ export class RolesComponent implements OnInit, OnDestroy {
     private params: Subscription | undefined
 
     private gridApi!: GridApi<any>;
-
+    context = {
+        componentParent: this
+    };
     public columnDefs: ColDef[] = [
         // this row just shows the row index, doesn't use any data from the row
         {
@@ -87,14 +89,10 @@ export class RolesComponent implements OnInit, OnDestroy {
             valueFormatter: (params: ValueFormatterParams) => {
                 return `${params.node!.data}`;
             },
-            cellRenderer: (params: any) => {
-                return `<a title="Reset Password" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;" (click)="editUser(${params.node!.data})"><svg cIcon class="me-2" name="cilLockLocked"></svg></a>
-                                // <a title="Edit" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;"
-                                //     (click)="editUser(${params.node!.data})"><svg cIcon class="me-2" name="cilPencil"></svg></a>
-                                // <a title="Delete" *ngIf="access.delete" style="cursor: pointer; text-decoration: none;"
-                                //     (click)="toggleDeleteModal(${params.node!.data})"><svg cIcon class="me-2"
-                                //         name="cilTrash"></svg></a>
-                `
+            cellRenderer: ToggleDropdownComponent,
+            cellRendererParams: {
+                specificId: 'roleButtons', // Custom parameter
+                onClick: this.onButtonClick.bind(this) // pass method to renderer
             }
         }
     ];
@@ -145,7 +143,13 @@ export class RolesComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.buildForm();
     }
-
+    onButtonClick(data: any, value: any) {
+        if (value === 'update') {
+            this.editRole(data)
+        } else {
+            this.toggleDeleteModal(data);
+        }
+    }
     ngOnDestroy(): void {
         try {
             if (this.paramsubscriptions) {

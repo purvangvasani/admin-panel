@@ -11,20 +11,21 @@ import { UtilService } from 'src/app/util/util.service';
 import { LocalStorageService } from 'src/app/util/local-storage.service';
 import { appConstants } from 'src/app/util/app.constant';
 import { ActivatedRoute, Params, RouterLink } from '@angular/router';
-import { ColDef, GridApi, GridReadyEvent, ValueFormatterParams } from 'ag-grid-community';
+import { CellClickedEvent, ColDef, GridApi, GridReadyEvent, ICellRendererParams, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
+import { ToggleDropdownComponent } from '../toggle-dropdown/toggle-dropdown.component';
 @Component({
   selector: 'app-payouts',
   standalone: true,
   imports: [AgGridAngular, PaginationComponent, PageItemDirective, RouterLink,
     PageLinkDirective, CommonModule, ContainerComponent, FormsModule, ReactiveFormsModule, RowComponent, ColComponent, TextColorDirective, CardComponent, CardHeaderComponent, CardBodyComponent, TableDirective, TableColorDirective, TableActiveDirective, BorderDirective, FormControlDirective, FormDirective, FormLabelDirective, FormSelectDirective, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, ButtonDirective, ColDirective, InputGroupComponent, InputGroupTextDirective, AlignDirective,
-    IconDirective, DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, NgStyle
+    IconDirective, DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, NgStyle,
+    ToggleDropdownComponent
   ],
   templateUrl: './payouts.component.html',
   styleUrl: './payouts.component.scss'
 })
 export class PayoutsComponent implements OnInit, OnDestroy {
-
   public payoutsList: any[] = [];
   public payoutsForm: FormGroup | any;
   public access: any = null;
@@ -34,7 +35,9 @@ export class PayoutsComponent implements OnInit, OnDestroy {
   private paramsubscriptions: Subscription[] = [];
   private params: Subscription | undefined;
   private gridApi!: GridApi<any>;
-
+  context = {
+    componentParent: this
+  };
   public columnDefs: ColDef[] = [
     // this row just shows the row index, doesn't use any data from the row
     {
@@ -58,16 +61,13 @@ export class PayoutsComponent implements OnInit, OnDestroy {
       valueFormatter: (params: ValueFormatterParams) => {
         return `${params.node!.data}`;
       },
-      cellRenderer: (params: any) => {
-        return `<a title="Reset Password" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;" (click)="editUser(${params.node!.data})"><svg cIcon class="me-2" name="cilLockLocked"></svg></a>
-                                // <a title="Edit" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;"
-                                //     (click)="editUser(${params.node!.data})"><svg cIcon class="me-2" name="cilPencil"></svg></a>
-                                // <a title="Delete" *ngIf="access.delete" style="cursor: pointer; text-decoration: none;"
-                                //     (click)="toggleDeleteModal(${params.node!.data})"><svg cIcon class="me-2"
-                                //         name="cilTrash"></svg></a>
-                `
+      cellRenderer: ToggleDropdownComponent,
+      cellRendererParams: {
+        specificId: 'toggleButton', // Custom parameter
+
+        onClick: this.onButtonClick.bind(this) // pass method to renderer
       }
-    }
+    },
   ];
   public defaultColDef: ColDef = {
     filter: true,
@@ -124,6 +124,9 @@ export class PayoutsComponent implements OnInit, OnDestroy {
   }
   handleRefreshEvent(): void {
     this.getAllDeposite();
+  }
+  onButtonClick(data: any, value: any) {
+    this.handleToggleEvent(data, value)
   }
   ngOnDestroy(): void {
     try {

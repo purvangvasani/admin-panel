@@ -17,7 +17,7 @@ export const routes: Routes = [
         loadComponent: () => import('./payouts.component').then(m => m.PayoutsComponent),
         data: {
           title: $localize`List`,
-          module: 'payouts',
+          module: 'payout',
         }
       },
       {

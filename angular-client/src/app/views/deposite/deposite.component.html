@@ -181,12 +181,15 @@
                         </div>
                     </div>
                 </div>
-                <ag-grid-angular style="width: 100%; height: 300px;" [columnDefs]="columnDefs"
-                    [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
-                    [paginationPageSize]="paginationPageSize" [paginationPageSizeSelector]="paginationPageSizeSelector"
-                    [pagination]="true" [suppressPaginationPanel]="true" [suppressScrollOnNewData]="true"
-                    [rowData]="rowData" [class]="themeClass" (paginationChanged)="onPaginationChanged($event)"
-                    (gridReady)="onGridReady($event)" />
+                <div class="data-table">
+                    <ag-grid-angular style="width: 100%; height: 300px;" [columnDefs]="columnDefs"
+                        [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
+                        [paginationPageSize]="paginationPageSize"
+                        [paginationPageSizeSelector]="paginationPageSizeSelector" [pagination]="true"
+                        [suppressPaginationPanel]="true" [suppressScrollOnNewData]="true" [rowData]="rowData"
+                        [class]="themeClass" (paginationChanged)="onPaginationChanged($event)" [context]="context"
+                        (gridReady)="onGridReady($event)" />
+                </div>
             </div>
         </c-col>
     </c-row>

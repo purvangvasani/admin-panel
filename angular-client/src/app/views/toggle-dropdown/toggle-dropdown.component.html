@@ -1,0 +1,33 @@
+<div *ngIf="toggleData?.data?.status === 'Processing' && toggleData?.specificId === 'toggleButton'">
+    <c-dropdown *ngIf="access.edit" [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+        <button [caret]="false" cDropdownToggle class="py-0 pe-0" aria-label="Open user menu">
+            <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
+        </button>
+        <ul cDropdownMenu class="pt-0 w-auto">
+            <li>
+                <a cDropdownItem (click)="buttonClicked('Approved')">Approve</a>
+            </li>
+            <li>
+                <a cDropdownItem (click)="buttonClicked('Rejected')">Reject</a>
+            </li>
+        </ul>
+    </c-dropdown>
+</div>
+<div *ngIf="toggleData?.specificId === 'roleButtons'">
+    <td *ngIf="toggleData?.data?.isDeletable">
+        <a style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('update')"><svg cIcon class="me-2"
+                name="cilPencil"></svg></a>
+        <a style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('delete')"><svg cIcon class="me-2"
+                name="cilTrash"></svg></a>
+    </td>
+</div>
+<div *ngIf="toggleData?.specificId === 'actionButtons'">
+    <td>
+        <a title="Reset Password" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;"
+            (click)="buttonClicked('reset')"><svg cIcon class="me-2" name="cilLockLocked"></svg></a>
+        <a title="Edit" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;"
+            (click)="buttonClicked('update')"><svg cIcon class="me-2" name="cilPencil"></svg></a>
+        <a title="Delete" *ngIf="access.delete" style="cursor: pointer; text-decoration: none;"
+            (click)="buttonClicked('delete')"><svg cIcon class="me-2" name="cilTrash"></svg></a>
+    </td>
+</div>

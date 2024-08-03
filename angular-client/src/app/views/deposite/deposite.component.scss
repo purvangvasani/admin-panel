@@ -7,11 +7,27 @@
         display: flex;
         justify-content: space-between;
         /* Space between left and right sections */
-        align-items: center; 
+        align-items: center;
         /* Space below the header container */
     }
+
     .right-header button {
-        margin-left: 10px; /* Space between buttons */
+        margin-left: 10px;
+        /* Space between buttons */
+    }
+
+    .data-table {
+        ::ng-deep .ag-cell-value.ag-cell.ag-cell-not-inline-editing.ag-cell-normal-height.ag-column-last.ag-cell-focus {
+            overflow: visible;
+        }
+
+        ::ng-deep .ag-row {
+            z-index: 0;
+        }
+
+        ::ng-deep .ag-row.ag-row-focus {
+            z-index: 1;
+        }
     }
 }
 
