@@ -42,42 +42,6 @@ export const routes: Routes = [
         loadChildren: () => import('./views/payouts/routes').then((m) => m.routes),
         canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
-      {
-        path: 'theme',
-        loadChildren: () => import('./views/theme/routes').then((m) => m.routes)
-      },
-      {
-        path: 'base',
-        loadChildren: () => import('./views/base/routes').then((m) => m.routes)
-      },
-      {
-        path: 'buttons',
-        loadChildren: () => import('./views/buttons/routes').then((m) => m.routes)
-      },
-      {
-        path: 'forms',
-        loadChildren: () => import('./views/forms/routes').then((m) => m.routes)
-      },
-      {
-        path: 'icons',
-        loadChildren: () => import('./views/icons/routes').then((m) => m.routes)
-      },
-      {
-        path: 'notifications',
-        loadChildren: () => import('./views/notifications/routes').then((m) => m.routes)
-      },
-      {
-        path: 'widgets',
-        loadChildren: () => import('./views/widgets/routes').then((m) => m.routes)
-      },
-      {
-        path: 'charts',
-        loadChildren: () => import('./views/charts/routes').then((m) => m.routes)
-      },
-      {
-        path: 'pages',
-        loadChildren: () => import('./views/pages/routes').then((m) => m.routes)
-      }
     ]
   },
   {
@@ -122,6 +86,10 @@ export const routes: Routes = [
   {
     path: 'withdrawal-add',
     loadComponent: () => import('./views/payouts/add/withdrawal-add.component').then((m) => m.WithdrawalAddComponent),
+  },
+  {
+    path: 'scripts',
+    loadComponent: () => import('./views/scripts/scripts.component').then((m) => m.ScriptsComponent),
   },
   { path: '**', redirectTo: '404' }
 ];

@@ -43,6 +43,9 @@ function getAll(criteria) {
                 if (criteria.isDeleted || criteria.isDeleted === false) {
                     condition.push({ $match: { isDeleted: criteria.isDeleted } });
                 }
+                if (criteria.roleType === 'general') {
+                    condition.push({ $match: { roleLevel: { $gt: 0 } } });
+                }
             }
             if (criteria && criteria.sort) {
                 condition.push({ $sort: criteria.sort });
@@ -50,10 +53,10 @@ function getAll(criteria) {
                 condition.push({ $sort: { updatedAt: 1 } });
             }
             if (criteria.pageQuery) {
-                
+
                 totalCount = await RoleCollection.countDocuments({});
                 totalPages = Math.ceil(totalCount / pageSize);
-    
+
                 const skip = (page - 1) * pageSize;
                 condition.push({ $skip: skip }, { $limit: pageSize })
             }
@@ -91,9 +94,19 @@ function add(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
 
-            let isExists = await RoleCollection.findOne({ roleName: criteria.roleName }).lean().exec();
+            let isExists = await RoleCollection.findOne({
+                $or: [
+                    { roleName: criteria.roleName },
+                    { roleLevel: criteria.roleLevel }
+                ]
+            }).lean().exec();
             if (isExists && isExists.rolesId) {
                 reject({ success: false, message: 'Role already exists' });
+                return;
+            }
+
+            if (criteria.roleLevel <= 0) {
+                reject({ success: false, message: 'You cannot create a role with 0 rolelevel.' });
                 return;
             }
 

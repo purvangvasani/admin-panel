@@ -75,7 +75,7 @@ async function authenticationMiddleware(req, res, next) {
                                 // }
                                 // let hasAccess = routAccess.hasAccess(role.modulesAccess, req.route.path);
                                 // if (hasAccess || role.rolelevel === 0) {
-                                if (role.roleLevel > 0) {
+                                if (role.roleLevel >= 0) {
                                     // Update Last Activity
                                     let dbToken = tokenList[0];
                                     dbToken.lastActivityAt = new Date();

@@ -21,15 +21,6 @@ import { appConstants } from 'src/app/util/app.constant';
 })
 export class BanksComponent implements OnInit, OnDestroy {
 
-  // public bankList = [
-  //   {
-  //     id: "91225",
-  //     bankName: "PayTM George",
-  //     dateOfCreation: "2023-07-18 03:59:22",
-  //     isActive: 'No'
-  //   }
-  // ]
-
   public deleteModalVisible = false;
   public deleteData: any;
   public bankList: any = [];

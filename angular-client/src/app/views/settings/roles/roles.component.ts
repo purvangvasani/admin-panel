@@ -54,48 +54,7 @@ export class RolesComponent implements OnInit, OnDestroy {
     context = {
         componentParent: this
     };
-    public columnDefs: ColDef[] = [
-        // this row just shows the row index, doesn't use any data from the row
-        {
-            headerName: "#",
-            filter: false,
-            sortable: false,
-            valueFormatter: (params: ValueFormatterParams) => {
-                return `${params.node!.data.rolesId}`;
-            }, suppressMovable: true
-        },
-        { headerName: "Role Name", field: "displayName", suppressMovable: true },
-        { headerName: "Role Level", field: "roleLevel", suppressMovable: true },
-        {
-            headerName: "Is Active?",
-            filter: false,
-            sortable: false,
-            valueFormatter: (params: ValueFormatterParams) => {
-                return `${params.node!.data.isActive ? 'Yes' : 'No'}`;
-            }, suppressMovable: true
-        },
-        {
-            headerName: "Is Deletable?",
-            filter: false,
-            sortable: false,
-            valueFormatter: (params: ValueFormatterParams) => {
-                return `${params.node!.data.isDeletable ? 'Yes' : 'No'}`;
-            }, suppressMovable: true
-        },
-        {
-            headerName: 'Action',
-            filter: false,
-            sortable: false,
-            valueFormatter: (params: ValueFormatterParams) => {
-                return `${params.node!.data}`;
-            },
-            cellRenderer: ToggleDropdownComponent,
-            cellRendererParams: {
-                specificId: 'roleButtons', // Custom parameter
-                onClick: this.onButtonClick.bind(this) // pass method to renderer
-            }
-        }
-    ];
+    public columnDefs: ColDef[] = [];
     public defaultColDef: ColDef = {
         filter: true,
     };
@@ -118,6 +77,7 @@ export class RolesComponent implements OnInit, OnDestroy {
             this.accessModule = data['module'];
             this.accessSubModule = data['subModule'];
             if (this.accessModule) {
+                debugger
                 let access = this.localStorageService.getValue('user')?.permissions ? JSON.parse(this.localStorageService.getValue('user').permissions) : appConstants.permissionList;
                 if (access && access.length) {
                     let item = access.filter((a: any) => a.key === this.accessModule)[0];
@@ -131,6 +91,50 @@ export class RolesComponent implements OnInit, OnDestroy {
                         this.toastrService.showWarning('Warning!', "You donot have permission to view this page. Please contact to administrator!")
                         this.utilService.goto('/dashboard');
                     } else {
+                        this.columnDefs = [
+                            // this row just shows the row index, doesn't use any data from the row
+                            {
+                                headerName: "#",
+                                filter: false,
+                                sortable: false,
+                                valueFormatter: (params: ValueFormatterParams) => {
+                                    return `${params.node!.data.rolesId}`;
+                                }, suppressMovable: true
+                            },
+                            { headerName: "Role Name", field: "displayName", suppressMovable: true },
+                            { headerName: "Role Level", field: "roleLevel", suppressMovable: true },
+                            {
+                                headerName: "Is Active?",
+                                filter: false,
+                                sortable: false,
+                                valueFormatter: (params: ValueFormatterParams) => {
+                                    return `${params.node!.data.isActive ? 'Yes' : 'No'}`;
+                                }, suppressMovable: true
+                            },
+                            {
+                                headerName: "Is Deletable?",
+                                filter: false,
+                                sortable: false,
+                                valueFormatter: (params: ValueFormatterParams) => {
+                                    return `${params.node!.data.isDeletable ? 'Yes' : 'No'}`;
+                                }, suppressMovable: true
+                            }
+                        ];
+                        if (this.access.edit) {
+                            this.columnDefs.push({
+                                headerName: 'Action',
+                                filter: false,
+                                sortable: false,
+                                valueFormatter: (params: ValueFormatterParams) => {
+                                    return `${params.node!.data}`;
+                                },
+                                cellRenderer: ToggleDropdownComponent,
+                                cellRendererParams: {
+                                    specificId: 'roleButtons', // Custom parameter
+                                    onClick: this.onButtonClick.bind(this) // pass method to renderer
+                                }
+                            });
+                        }
                         this.getAll();
                     }
                 }
@@ -239,7 +243,7 @@ export class RolesComponent implements OnInit, OnDestroy {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while validating credentials.')
         }
         this.loaderService.showLoader();
-        this.roleService.getAll({ pageQuery: this.currentPage, pageSize: this.paginationPageSize }, success, failure)
+        this.roleService.getAll({ pageQuery: this.currentPage, pageSize: this.paginationPageSize, roleType: 'general' }, success, failure)
     }
 
     public openModal = (data: any) => {

@@ -22,9 +22,10 @@ export class PermissionComponent implements OnInit {
 
     public roleList: any = [];
     public selectedRole: any;
-    public permissions: any = appConstants.permissionList;
+    public permissions: any;
     public currentUserRole: any = this.utilService.getCurrentUserRole();
     public isSuperorAdmin: boolean = false;
+    public userRoleLevel: any = this.utilService.getUserRoleLevel();
 
     constructor(
         private toastrService: ToastService,
@@ -34,7 +35,7 @@ export class PermissionComponent implements OnInit {
         private profileService: ProfileService,
         private authService: AuthService,
     ) {
-        this.isSuperorAdmin = this.currentUserRole === 'super' || this.currentUserRole === 'admin' ? false : true;
+        this.isSuperorAdmin = !this.userRoleLevel ? false : this.currentUserRole === 'super' || this.currentUserRole === 'admin' ? false : true;
     }
 
     ngOnInit(): void {
@@ -70,7 +71,7 @@ export class PermissionComponent implements OnInit {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while validating credentials.')
         }
         this.loaderService.showLoader();
-        this.roleService.getAll({}, success, failure)
+        this.roleService.getAll({ roleType: 'general' }, success, failure)
     }
 
     public changePermission = (module: any, access: any, key: any) => {
@@ -154,12 +155,11 @@ export class PermissionComponent implements OnInit {
     private permissionsGetby = () => {
         let success = (data: any) => {
             this.loaderService.hideLoader();
-            // if (data && data.success && data.data && data.data._id) {
-            //     this.permissions = data.data.permissionAccess;
-            // } else {
-            //     this.permissions = appConstants.permissionList;
-            // }
-            this.permissions = appConstants.permissionList;
+            if (data && data.success && data.data && data.data._id) {
+                this.permissions = data.data.permissionAccess;
+            } else {
+                this.permissions = appConstants.permissionList;
+            }
         }
         let failure = (error: any) => {
             this.loaderService.hideLoader();
@@ -184,7 +184,11 @@ export class PermissionComponent implements OnInit {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while updating permissions.')
         }
         this.loaderService.showLoader();
-        this.profileService.permissionUpdate(this.permissions, success, failure)
+        let criteria = {
+            permissions: this.permissions,
+            type: 'transactionPayments'
+        }
+        this.profileService.permissionUpdate(criteria, success, failure)
     }
 
     public confirmLogout = () => {

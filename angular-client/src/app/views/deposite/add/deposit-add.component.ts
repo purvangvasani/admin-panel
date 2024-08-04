@@ -22,7 +22,6 @@ export class DepositAddComponent implements OnInit {
   public depositForm: FormGroup | any;
   public merchant = "";
   public depositFields: any = [];
-  // public deposits: any = {};
   public id: any;
 
   constructor(
@@ -79,10 +78,6 @@ export class DepositAddComponent implements OnInit {
     this.loaderService.showLoader();
     const updatedData = this.mergeAdditionalFields(this.depositForm.value, this.depositFields);
     updatedData['merchantId'] = this.id;
-    // let criteria = {
-    //   form: this.depositForm.value,
-    //   extraFields: this.depositFields
-    // }
     this.transactionService.addTransaction(updatedData, success, failure)
   }
   public mergeAdditionalFields = (data: any, fields: any) => {

@@ -11,6 +11,7 @@ import { ToastService } from 'src/app/util/toastr.service';
 import { UtilService } from 'src/app/util/util.service';
 import { MerchantService } from 'src/app/services/merchant.service';
 import { environment } from '../../../environments/environment';
+import { LocalStorageService } from 'src/app/util/local-storage.service';
 
 @Component({
     selector: 'app-merchant',
@@ -38,7 +39,7 @@ export class MerchantComponent implements OnInit, OnDestroy {
 
     constructor(
         private route: ActivatedRoute,
-        private router: Router,
+        private localStorageService: LocalStorageService,
         private utilService: UtilService,
         private toastrService: ToastService,
         private loaderService: LoaderService,
@@ -47,8 +48,7 @@ export class MerchantComponent implements OnInit, OnDestroy {
         const params = this.route.data.subscribe((data: Params) => {
             this.accessModule = data['module'];
             if (this.accessModule) {
-                // let access = this.localStorageService.getValue('user')?.permissions ? JSON.parse(this.localStorageService.getValue('user').permissions) : appConstants.permissionList;
-                let access = appConstants.permissionList;
+                let access = this.localStorageService.getValue('user')?.permissions ? JSON.parse(this.localStorageService.getValue('user').permissions) : appConstants.permissionList;
                 if (access && access.length) {
                     let item = access.filter((a: any) => a.key === this.accessModule)[0];
                     this.access = item.access;
