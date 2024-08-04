@@ -14,6 +14,8 @@ import { appConstants } from 'src/app/util/app.constant';
 import { ColDef, GridApi, GridReadyEvent, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
 import { ToggleDropdownComponent } from '../toggle-dropdown/toggle-dropdown.component';
+import { format } from 'date-fns';
+
 @Component({
   selector: 'app-deposite',
   standalone: true,
@@ -52,7 +54,41 @@ export class DepositeComponent implements OnInit, OnDestroy {
       }, suppressMovable: true
     },
     { headerName: "Merchant Id", field: "merchant_id", suppressMovable: true },
-    { headerName: "Created At", field: "createdAt", suppressMovable: true },
+    {
+      field: 'createdAt',
+      filter: 'agDateColumnFilter',
+      valueFormatter: (params) => {
+        const date = new Date(params.value);
+        return format(date, 'yyyy-dd-MM HH:mm:ss');
+      },
+      filterParams: {
+        comparator: (filterLocalDateAtMidnight: any, cellValue: any) => {
+          if (!cellValue) return -1;
+
+          const cellDate = new Date(cellValue);
+
+          // Clear the time part for comparison
+          const cellDateWithoutTime = new Date(
+            cellDate.getFullYear(),
+            cellDate.getMonth(),
+            cellDate.getDate()
+          );
+
+          if (filterLocalDateAtMidnight.getTime() === cellDateWithoutTime.getTime()) {
+            return 0;
+          }
+          if (cellDateWithoutTime < filterLocalDateAtMidnight) {
+            return -1;
+          }
+          if (cellDateWithoutTime > filterLocalDateAtMidnight) {
+            return 1;
+          }
+
+          // Fallback return value
+          return 0;
+        }
+      }
+    },
     { headerName: "Operation Type", field: "operationType", suppressMovable: true },
     { headerName: "Transaction Id", field: "transaction_id", suppressMovable: true },
     { headerName: "Amount", field: "amount", suppressMovable: true },

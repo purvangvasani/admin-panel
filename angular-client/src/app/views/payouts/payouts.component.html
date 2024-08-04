@@ -1,8 +1,17 @@
 <c-container class="payouts-container" breakpoint="md">
     <c-row class="pb-3">
         <c-col lg="12" xl="12">
-            <c-card>
-                <c-card-header>
+            <div class="header-container">
+                <div class="left-header">
+                    <strong class="b-strong"></strong>
+                </div>
+                <div class="right-header">
+                    <!-- <button cButton color="primary" (click)="handleFilterEvent()">Submit</button> -->
+                    <button cButton color="primary" (click)="handleRefreshEvent()">Refresh Data</button>
+                </div>
+            </div>
+            <!-- <c-card> -->
+            <!-- <c-card-header>
                     <div class="header-container">
                         <div class="left-header">
                             <strong class="b-strong">Filter</strong>
@@ -18,14 +27,12 @@
                         <c-row class="pb-3">
                             <c-col sm="12" xs="12" md="6" lg="4">
                                 <select cSelect id="account" formControlName="account">
-                                    <option>Account</option>
-                                    <!-- Add options as needed -->
+                                    <option>Account</option> 
                                 </select>
                             </c-col>
                             <c-col sm="12" xs="12" md="6" lg="4">
                                 <select cSelect id="currency" formControlName="currency">
-                                    <option>Currency</option>
-                                    <!-- Add options as needed -->
+                                    <option>Currency</option> 
                                 </select>
                             </c-col>
                             <c-col sm="12" xs="12" md="6" lg="4">
@@ -65,8 +72,7 @@
                                 </label>
                                 <input cFormControl placeholder="Creation Date To" type="date" id="creationDateTo"
                                     name="creationDateTo" formControlName="creationDateTo" />
-
-                                <!-- Validation message -->
+ 
                                 <div *ngIf="payoutsForm.get('creationDateTo').hasError('dateRangeError')"
                                     class="text-danger">
                                     Creation Date To cannot be earlier than Creation Date From.
@@ -74,8 +80,8 @@
                             </c-col>
                         </c-row>
                     </form>
-                </c-card-body>
-            </c-card>
+                </c-card-body> -->
+            <!-- </c-card> -->
         </c-col>
     </c-row>
     <c-row class="justify-content-center">
@@ -169,14 +175,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="data-table"> 
+                <div class="data-table">
                     <ag-grid-angular style="width: 100%; height: 300px;" [columnDefs]="columnDefs"
                         [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
                         [paginationPageSize]="paginationPageSize"
                         [paginationPageSizeSelector]="paginationPageSizeSelector" [pagination]="true"
                         [suppressPaginationPanel]="true" [suppressScrollOnNewData]="true" [rowData]="rowData"
-                        [class]="themeClass" (paginationChanged)="onPaginationChanged($event)"
-                        [context]="context"
+                        [class]="themeClass" (paginationChanged)="onPaginationChanged($event)" [context]="context"
                         (gridReady)="onGridReady($event)" />
                 </div>
             </div>

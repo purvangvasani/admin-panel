@@ -1,7 +1,7 @@
 import { CommonModule, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonDirective, CardBodyComponent, CardComponent, CardGroupComponent, CardHeaderComponent, ColComponent, ContainerComponent, FormControlDirective, FormDirective, InputGroupComponent, InputGroupTextDirective, RowComponent, TextColorDirective, ThemeDirective } from '@coreui/angular';
+import { ButtonDirective, CardBodyComponent, CardComponent, CardGroupComponent, CardHeaderComponent, ColComponent, ContainerComponent, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, FormControlDirective, FormDirective, InputGroupComponent, InputGroupTextDirective, RowComponent, TextColorDirective, ThemeDirective } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
 import { LoaderComponent } from '../../loader/loader.component';
 import { ToastService } from 'src/app/util/toastr.service';
@@ -14,7 +14,7 @@ import { MerchantService } from 'src/app/services/merchant.service';
 @Component({
   selector: 'app-withdrawal-add',
   standalone: true,
-  imports: [NgTemplateOutlet, FormsModule, ThemeDirective, CommonModule, ReactiveFormsModule, ContainerComponent, RowComponent, ColComponent, CardHeaderComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle],
+  imports: [NgTemplateOutlet, FormsModule, ThemeDirective, CommonModule, ReactiveFormsModule, ContainerComponent, RowComponent, ColComponent, CardHeaderComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle,FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective],
   templateUrl: './withdrawal-add.component.html',
   styleUrl: './withdrawal-add.component.scss'
 })
@@ -92,7 +92,7 @@ export class WithdrawalAddComponent implements OnInit {
     return data;
   };
   public handleFieldEvents = (events: any) => {
-    console.log(this.withdrawalFields)
+    // console.log(this.withdrawalFields)
   }
   private getMerchantById = (id: any) => {
     let success = (data: any) => {

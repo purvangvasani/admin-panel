@@ -147,7 +147,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching merchant.')
     }
     this.loaderService.showLoader();
-    this.merchantService.getAll({  }, success, failure)
+    this.merchantService.getAll({}, success, failure)
   }
 
   private differenceById = (arr1: any, arr2: any) => {
@@ -157,7 +157,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
 
   public getBankID = () => {
     let success = (data: any) => {
-      this.loaderService.hideLoader(); 
+      this.loaderService.hideLoader();
       if (data && data.success) {
         if (data.data && data.data.length) {
           this.bankIdList = data.data;
@@ -226,6 +226,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onBankSubmit = () => {
+    debugger
     let success = (data: any) => {
       this.loaderService.hideLoader();
       if (data && data.success) {
@@ -244,10 +245,10 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     // bankData['deposits'] = this.depositForm.value.depositFields;
     // bankData['withdrawals'] = this.withdrawlForm.value.withdrawlFields;
     const allwithdrawlFormFilled = this.withdrawlForm.value.withdrawlFields.every((field: any) => {
-      return field.fieldName && field.displayMode && field.fieldType && field.placeHolder && (field.required !== undefined);
+      return field.fieldName && field.displayMode && field.fieldType && (field.placeHolder || field.fieldType === 'checkbox') && (field.required !== undefined);
     });
     const allwdepositsFormFilled = this.depositForm.value.depositFields.every((field: any) => {
-      return field.fieldName && field.displayMode && field.fieldType && field.placeHolder && (field.required !== undefined);
+      return field.fieldName && field.displayMode && field.fieldType && (field.placeHolder || field.fieldType === 'checkbox') && (field.required !== undefined);
     });
     if (allwithdrawlFormFilled) {
       bankData['withdrawals'] = this.withdrawlForm.value.withdrawlFields;

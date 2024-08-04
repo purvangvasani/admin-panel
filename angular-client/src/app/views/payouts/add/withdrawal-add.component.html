@@ -56,13 +56,32 @@
                                 <ng-container *ngIf="withdrawalFields.length">
                                     <ng-container *ngFor="let fields of withdrawalFields">
                                         <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                            <label cLabel="col" [for]="fields.fieldName">
+                                            <label *ngIf="fields.fieldType !== 'checkbox';else tmpblank" cLabel="col"
+                                                [for]="fields.fieldName">
                                                 {{fields.fieldName}}
                                             </label>
-                                            <input cFormControl [placeholder]="fields.placeHolder"
-                                                [type]="fields.fieldType" (ngModelChange)="handleFieldEvents($event)"
+                                            <ng-template #tmpblank>
+                                                <label></label>
+                                            </ng-template>
+                                            <input *ngIf="fields.fieldType !== 'checkbox'" cFormControl
+                                                [placeholder]="fields.placeHolder" [type]="fields.fieldType"
+                                                (ngModelChange)="handleFieldEvents($event)"
                                                 [(ngModel)]="fields['value']" [id]="fields.fieldName"
                                                 [name]="fields.fieldName" [required]="fields.required" />
+
+                                            <!-- <input *ngIf="fields.fieldType === 'checkbox'" [type]="fields.fieldType"
+                                                (ngModelChange)="handleFieldEvents($event)"
+                                                [(ngModel)]="fields['value']" [id]="fields.fieldName"
+                                                [name]="fields.fieldName" [required]="fields.required" /> -->
+
+                                            <c-form-check *ngIf="fields.fieldType === 'checkbox'">
+                                                <input cFormCheckInput (ngModelChange)="handleFieldEvents($event)"
+                                                    [(ngModel)]="fields['value']" [id]="fields.fieldName"
+                                                    [name]="fields.fieldName" [required]="fields.required"
+                                                    type="checkbox" />
+                                                <label cFormCheckLabel
+                                                    [for]="fields.fieldName">{{fields.fieldName}}</label>
+                                            </c-form-check>
                                         </c-col>
                                     </ng-container>
                                 </ng-container>
