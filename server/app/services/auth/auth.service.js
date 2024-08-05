@@ -86,9 +86,17 @@ function getAuthentication(email, password, userAgent, token) {
                 // then it will return error in response
                 return reject({ success: false, message: 'You have entered invalid email address and/or password.' });
             }
+            if (!user.active) {
+                // if no user found based on email,
+                // then it will return error in response
+                return reject({ success: false, message: 'You are disabled by the system.' });
+            }
             let role = await RoleCollection.findById(user.role).lean().exec();
             if (role) {
                 user['role'] = role;
+            }
+            if (!role.isActive) {
+                return reject({ success: false, message: 'Your role is disabled by the system.' });
             }
             if (password) {
                 //Check if password matches
@@ -123,7 +131,7 @@ function getAuthentication(email, password, userAgent, token) {
                             mailParams.mailBody = `<p>We noticed that there were multiple attempts to login into the Portal associated with your user id.
                         We have sent you a separate email with a new password. If you did not attempt login, please <a href="mailto:${mailParams.contactEmail}"><u>contact us</u></a> immediately.</p>`;
                             try {
-                                // helper.mail.sendMail(helper.mail.template.general, mailParams);
+                                helper.mail.sendMail(helper.mail.template.general, mailParams);
                             } catch (error) {
                                 console.error(error);
                             }
@@ -169,29 +177,29 @@ function getAuthentication(email, password, userAgent, token) {
 
 function generatedAuthentication(user, userAgent, token) {
     let promiseFunction = async (resolve, reject) => {
-        // if (!user.role || !user.role.roleName) {
-        //     reject({ success: false, message: 'Unable to find your role.' });
-        // } else {
-        // create an access token
-        let userWithToken = generateToken(user);
-        let newAuthToken = new AuthToken({
-            accessToken: userWithToken,
-            // refreshToken: userWithToken,
-            lastActivityAt: new Date(),
-            userId: user.userId,
-            idp: token && token.idp ? token.idp : null,
-            nameID: token && token.email ? token.email : null,
-            sessionIndex: token && token.sessionIndex ? token.sessionIndex : null,
-            // role: user.role.roleName,
-            userAgent: userAgent
-        });
-        try {
-            let authToken = await newAuthToken.save();
-            resolve({ success: true, user: user, auth: authToken });
-        } catch (err) {
-            reject({ success: false, message: '289-Some unhandled server error has occurred.', error: err });
+        if (!user.role || !user.role.roleName) {
+            reject({ success: false, message: 'Unable to find your role.' });
+        } else {
+            // create an access token
+            let userWithToken = generateToken(user);
+            let newAuthToken = new AuthToken({
+                accessToken: userWithToken,
+                refreshToken: userWithToken,
+                lastActivityAt: new Date(),
+                userId: user.userId,
+                idp: token && token.idp ? token.idp : null,
+                nameID: token && token.email ? token.email : null,
+                sessionIndex: token && token.sessionIndex ? token.sessionIndex : null,
+                role: user.role.roleName,
+                userAgent: userAgent
+            });
+            try {
+                let authToken = await newAuthToken.save();
+                resolve({ success: true, user: user, auth: authToken });
+            } catch (err) {
+                reject({ success: false, message: '289-Some unhandled server error has occurred.', error: err });
+            }
         }
-        // }
     }
     return new Promise(promiseFunction);
 }
@@ -218,6 +226,7 @@ function register(criteria) {
                 firstname: criteria.firstname,
                 lastname: criteria.lastname,
                 email: criteria.email,
+                active: criteria.active || false,
                 // password: hashPassword,
                 role: criteria.role,
                 lastPasswordUpdatedAt: new Date().getTime(),

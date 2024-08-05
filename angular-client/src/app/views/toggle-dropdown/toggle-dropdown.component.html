@@ -15,19 +15,17 @@
 </div>
 <div *ngIf="toggleData?.specificId === 'roleButtons'">
     <td *ngIf="toggleData?.data?.isDeletable">
-        <a style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('update')"><svg cIcon class="me-2"
+        <a *ngIf="access?.edit" style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('update')"><svg cIcon class="me-2"
                 name="cilPencil"></svg></a>
-        <a style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('delete')"><svg cIcon class="me-2"
+        <a *ngIf="access?.delete" style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('delete')"><svg cIcon class="me-2"
                 name="cilTrash"></svg></a>
     </td>
 </div>
 <div *ngIf="toggleData?.specificId === 'actionButtons'">
     <td>
-        <a title="Reset Password" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;"
-            (click)="buttonClicked('reset')"><svg cIcon class="me-2" name="cilLockLocked"></svg></a>
-        <a title="Edit" *ngIf="access.edit" style="cursor: pointer; text-decoration: none;"
-            (click)="buttonClicked('update')"><svg cIcon class="me-2" name="cilPencil"></svg></a>
-        <a title="Delete" *ngIf="access.delete" style="cursor: pointer; text-decoration: none;"
-            (click)="buttonClicked('delete')"><svg cIcon class="me-2" name="cilTrash"></svg></a>
+        <a title="Edit" style="cursor: pointer; text-decoration: none;"
+            (click)="buttonClicked('update')" *ngIf="access?.edit"><svg cIcon class="me-2" name="cilPencil"></svg></a>
+        <a title="Delete" style="cursor: pointer; text-decoration: none;"
+            (click)="buttonClicked('delete')" *ngIf="access?.delete"><svg cIcon class="me-2" name="cilTrash"></svg></a>
     </td>
 </div>

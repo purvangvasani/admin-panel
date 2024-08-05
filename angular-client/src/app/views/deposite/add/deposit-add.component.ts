@@ -87,7 +87,6 @@ export class DepositAddComponent implements OnInit {
     return data;
   };
   public handleFieldEvents = (events: any) => {
-    console.log(this.depositFields)
   }
 
   private getMerchantById = (id: any) => {
@@ -96,17 +95,17 @@ export class DepositAddComponent implements OnInit {
         if (data.data.merchantname) {
           this.merchant = data.data.merchantname;
           this.depositFields = data.data.depositFields.deposits?.length ? data.data.depositFields.deposits[0].typeDetails : [];
-        } else {
-          console.log(data.data)
-        }
+        } 
       } else {
         this.toastrService.showError('Error!', data.message)
+        this.utilService.goto('/404')
       }
       this.loaderService.hideLoader();
     }
     let failure = (error: any) => {
       this.loaderService.hideLoader();
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching merchant.')
+      this.utilService.goto('/404')
     }
     this.loaderService.showLoader();
     this.merchantService.getById({ merchantId: id, for: "public", get: 'bankDeposits' }, success, failure)

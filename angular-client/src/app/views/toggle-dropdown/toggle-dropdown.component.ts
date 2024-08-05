@@ -57,7 +57,6 @@ export class ToggleDropdownComponent implements ICellRendererAngularComp, OnInit
             this.access = item.access;
           }
           this.access = this.access[this.currentUserRole];
-
         }
       }
     })

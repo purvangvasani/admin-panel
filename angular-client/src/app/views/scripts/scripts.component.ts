@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { ScriptService } from 'src/app/util/script.service';
 
 @Component({
     templateUrl: 'scripts.component.html',
@@ -10,7 +11,8 @@ import { Component } from '@angular/core';
 export class ScriptsComponent {
 
     constructor(
-    ){
+        private scriptService: ScriptService
+    ) {
     }
 
     ngOnInit(): void {
@@ -18,10 +20,17 @@ export class ScriptsComponent {
     }
 
     ngOnDestroy(): void {
-       
+
     }
 
     public runDisableRoleScript = () => {
-        
+        const successCallback = (response: any) => {
+            if (response && response.success) {
+                
+            }
+        }
+        const errorCallback = (error: any) => {
+        }
+        this.scriptService.add({}, successCallback, errorCallback);
     }
 }

@@ -1,4 +1,4 @@
-<div style="margin-bottom: 10px;">
+<div style="margin-bottom: 10px;" *ngIf="access?.add">
     <c-card>
         <c-card-header>
             <h5>Users Form</h5>
@@ -35,8 +35,8 @@
                             *ngIf="userForm.controls['email'].hasError('required') && userForm.controls['email'].touched">
                             Email is required</span>
                     </div>
-                    <label class="col-md-2 form-check-label col-form-label">Active?</label>
-                    <div class="col-md-4">
+                    <label class="col-md-2 form-check-label col-form-label" *ngIf="editUserData?.userId">Active?</label>
+                    <div class="col-md-4" *ngIf="editUserData?.userId">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="active" formControlName="active">
                         </div>

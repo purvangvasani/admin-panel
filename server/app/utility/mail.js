@@ -5,19 +5,19 @@ const fs = require('fs');
 const nodemailer = require('nodemailer');
 
 let mailId = {
-    notification: `"Notifications QuestionQraft Adminpanel" ${process && process.env && process.env.NOTIFICATION_EMAIL_ACC ? process.env.NOTIFICATION_EMAIL_ACC : 'purvang.vasani@nextgen-webworks.in'}`,
-    support: `"Support QuestionQraft Adminpanel" ${process && process.env && process.env.NOTIFICATION_EMAIL_ACC ? process.env.NOTIFICATION_EMAIL_ACC : 'purvang.vasani@nextgen-webworks.in'}`
+    notification: `"Notifications ${process.env.APP_NAME} Adminpanel" ${process && process.env && process.env.NOTIFICATION_EMAIL_ACC ? process.env.NOTIFICATION_EMAIL_ACC : 'purvang.vasani@nextgen-webworks.in'}`,
+    support: `"Support ${process.env.APP_NAME} Adminpanel" ${process && process.env && process.env.NOTIFICATION_EMAIL_ACC ? process.env.NOTIFICATION_EMAIL_ACC : 'purvang.vasani@nextgen-webworks.in'}`
 };
 
 module.exports = {
     mailId: mailId,
     subject: {
-        forgotPassword: 'QuestionQraft' + ' : Your password has been updated',
-        otp: 'QuestionQraft' + ' : OTP Authentication',
-        passwordReset: 'QuestionQraft' + ' : Your password has been updated',
-        registration: 'QuestionQraft' + ' : Your password',
-        resetPasswordOnMultipleLogin: 'QuestionQraft' + ' : Password reset due to multiple unsuccessful login attempts',
-        welcomeUser: 'QuestionQraft' + ' : Registration complete',
+        forgotPassword: `${process.env.APP_NAME} Your password has been updated`,
+        otp: `${process.env.APP_NAME} OTP Authentication`,
+        passwordReset: `${process.env.APP_NAME} Your password has been updated`,
+        registration: `${process.env.APP_NAME} Your password`,
+        resetPasswordOnMultipleLogin: `${process.env.APP_NAME} Password reset due to multiple unsuccessful login attempts`,
+        welcomeUser: `${process.env.APP_NAME} Registration complete`,
     },
     template: {
         assignedUser: 'assignedUser',
@@ -75,11 +75,11 @@ function sendByNodeMail(templateName, params, success, failure, transportOptions
     try {
         let rawTemplate = fs.readFileSync(path.join(__dirname, `../mail-templates/${templateName}/html.ejs`), { encoding: 'utf8' });
         // params['portalTitle'] = constants.portalTitle;
-        params['portalTitle'] = 'WEB MANAGEMENT';
+        params['portalTitle'] = `${process.env.APP_NAME}`;
         let html = ejs.render(rawTemplate, params);
 
         let transporter = nodemailer.createTransport({
-            host: "smtp.hostinger.com",
+            host: "smtp.gmail.com",
             port: 587,
             secureConnection: false, // use SSL
             // secure: true,
@@ -95,7 +95,7 @@ function sendByNodeMail(templateName, params, success, failure, transportOptions
         let mailOptions = {
             from: params.from || mailId.notification,
             to: params.email,
-            subject: params.subject + ' (' + 'QuestionQraft' + ')',
+            subject: params.subject + ' (' + `${process.env.APP_NAME}` + ')',
             html: html,
             attachments: []
         };

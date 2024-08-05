@@ -1,4 +1,5 @@
 const RoleService = require('../../services/roles/roles.service')
+const UserService = require('../../services/users/users.service')
 const helper = require('../../utility');
 
 module.exports = {
@@ -6,7 +7,18 @@ module.exports = {
     getByRoleId,
     add,
     update,
-    deleteById
+    deleteById,
+    runScript
+}
+
+async function runScript(req, res, next) {
+    try {
+        let result = await RoleService.runScript(req.body);
+        result = await UserService.runScript(req.body);
+        res.json(result);
+    } catch (e) {
+        res.json(e);
+    }
 }
 
 async function getAll(req, res, next) {

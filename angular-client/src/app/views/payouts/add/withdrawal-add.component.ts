@@ -92,7 +92,6 @@ export class WithdrawalAddComponent implements OnInit {
     return data;
   };
   public handleFieldEvents = (events: any) => {
-    // console.log(this.withdrawalFields)
   }
   private getMerchantById = (id: any) => {
     let success = (data: any) => {
@@ -100,9 +99,7 @@ export class WithdrawalAddComponent implements OnInit {
         if (data.data.merchantname) {
           this.merchant = data.data.merchantname;
           this.withdrawalFields = data.data.depositFields.withdrawals?.length ? data.data.depositFields.withdrawals[0].typeDetails : [];
-        } else {
-          console.log(data.data)
-        }
+        } 
       } else {
         this.toastrService.showError('Error!', data.message)
       }

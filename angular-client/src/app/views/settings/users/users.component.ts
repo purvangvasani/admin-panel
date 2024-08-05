@@ -60,6 +60,7 @@ export class UsersComponent implements OnInit {
     public accessModule: any = null;
     public accessSubModule: any = null;
     public currentUserRole: any = this.utilService.getCurrentUserRole();
+    public userRoleLevel: any = this.utilService.getUserRoleLevel();
     private paramsubscriptions: Subscription[] = [];
     public userForm: any;
     public userId: any = "";
@@ -71,41 +72,7 @@ export class UsersComponent implements OnInit {
     context = {
         componentParent: this
     };
-    public columnDefs: ColDef[] = [
-        // this row just shows the row index, doesn't use any data from the row
-        {
-            headerName: "#",
-            filter: false,
-            sortable: false,
-            valueFormatter: (params: ValueFormatterParams) => {
-                return `${params.node!.data.userId}`;
-            }, suppressMovable: true
-        },
-        { headerName: "First Name", field: "firstname", suppressMovable: true },
-        { headerName: "Last Name", field: "lastname", suppressMovable: true },
-        { headerName: "Email", field: "email", suppressMovable: true },
-        {
-            headerName: "Is Active?",
-            filter: false,
-            sortable: false,
-            valueFormatter: (params: ValueFormatterParams) => {
-                return `${params.node!.data.active ? 'Yes' : 'No'}`;
-            }, suppressMovable: true
-        },
-        {
-            headerName: 'Action',
-            filter: false,
-            sortable: false,
-            valueFormatter: (params: ValueFormatterParams) => {
-                return `${params.node!.data}`;
-            },
-            cellRenderer: ToggleDropdownComponent,
-            cellRendererParams: {
-                specificId: 'actionButtons', // Custom parameter
-                onClick: this.onButtonClick.bind(this) // pass method to renderer
-            }
-        }
-    ];
+    public columnDefs: ColDef[] = [ ];
     public defaultColDef: ColDef = {
         filter: true,
     };
@@ -152,6 +119,42 @@ export class UsersComponent implements OnInit {
             this.toastrService.showWarning('Warning!', "You donot have permission to view this page. Please contact to administrator!")
             this.utilService.goto('/home');
         } else {
+            this.columnDefs = [
+                {
+                    headerName: "#",
+                    filter: false,
+                    sortable: false,
+                    valueFormatter: (params: ValueFormatterParams) => {
+                        return `${params.node!.data.userId}`;
+                    }, suppressMovable: true
+                },
+                { headerName: "First Name", field: "firstname", suppressMovable: true },
+                { headerName: "Last Name", field: "lastname", suppressMovable: true },
+                { headerName: "Email", field: "email", suppressMovable: true },
+                {
+                    headerName: "Is Active?",
+                    filter: false,
+                    sortable: false,
+                    valueFormatter: (params: ValueFormatterParams) => {
+                        return `${params.node!.data.active ? 'Yes' : 'No'}`;
+                    }, suppressMovable: true
+                }
+            ];
+            if (this.access.edit) {
+                this.columnDefs.push({
+                    headerName: 'Action',
+                    filter: false,
+                    sortable: false,
+                    valueFormatter: (params: ValueFormatterParams) => {
+                        return `${params.node!.data}`;
+                    },
+                    cellRenderer: ToggleDropdownComponent,
+                    cellRendererParams: {
+                        specificId: 'actionButtons', // Custom parameter
+                        onClick: this.onButtonClick.bind(this) // pass method to renderer
+                    }
+                });
+            }
             this.getAll();
             this.getAllRoles();
             this.buildForm();
@@ -192,6 +195,9 @@ export class UsersComponent implements OnInit {
             email: new FormControl(data && data.email ? data.email : null, [Validators.email]),
             active: new FormControl(data && data.active ? data.active : false),
         });
+        if (data?.role){
+            this.selectedRole = data?.role?._id
+        }
     }
 
     private getAllRoles = () => {
@@ -210,7 +216,7 @@ export class UsersComponent implements OnInit {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching roles.')
         }
         this.loaderService.showLoader();
-        this.roleService.getAll({}, success, failure)
+        this.roleService.getAll({ roleType: 'general' }, success, failure)
     }
 
     numSequence(n: number): Array<number> {
@@ -218,7 +224,6 @@ export class UsersComponent implements OnInit {
     }
 
     public handlePagination = (pageNumber: number) => {
-        console.log(pageNumber)
         this.currentPage = pageNumber;
         this.userList = [];
         this.getAll();
@@ -228,6 +233,9 @@ export class UsersComponent implements OnInit {
         let success = (data: any) => {
             if (data && data.success) {
                 if (data.data && data.data.length) {
+                    data.data = data.data.filter((x: any) => 
+                        x.role.roleLevel > 0
+                    )
                     this.userList = data.data;
                     this.rowData = data.data;
                     this.currentPage = data.currentPage;
@@ -245,7 +253,7 @@ export class UsersComponent implements OnInit {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching users.')
         }
         this.loaderService.showLoader();
-        this.userService.getAll({ pageQuery: this.currentPage, pageSize: this.paginationPageSize }, success, failure)
+        this.userService.getAll({ pageQuery: this.currentPage, pageSize: this.paginationPageSize, userRoleLevel: this.userRoleLevel }, success, failure)
     }
 
     public cancel = () => {

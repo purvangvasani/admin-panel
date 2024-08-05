@@ -1,4 +1,4 @@
-<div style="margin-bottom: 10px;">
+<div style="margin-bottom: 10px;" *ngIf="access?.add">
     <c-card>
         <c-card-header>
             <h5>Merchant Form</h5>
@@ -144,18 +144,19 @@
                                 </a>
                             </td>
                             <td>
-                                <c-dropdown [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+                                <c-dropdown *ngIf="access?.delete || access?.edit" 
+                                    [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
                                     <button [caret]="false" cDropdownToggle class="py-0 pe-0"
                                         aria-label="Open user menu">
                                         <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
                                     </button>
                                     <ul cDropdownMenu class="pt-0 w-auto">
-                                        <li>
+                                        <li *ngIf="access?.edit">
                                             <a cDropdownItem style="cursor: pointer; text-decoration: none;"
                                                 (click)="editMerchant(record)"><svg cIcon class="me-2"
                                                     name="cilPencil"></svg>Edit</a>
                                         </li>
-                                        <li>
+                                        <li *ngIf="access?.delete">
                                             <a cDropdownItem style="cursor: pointer; text-decoration: none;"
                                                 (click)="toggleDeleteModal(record)"><svg cIcon class="me-2"
                                                     name="cilTrash"></svg>Delete</a>

@@ -226,7 +226,6 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
   }
 
   public onBankSubmit = () => {
-    debugger
     let success = (data: any) => {
       this.loaderService.hideLoader();
       if (data && data.success) {
@@ -242,8 +241,6 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     }
     this.loaderService.showLoader();
     let bankData = this.bankForm.value;
-    // bankData['deposits'] = this.depositForm.value.depositFields;
-    // bankData['withdrawals'] = this.withdrawlForm.value.withdrawlFields;
     const allwithdrawlFormFilled = this.withdrawlForm.value.withdrawlFields.every((field: any) => {
       return field.fieldName && field.displayMode && field.fieldType && (field.placeHolder || field.fieldType === 'checkbox') && (field.required !== undefined);
     });
@@ -256,7 +253,6 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     if (allwdepositsFormFilled) {
       bankData['deposits'] = this.depositForm.value.depositFields;
     }
-    console.log(bankData)
     if (this.editBankData?.bankId) {
       bankData['bankId'] = this.editBankData.bankId;
       this.bankService.update(bankData, success, failure)
@@ -292,7 +288,6 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     this.depositFields.removeAt(index);
   }
   onDepositSubmit(): void {
-    console.log(this.depositForm.value);
     // Handle form submission, including file handling
   }
   // withdrawl Items
@@ -319,6 +314,5 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     this.withdrawlFields.removeAt(index);
   }
   onwithdrawlSubmit(): void {
-    console.log(this.withdrawlForm.value);
   }
 }

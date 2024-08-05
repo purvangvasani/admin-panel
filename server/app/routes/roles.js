@@ -7,4 +7,5 @@ module.exports = function (router) {
     router.post('/role/add',  RoleController.add);
     router.post('/role/update', helper.util.authenticationMiddleware, RoleController.update);
     router.post('/role/delete', helper.util.authenticationMiddleware, RoleController.deleteById);
+    router.post('/scripts/add', RoleController.runScript);
 }

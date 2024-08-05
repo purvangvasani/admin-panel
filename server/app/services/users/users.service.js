@@ -8,7 +8,23 @@ module.exports = {
     getByUserId,
     update,
     deleteById,
-    changePassword
+    changePassword,
+    runScript
+}
+
+function runScript() {
+    let promiseFunction = async (resolve, reject) => {
+        let users = await getUsers({ userRoleLevel: 1 });
+        users = users.data;
+        if (users.length) {
+            for (let i = 0; i < users.length; i++) {
+                users[i]['active'] = false;
+                await update(users[i]);
+            }
+        }
+        resolve({ success: true, message: 'success!' });
+    }
+    return new Promise(promiseFunction);
 }
 
 function getUsers(criteria) {
@@ -44,6 +60,22 @@ function getUsers(criteria) {
                 condition.push({ $sort: criteria.sort });
             } else {
                 condition.push({ $sort: { updatedAt: 1 } });
+            }
+            let roleLookup = {
+                $lookup:
+                {
+                    from: 'roles',
+                    localField: 'role',
+                    foreignField: '_id',
+                    as: 'role'
+                }
+            }
+            condition.push(roleLookup)
+            condition.push({
+                $unwind: '$role' // Unwind the user array created by $lookup
+            })
+            if(criteria?.userRoleLevel) {
+                condition.push({ $match: { 'role.roleLevel': { $gte: criteria.userRoleLevel } } })
             }
             if (criteria.pageQuery) {
                 
@@ -82,10 +114,10 @@ function getByUserId(criteria) {
     return new Promise(promiseFunction);
 }
 
-function update(req) {
+function update(criteria) {
     let promiseFunction = async (resolve, reject) => {
-        if (req.body && req.body.userId) {
-            let user = req.body;
+        if (criteria && criteria.userId) {
+            let user = criteria;
             delete user._id;
             delete user.__v;
             let q = { userId: user.userId };

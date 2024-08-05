@@ -68,4 +68,5 @@ router.get(
 module.exports = function (router) {
   router.post('/login', AuthenticationController.authenticate);
   router.post('/register', validateRegister, AuthenticationController.register);
+  router.post('/reset-password', resetPassword)
 }

@@ -28,7 +28,7 @@ async function getByUserId(req, res, next) {
 
 async function update(req, res, next) {
     try {
-        let result = await UserService.update(req);
+        let result = await UserService.update(req.body);
         res.json(result);
     } catch (e) {
         res.json(e);

@@ -88,76 +88,6 @@
     </c-row>
     <c-row class="justify-content-center">
         <c-col lg="12" xl="12">
-            <!-- <c-card>
-                <c-card-header>
-                    <strong>Deposit</strong>
-                </c-card-header>
-                <c-card-body>
-                    <table [responsive]="true" cAlign="middle" cTable>
-                        <thead cTableColor="light">
-                            <tr>
-                                <th class="font-style" scope="col">ID</th>
-                                <th class="font-style" scope="col">Merchant ID</th>
-                                <th class="font-style" scope="col">Creation Date</th>
-                                <th class="font-style" scope="col">Complete Date</th>
-                                <th class="font-style" scope="col">Operation Amount</th>
-                                <th class="font-style" scope="col">Status</th>
-                                <th class="font-style" scope="col">Operation Type</th>
-                                <th class="font-style" scope="col">Transaction ID</th>
-                                <th class="font-style" scope="col">Account Name</th>
-                                <th class="font-style" scope="col">Account Number</th>
-                                <th class="font-style" scope="col">Time of Processing</th>
-                                <th class="font-style" scope="col">Action</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let item of deositeList">
-                                <td class="font-style">{{ item.id }}</td>
-                                <td class="font-style">{{ item.merchant_id }}</td>
-                                <td class="font-style">{{ item.createdAt }}</td>
-                                <td class="font-style" *ngIf="item.status !=='Processing';else processing">{{
-                                    item.updatedAt }}</td>
-                                <ng-template #processing>
-                                    <td></td>
-                                </ng-template>
-                                <td class="font-style">{{ item.amount }}</td>
-                                <td class="font-style">{{ item.status }}</td>
-                                <td class="font-style">{{ item.operationType }}</td>
-                                <td class="font-style">{{ item.transaction_id }}</td>
-                                <td class="font-style">{{ item.accountName }}</td>
-                                <td class="font-style">{{ item.accountNumber}}</td>
-                                <td class="font-style"> {{ getHoursDifference(item.createdAt,
-                                    item.updatedAt,item.status) }}
-                                </td>
-
-                                <td *ngIf="item.status ==='Processing';">
-                                    <c-dropdown *ngIf="access.edit" [popperOptions]="{ placement: 'bottom-start' }"
-                                        variant="nav-item">
-                                        <button [caret]="false" cDropdownToggle class="py-0 pe-0"
-                                            aria-label="Open user menu">
-                                            <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
-                                        </button>
-                                        <ul cDropdownMenu class="pt-0 w-auto">
-                                            
-                                            <li>
-                                                <a cDropdownItem (click)="handleToggleEvent(item,'Approve')">
-                                                    Approve
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a cDropdownItem (click)="handleToggleEvent(item,'Reject')">
-                                                    Reject
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </c-dropdown>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </c-card-body>
-            </c-card> -->
             <div class="example-wrapper">
                 <div class="example-header">
 
@@ -184,7 +114,7 @@
                     </div>
                 </div>
                 <div class="data-table">
-                    <ag-grid-angular style="width: 100%; height: 300px;" [columnDefs]="columnDefs"
+                    <ag-grid-angular style="width: 100%; height: 500px;" [columnDefs]="columnDefs"
                         [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
                         [paginationPageSize]="paginationPageSize"
                         [paginationPageSizeSelector]="paginationPageSizeSelector" [pagination]="true"

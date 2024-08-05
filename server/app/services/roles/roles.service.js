@@ -9,7 +9,8 @@ module.exports = {
     getByRoleId,
     add,
     update,
-    deleteById
+    deleteById,
+    runScript
 }
 
 function getAll(criteria) {
@@ -71,6 +72,21 @@ function getAll(criteria) {
     }
     return new Promise(promiseFunction);
 
+}
+
+function runScript() {
+    let promiseFunction = async (resolve, reject) => {
+        let roles = await getAll({ roleType: 'general' });
+        roles = roles.data;
+        if (roles.length) {
+            for (let i = 0; i < roles.length; i++) {
+                roles[i]['isActive'] = false;
+                await update(roles[i]);
+            }
+        }
+        resolve({ success: true, message: 'success!' });
+    }
+    return new Promise(promiseFunction);
 }
 
 function getByRoleId(criteria) {

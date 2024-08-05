@@ -43,72 +43,7 @@ export class DepositeComponent implements OnInit, OnDestroy {
     componentParent: this
   };
 
-  public columnDefs: ColDef[] = [
-    // this row just shows the row index, doesn't use any data from the row
-    {
-      headerName: "#",
-      filter: false,
-      sortable: false,
-      valueFormatter: (params: ValueFormatterParams) => {
-        return `${params.node!.data.id}`;
-      }, suppressMovable: true
-    },
-    { headerName: "Merchant Id", field: "merchant_id", suppressMovable: true },
-    {
-      field: 'createdAt',
-      filter: 'agDateColumnFilter',
-      valueFormatter: (params) => {
-        const date = new Date(params.value);
-        return format(date, 'yyyy-dd-MM HH:mm:ss');
-      },
-      filterParams: {
-        comparator: (filterLocalDateAtMidnight: any, cellValue: any) => {
-          if (!cellValue) return -1;
-
-          const cellDate = new Date(cellValue);
-
-          // Clear the time part for comparison
-          const cellDateWithoutTime = new Date(
-            cellDate.getFullYear(),
-            cellDate.getMonth(),
-            cellDate.getDate()
-          );
-
-          if (filterLocalDateAtMidnight.getTime() === cellDateWithoutTime.getTime()) {
-            return 0;
-          }
-          if (cellDateWithoutTime < filterLocalDateAtMidnight) {
-            return -1;
-          }
-          if (cellDateWithoutTime > filterLocalDateAtMidnight) {
-            return 1;
-          }
-
-          // Fallback return value
-          return 0;
-        }
-      }
-    },
-    { headerName: "Operation Type", field: "operationType", suppressMovable: true },
-    { headerName: "Transaction Id", field: "transaction_id", suppressMovable: true },
-    { headerName: "Amount", field: "amount", suppressMovable: true },
-    { headerName: "Status", field: "status", suppressMovable: true },
-    { headerName: "Account Number", field: "accountNumber", suppressMovable: true },
-    { headerName: "Account Name", field: "accountName", suppressMovable: true },
-    {
-      headerName: 'Action',
-      filter: false,
-      sortable: false,
-      valueFormatter: (params: ValueFormatterParams) => {
-        return `${params.node!.data}`;
-      },
-      cellRenderer: ToggleDropdownComponent,
-      cellRendererParams: {
-        specificId: 'toggleButton', // Custom parameter 
-        onClick: this.onButtonClick.bind(this) // pass method to renderer
-      }
-    },
-  ];
+  public columnDefs: ColDef[] = [];
   public defaultColDef: ColDef = {
     filter: true,
   };
@@ -146,6 +81,74 @@ export class DepositeComponent implements OnInit, OnDestroy {
             this.toastrService.showWarning('Warning!', "You donot have permission to view this page. Please contact to administrator!");
             this.utilService.goto('/dashboard');
           } else {
+            this.columnDefs = [
+              // this row just shows the row index, doesn't use any data from the row
+              {
+                headerName: "#",
+                filter: false,
+                sortable: false,
+                valueFormatter: (params: ValueFormatterParams) => {
+                  return `${params.node!.data.id}`;
+                }, suppressMovable: true
+              },
+              { headerName: "Merchant Id", field: "merchant_id", suppressMovable: true },
+              {
+                field: 'createdAt',
+                filter: 'agDateColumnFilter',
+                valueFormatter: (params) => {
+                  const date = new Date(params.value);
+                  return format(date, 'yyyy-dd-MM HH:mm:ss');
+                },
+                filterParams: {
+                  comparator: (filterLocalDateAtMidnight: any, cellValue: any) => {
+                    if (!cellValue) return -1;
+
+                    const cellDate = new Date(cellValue);
+
+                    // Clear the time part for comparison
+                    const cellDateWithoutTime = new Date(
+                      cellDate.getFullYear(),
+                      cellDate.getMonth(),
+                      cellDate.getDate()
+                    );
+
+                    if (filterLocalDateAtMidnight.getTime() === cellDateWithoutTime.getTime()) {
+                      return 0;
+                    }
+                    if (cellDateWithoutTime < filterLocalDateAtMidnight) {
+                      return -1;
+                    }
+                    if (cellDateWithoutTime > filterLocalDateAtMidnight) {
+                      return 1;
+                    }
+
+                    // Fallback return value
+                    return 0;
+                  }
+                }
+              },
+              { headerName: "Operation Type", field: "operationType", suppressMovable: true },
+              { headerName: "Transaction Id", field: "transaction_id", suppressMovable: true },
+              { headerName: "Amount", field: "amount", suppressMovable: true },
+              { headerName: "Status", field: "status", suppressMovable: true },
+              { headerName: "Account Number", field: "accountNumber", suppressMovable: true },
+              { headerName: "Account Name", field: "accountName", suppressMovable: true }
+            ];
+            if (this.access?.edit) {
+              this.columnDefs.push({
+                headerName: 'Action',
+                filter: false,
+                sortable: false,
+                valueFormatter: (params: ValueFormatterParams) => {
+                  return `${params.node!.data}`;
+                },
+                cellRenderer: ToggleDropdownComponent,
+                cellRendererParams: {
+                  specificId: 'toggleButton', // Custom parameter 
+                  onClick: this.onButtonClick.bind(this) // pass method to renderer
+                }
+              });
+            }
             this.getAllDeposite();
           }
         }
