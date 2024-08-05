@@ -11,9 +11,10 @@ import { UtilService } from 'src/app/util/util.service';
 import { LocalStorageService } from 'src/app/util/local-storage.service';
 import { appConstants } from 'src/app/util/app.constant';
 import { ActivatedRoute, Params, RouterLink } from '@angular/router';
-import { CellClickedEvent, ColDef, GridApi, GridReadyEvent, ICellRendererParams, ValueFormatterParams } from 'ag-grid-community';
+import { CellClickedEvent, ColDef, GridApi, GridReadyEvent, ValueFormatterParams } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ToggleDropdownComponent } from '../toggle-dropdown/toggle-dropdown.component';
+import { ToggleDropdownComponent } from '../toggle-dropdown/toggle-dropdown.component'; import { format } from 'date-fns';
+
 @Component({
   selector: 'app-payouts',
   standalone: true,
@@ -49,8 +50,41 @@ export class PayoutsComponent implements OnInit, OnDestroy {
       }, suppressMovable: true
     },
     { headerName: "Merchant Id", field: "merchant_id", suppressMovable: true },
-    { headerName: "Created At", field: "createdAt", suppressMovable: true },
-    { headerName: "Amount", field: "amount", suppressMovable: true },
+    {
+      field: 'createdAt',
+      filter: 'agDateColumnFilter',
+      valueFormatter: (params) => {
+        const date = new Date(params.value);
+        return format(date, 'yyyy-dd-MM HH:mm:ss');
+      },
+      filterParams: {
+        comparator: (filterLocalDateAtMidnight: any, cellValue: any) => {
+          if (!cellValue) return -1;
+
+          const cellDate = new Date(cellValue);
+
+          // Clear the time part for comparison
+          const cellDateWithoutTime = new Date(
+            cellDate.getFullYear(),
+            cellDate.getMonth(),
+            cellDate.getDate()
+          );
+
+          if (filterLocalDateAtMidnight.getTime() === cellDateWithoutTime.getTime()) {
+            return 0;
+          }
+          if (cellDateWithoutTime < filterLocalDateAtMidnight) {
+            return -1;
+          }
+          if (cellDateWithoutTime > filterLocalDateAtMidnight) {
+            return 1;
+          }
+
+          // Fallback return value
+          return 0;
+        }
+      }
+    }, { headerName: "Amount", field: "amount", suppressMovable: true },
     { headerName: "Status", field: "status", suppressMovable: true },
     { headerName: "Account Number", field: "accountNumber", suppressMovable: true },
     { headerName: "Account Name", field: "accountName", suppressMovable: true },
@@ -119,7 +153,6 @@ export class PayoutsComponent implements OnInit, OnDestroy {
 
   ]
   ngOnInit(): void {
-    this.getAllDeposite();
     this.buildForm();
   }
   handleRefreshEvent(): void {

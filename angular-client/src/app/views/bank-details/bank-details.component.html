@@ -119,7 +119,7 @@
                                                         id="required" name="required" />
                                                 </c-form-check>
                                             </c-col>
-                                            <c-col sm="12" xs="12" md="5" lg="5">
+                                            <c-col sm="12" xs="12" md="5" lg="5" *ngIf="item.get('fieldType')?.value !== 'checkbox'">
                                                 <label cLabel="col" for="ref">
                                                     Placeholder
                                                 </label>
@@ -184,7 +184,7 @@
                                                         id="required" name="required" />
                                                 </c-form-check>
                                             </c-col>
-                                            <c-col sm="12" xs="12" md="5" lg="5">
+                                            <c-col sm="12" xs="12" md="5" lg="5" *ngIf="item.get('fieldType')?.value !== 'checkbox'">
                                                 <label cLabel="col" for="placeHolder">
                                                     PlaceHolder
                                                 </label>

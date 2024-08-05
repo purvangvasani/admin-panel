@@ -1,87 +1,89 @@
 <c-container class="deposite-container" breakpoint="md">
     <c-row class="pb-3">
         <c-col lg="12" xl="12">
-            <c-card>
-                <c-card-header>
-                    <div class="header-container">
-                        <div class="left-header">
-                            <strong class="b-strong">Filter</strong>
-                        </div>
-                        <div class="right-header">
-                            <button cButton color="primary" (click)="handleFilterEvent()">Submit</button>
-                            <button cButton color="primary" (click)="handleRefreshEvent()">Refresh Data</button>
-                        </div>
+            <c-col lg="12" xl="12">
+                <div class="header-container">
+                    <div class="left-header">
+                        <strong class="b-strong"></strong>
                     </div>
-                </c-card-header>
-                <c-card-body>
-                    <form cForm [formGroup]="depositeForm">
-                        <c-row>
-                            <c-col sm="12" xs="12" md="6" lg="4">
-                                <select cSelect id="account" formControlName="account">
-                                    <option>Account</option>
-                                    <!-- Add options as needed -->
-                                </select>
-                            </c-col>
-                            <c-col sm="12" xs="12" md="6" lg="4">
-                                <select cSelect id="currency" formControlName="currency">
-                                    <option>Currency</option>
-                                    <!-- Add options as needed -->
-                                </select>
-                            </c-col>
-                            <c-col sm="12" xs="12" md="6" lg="4">
-                                <select cSelect id="status" formControlName="status">
-                                    <option>Status</option>
-                                    <option *ngFor="let item of status" [value]="item.value">{{ item.label }}</option>
-                                </select>
-                            </c-col>
-                        </c-row>
-                        <c-row class="pb-3 pt-3">
-                            <c-col sm="12" xs="12" md="6" lg="4">
-                                <select cSelect id="method" formControlName="method">
-                                    <option>Operation Type</option>
-                                    <!-- Add options as needed -->
-                                </select>
-                            </c-col>
-                            <c-col sm="12" xs="12" md="6" lg="4">
-                                <c-input-group>
-                                    <input cFormControl placeholder="Operation Amount From" type="number"
-                                        formControlName="operationAmountFrom" id="operationAmountFrom"
-                                        name="operationAmountFrom" />
-                                </c-input-group>
-                            </c-col>
-                            <c-col sm="12" xs="12" md="6" lg="4">
-                                <c-input-group>
-                                    <input cFormControl placeholder="Operation Amount To" type="number"
-                                        formControlName="operationAmountTo" id="operationAmountTo"
-                                        name="operationAmountTo" />
-                                </c-input-group>
-                            </c-col>
-                        </c-row>
-                        <c-row class="pb-3">
-                            <c-col sm="12" xs="12" md="6" lg="4">
-                                <label cLabel="col" cCol for="creationDateFrom">
-                                    Creation Date From
-                                </label>
-                                <input cFormControl placeholder="Creation Date From" type="date" id="creationDateFrom"
-                                    name="creationDateFrom" formControlName="creationDateFrom" />
-                            </c-col>
-                            <c-col sm="12" xs="12" md="6" lg="4">
-                                <label cLabel="col" cCol for="creationDateTo">
-                                    Creation Date To
-                                </label>
-                                <input cFormControl placeholder="Creation Date To" type="date" id="creationDateTo"
-                                    name="creationDateTo" formControlName="creationDateTo" />
-
-                                <!-- Validation message -->
-                                <div *ngIf="depositeForm.get('creationDateTo').hasError('dateRangeError')"
-                                    class="text-danger">
-                                    Creation Date To cannot be earlier than Creation Date From.
-                                </div>
-                            </c-col>
-                        </c-row>
-                    </form>
-                </c-card-body>
-            </c-card>
+                    <div class="right-header">
+                        <!-- <button cButton color="primary" (click)="handleFilterEvent()">Submit</button> -->
+                        <button cButton color="primary" (click)="handleRefreshEvent()">Refresh Data</button>
+                    </div>
+                </div>
+                <!-- <c-card> -->
+                <!-- <c-card-header>
+                        <div class="header-container">
+                            <div class="left-header">
+                                <strong class="b-strong">Filter</strong>
+                            </div>
+                            <div class="right-header">
+                                <button cButton color="primary" (click)="handleFilterEvent()">Submit</button>
+                                <button cButton color="primary" (click)="handleRefreshEvent()">Refresh Data</button>
+                            </div>
+                        </div>
+                    </c-card-header>
+                    <c-card-body>
+                        <form cForm [formGroup]="payoutsForm">
+                            <c-row class="pb-3">
+                                <c-col sm="12" xs="12" md="6" lg="4">
+                                    <select cSelect id="account" formControlName="account">
+                                        <option>Account</option> 
+                                    </select>
+                                </c-col>
+                                <c-col sm="12" xs="12" md="6" lg="4">
+                                    <select cSelect id="currency" formControlName="currency">
+                                        <option>Currency</option> 
+                                    </select>
+                                </c-col>
+                                <c-col sm="12" xs="12" md="6" lg="4">
+                                    <select cSelect id="status" formControlName="status">
+                                        <option>Status</option>
+                                        <option *ngFor="let item of status" [value]="item.value">{{ item.label }}</option>
+                                    </select>
+                                </c-col>
+                            </c-row>
+                            <c-row class="pb-3">
+                                <c-col sm="12" xs="12" md="6" lg="4">
+                                    <c-input-group>
+                                        <input cFormControl placeholder="Operation Amount From" type="number"
+                                            formControlName="operationAmountFrom" id="operationAmountFrom"
+                                            name="operationAmountFrom" />
+                                    </c-input-group>
+                                </c-col>
+                                <c-col sm="12" xs="12" md="6" lg="4">
+                                    <c-input-group>
+                                        <input cFormControl placeholder="Operation Amount To" type="number"
+                                            formControlName="operationAmountTo" id="operationAmountTo"
+                                            name="operationAmountTo" />
+                                    </c-input-group>
+                                </c-col>
+                                <c-col sm="12" xs="12" md="6" lg="4">
+                                    <label cLabel="col" cCol for="creationDateFrom">
+                                        Creation Date From
+                                    </label>
+                                    <input cFormControl placeholder="Creation Date From" type="date" id="creationDateFrom"
+                                        name="creationDateFrom" formControlName="creationDateFrom" />
+                                </c-col>
+                            </c-row>
+                            <c-row>
+                                <c-col sm="12" xs="12" md="6" lg="4">
+                                    <label cLabel="col" cCol for="creationDateTo">
+                                        Creation Date To
+                                    </label>
+                                    <input cFormControl placeholder="Creation Date To" type="date" id="creationDateTo"
+                                        name="creationDateTo" formControlName="creationDateTo" />
+     
+                                    <div *ngIf="payoutsForm.get('creationDateTo').hasError('dateRangeError')"
+                                        class="text-danger">
+                                        Creation Date To cannot be earlier than Creation Date From.
+                                    </div>
+                                </c-col>
+                            </c-row>
+                        </form>
+                    </c-card-body> -->
+                <!-- </c-card> -->
+            </c-col>
         </c-col>
     </c-row>
     <c-row class="justify-content-center">

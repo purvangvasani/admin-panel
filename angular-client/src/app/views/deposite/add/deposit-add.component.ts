@@ -1,7 +1,7 @@
 import { CommonModule, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ButtonDirective, CardBodyComponent, CardComponent, CardGroupComponent, CardHeaderComponent, ColComponent, ContainerComponent, FormControlDirective, FormDirective, InputGroupComponent, InputGroupTextDirective, RowComponent, TextColorDirective, ThemeDirective } from '@coreui/angular';
+import { ButtonDirective, CardBodyComponent, CardComponent, CardGroupComponent, CardHeaderComponent, ColComponent, ContainerComponent, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective, FormControlDirective, FormDirective, InputGroupComponent, InputGroupTextDirective, RowComponent, TextColorDirective, ThemeDirective } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
 import { ToastService } from 'src/app/util/toastr.service';
 import { LoaderService } from 'src/app/util/loader.service';
@@ -13,7 +13,7 @@ import { MerchantService } from 'src/app/services/merchant.service';
 @Component({
   selector: 'app-deposit-add',
   standalone: true,
-  imports: [NgTemplateOutlet, FormsModule, ThemeDirective, CommonModule, ReactiveFormsModule, ContainerComponent, RowComponent, ColComponent, CardHeaderComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle],
+  imports: [NgTemplateOutlet, FormsModule, ThemeDirective, CommonModule, ReactiveFormsModule, ContainerComponent, RowComponent, ColComponent, CardHeaderComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle,FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective],
   templateUrl: './deposit-add.component.html',
   styleUrl: './deposit-add.component.scss'
 })

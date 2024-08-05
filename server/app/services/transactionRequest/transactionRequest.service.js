@@ -1,4 +1,5 @@
 const TransactionCollection = require('../../models/transaction-request');
+const helpers = require('../../utility');
 const helper = require('../../middleware/utils');
 
 module.exports = {
@@ -21,7 +22,7 @@ function getAll(criteria) {
 
                 if (criteria.pageQuery) {
 
-                    totalCount = await TransactionCollection.countDocuments({});
+                    totalCount = await TransactionCollection.countDocuments({ type: criteria.type });
                     totalPages = Math.ceil(totalCount / pageSize);
 
                     const skip = (page - 1) * pageSize;
