@@ -23,6 +23,11 @@ export class UtilService {
         return role;
     }
 
+    public getUserName = () => {
+        let name = this.localStorageService.getValue('user').firstname + " " +this.localStorageService.getValue('user').lastname ;
+        return name;
+    }
+
     public getUserRoleLevel = () => {
         let role = this.localStorageService.getValue('user').roleLevel;
         return role;

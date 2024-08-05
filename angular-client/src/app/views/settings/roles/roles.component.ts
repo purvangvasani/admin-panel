@@ -77,7 +77,6 @@ export class RolesComponent implements OnInit, OnDestroy {
             this.accessModule = data['module'];
             this.accessSubModule = data['subModule'];
             if (this.accessModule) {
-                debugger
                 let access = this.localStorageService.getValue('user')?.permissions ? JSON.parse(this.localStorageService.getValue('user').permissions) : appConstants.permissionList;
                 if (access && access.length) {
                     let item = access.filter((a: any) => a.key === this.accessModule)[0];

@@ -1,5 +1,5 @@
 <c-row class="g-4">
-  <c-col sm="6" xl="3">
+  <c-col sm="6" xl="4">
     <a style="cursor: pointer; text-decoration: none;" [routerLink]="['/banks']">
       <c-widget-stat-a color="primary">
         <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
@@ -11,7 +11,7 @@
       </c-widget-stat-a>
     </a>
   </c-col>
-  <c-col sm="6" xl="3">
+  <c-col sm="6" xl="4">
     <a style="cursor: pointer; text-decoration: none;" [routerLink]="['/deposit']">
       <c-widget-stat-a color="info">
         <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
@@ -23,35 +23,11 @@
       </c-widget-stat-a>
     </a>
   </c-col>
-  <c-col sm="6" xl="3">
-    <a style="cursor: pointer; text-decoration: none;" [routerLink]="['/pending-deposit']">
+  <c-col sm="6" xl="4">
+    <a style="cursor: pointer; text-decoration: none;" [routerLink]="['/withdrawal']">
       <c-widget-stat-a color="warning">
         <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-          Pending Deposits
-        </ng-template>
-        <ng-template cTemplateId="widgetChartTemplate">
-          <svg cIcon name="cilDollar" class="mt-3 mb-3" style="height: 3rem; width: 3rem;"></svg>
-        </ng-template>
-      </c-widget-stat-a>
-    </a>
-  </c-col>
-  <c-col sm="6" xl="3">
-    <a style="cursor: pointer; text-decoration: none;" [routerLink]="['/withdrawal']">
-      <c-widget-stat-a color="danger">
-        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
           Withdrawal
-        </ng-template>
-        <ng-template cTemplateId="widgetChartTemplate">
-          <svg cIcon name="cilDollar" class="mt-3 mb-3" style="height: 3rem; width: 3rem;"></svg>
-        </ng-template>
-      </c-widget-stat-a>
-    </a>
-  </c-col>
-  <c-col sm="6" xl="3">
-    <a style="cursor: pointer; text-decoration: none;" [routerLink]="['/pending-withdrawal']">
-      <c-widget-stat-a color="secondary">
-        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-          Pending Withdrawal
         </ng-template>
         <ng-template cTemplateId="widgetChartTemplate">
           <svg cIcon name="cilDollar" class="mt-3 mb-3" style="height: 3rem; width: 3rem;"></svg>

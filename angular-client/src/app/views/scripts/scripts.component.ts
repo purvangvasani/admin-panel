@@ -7,4 +7,21 @@ import { Component } from '@angular/core';
     providers: [],
     imports: []
 })
-export class ScriptsComponent {}
+export class ScriptsComponent {
+
+    constructor(
+    ){
+    }
+
+    ngOnInit(): void {
+
+    }
+
+    ngOnDestroy(): void {
+       
+    }
+
+    public runDisableRoleScript = () => {
+        
+    }
+}

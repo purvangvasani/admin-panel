@@ -54,6 +54,8 @@ export class DefaultHeaderComponent extends HeaderComponent {
     return this.colorModes.find(mode=> mode.name === currentMode)?.icon ?? 'cilSun';
   });
 
+  readonly name = this.utilService.getUserName();
+
   constructor(
     private authService: AuthService,
     private utilService: UtilService
@@ -61,7 +63,7 @@ export class DefaultHeaderComponent extends HeaderComponent {
     super();
     this.#colorModeService.localStorageItemName.set('coreui-free-angular-admin-template-theme-default');
     this.#colorModeService.eventName.set('ColorSchemeChange');
-
+    this.name = this.name.split(" ")[0].charAt(0).toUpperCase() + this.name.split(" ")[1].charAt(0).toUpperCase();
     this.#activatedRoute.queryParams
       .pipe(
         delay(1),
