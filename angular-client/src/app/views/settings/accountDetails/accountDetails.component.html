@@ -1,0 +1,164 @@
+<div style="margin-bottom: 10px;" *ngIf="access?.add || access?.edit">
+    <c-card>
+        <c-card-header>
+            <h5>Account Details</h5>
+        </c-card-header>
+        <c-card-body>
+            <form [formGroup]="accountForm">
+                <div class="form-group row mb-3">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Mode</label>
+                        <select formControlName="mode" aria-label="Default select example" cSelect>
+                            <option value="upi">UPI ID</option>
+                            <option value="imps">IMPS</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4" *ngIf="accountForm.controls['mode'].value === 'upi'">
+                        <label class="col-form-label">UPI ID</label>
+                        <input type="text" formControlName="upiId" class="form-control" id="upiId"
+                            placeholder="Enter UPI Id" required
+                            [ngStyle]="{'border': accountForm.controls['upiId'].hasError('required') && accountForm.controls['upiId'].touched ? '2px solid red' : '' }">
+                        <span style="color: red"
+                            *ngIf="accountForm.controls['upiId'].hasError('required') && accountForm.controls['upiId'].touched">
+                            UPI ID is required</span>
+                    </div>
+                </div>
+                <div class="form-group row mb-3" *ngIf="accountForm.controls['mode'].value === 'imps'">
+                    <div class="col-md-4">
+                        <label class="col-form-label">Account Name</label>
+                        <input type="text" formControlName="accountName" class="form-control" id="accountName"
+                            placeholder="Enter Account Name" required
+                            [ngStyle]="{'border': accountForm.controls['accountName'].hasError('required') && accountForm.controls['accountName'].touched ? '2px solid red' : '' }">
+                        <span style="color: red"
+                            *ngIf="accountForm.controls['accountName'].hasError('required') && accountForm.controls['accountName'].touched">
+                            Account Name is required</span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">Account Number</label>
+                        <input type="text" formControlName="accountNumber" class="form-control" id="accountNumber"
+                            placeholder="Enter Account Number" required
+                            [ngStyle]="{'border': accountForm.controls['accountNumber'].hasError('required') && accountForm.controls['accountNumber'].touched ? '2px solid red' : '' }">
+                        <span style="color: red"
+                            *ngIf="accountForm.controls['accountNumber'].hasError('required') && accountForm.controls['accountNumber'].touched">
+                            Account Number is required</span>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="col-form-label">IFSC Code</label>
+                        <input type="text" formControlName="ifsc" class="form-control" id="ifsc"
+                            placeholder="Enter IFSC" required
+                            [ngStyle]="{'border': accountForm.controls['ifsc'].hasError('required') && accountForm.controls['ifsc'].touched ? '2px solid red' : '' }">
+                        <span style="color: red"
+                            *ngIf="accountForm.controls['ifsc'].hasError('required') && accountForm.controls['ifsc'].touched">
+                            IFSC is required</span>
+                    </div>
+                </div>
+                <div class="form-group row mb-3">
+                    <div class="col-md-2">
+                        <button (click)="submit()"
+                            [ngClass]="'btn btn-primary submit'">
+                            Submit
+                        </button>
+                    </div>
+                    <div class="col-md-2">
+                        <button (click)="cancel()" [ngClass]="'btn btn-default'">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </c-card-body>
+    </c-card>
+</div>
+<div style="margin-bottom: 10px;">
+    <c-card>
+        <c-card-header>
+            <h5>Account List</h5>
+        </c-card-header>
+        <c-card-body>
+            <c-pagination align="end">
+                <li cPageItem [disabled]="currentPage === 1" [ngStyle]="{'cursor': currentPage === 1 ? '' : 'pointer'}">
+                    <a cPageLink (click)="handlePagination(currentPage - 1)" [routerLink]>Previous</a>
+                </li>
+                <ng-container *ngFor="let n of numSequence(totalPages); let i = index;">
+                    <li cPageItem [active]="currentPage === (i+1)"
+                        [ngStyle]="{'cursor': currentPage === (i+1) ? '' : 'pointer'}">
+                        <a cPageLink (click)="currentPage === (i+1) ? null : handlePagination(i+1)"
+                            [routerLink]>{{i+1}}</a>
+                    </li>
+                </ng-container>
+                <li cPageItem [disabled]="currentPage === totalPages"
+                    [ngStyle]="{'cursor': currentPage === totalPages ? '' : 'pointer'}">
+                    <a cPageLink (click)="handlePagination(currentPage + 1)" [routerLink]>Next</a>
+                </li>
+            </c-pagination>
+            <table cTable hover responsive>
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Mode</th>
+                        <th scope="col">UPI</th>
+                        <th scope="col">Account Name</th>
+                        <th scope="col">Account Number</th>
+                        <th scope="col">IFSC</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <ng-container *ngIf="!accountList.length">
+                        <tr class="text-center">
+                            <td colspan="7">No Data available</td>
+                        </tr>
+                    </ng-container>
+                    <ng-container *ngIf="accountList.length">
+                        <tr *ngFor="let record of accountList">
+                            <th scope="row">{{record.accountId}}</th>
+                            <td>{{record.mode}}</td>
+                            <td>{{record.upiId}}</td>
+                            <td>{{record.accountName}}</td>
+                            <td>{{record.accountNumber}}</td>
+                            <td>{{record.ifsc}}</td>
+                            <td>
+                                <c-dropdown *ngIf="access?.delete || access?.edit" 
+                                    [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+                                    <button [caret]="false" cDropdownToggle class="py-0 pe-0"
+                                        aria-label="Open user menu">
+                                        <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
+                                    </button>
+                                    <ul cDropdownMenu class="pt-0 w-auto">
+                                        <li *ngIf="access?.edit">
+                                            <a cDropdownItem style="cursor: pointer; text-decoration: none;"
+                                                (click)="editAccount(record)"><svg cIcon class="me-2"
+                                                    name="cilPencil"></svg>Edit</a>
+                                        </li>
+                                        <li *ngIf="access?.delete">
+                                            <a cDropdownItem style="cursor: pointer; text-decoration: none;"
+                                                (click)="toggleDeleteModal(record)"><svg cIcon class="me-2"
+                                                    name="cilTrash"></svg>Delete</a>
+                                        </li>
+                                    </ul>
+                                </c-dropdown>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </c-card-body>
+    </c-card>
+</div>
+
+<div *ngIf="deleteModalVisible">
+    <c-modal #staticBackdropModal backdrop="static" id="staticBackdropModal" [@.disabled]="true"
+        [visible]="deleteModalVisible" (visibleChange)="handleDeleteToggleChange($event)">
+        <c-modal-header>
+            <h5 cModalTitle>Delete Account <small>({{deleteData?.accountId}})</small></h5>
+            <button (click)="cancel()" cButtonClose></button>
+        </c-modal-header>
+        <c-modal-body>Are you sure you want to delete the Account?</c-modal-body>
+        <c-modal-footer>
+            <button (click)="cancel()" cButton color="secondary">
+                Close
+            </button>
+            <button cButton color="danger" (click)="deleteRecord()">Delete</button>
+        </c-modal-footer>
+    </c-modal>
+</div>

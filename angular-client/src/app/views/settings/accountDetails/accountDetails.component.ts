@@ -5,37 +5,37 @@ import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
 import { ButtonCloseDirective, ButtonDirective, CardBodyComponent, CardComponent, CardHeaderComponent, DropdownComponent, DropdownItemDirective, DropdownMenuDirective, DropdownToggleDirective, FormControlDirective, FormDirective, FormSelectDirective, ModalBodyComponent, ModalComponent, ModalFooterComponent, ModalHeaderComponent, ModalTitleDirective, ModalToggleDirective, PageItemDirective, PageLinkDirective, PaginationComponent, TableDirective, ThemeDirective } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
 import { Subscription } from 'rxjs';
-import { appConstants } from 'src/app/util/app.constant';
-import { LoaderService } from 'src/app/util/loader.service';
-import { ToastService } from 'src/app/util/toastr.service';
-import { UtilService } from 'src/app/util/util.service';
-import { MerchantService } from 'src/app/services/merchant.service';
-import { environment } from '../../../environments/environment';
-import { LocalStorageService } from 'src/app/util/local-storage.service';
+import { LoaderService } from '../../../util/loader.service';
+import { ToastService } from '../../../util/toastr.service';
+import { UtilService } from '../../../util/util.service';
+import { AccountDetailsService } from '../../../services/accountDetals.service';
+import { LocalStorageService } from '../../../util/local-storage.service';
+import { appConstants } from '../../../util/app.constant';
 
 @Component({
-    selector: 'app-merchant',
+    selector: 'app-account-Details',
     standalone: true,
     imports: [
-        ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ModalBodyComponent, ModalFooterComponent, ButtonCloseDirective, DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, PaginationComponent, PageItemDirective, TableDirective, RouterLink, PageLinkDirective, CommonModule, FormSelectDirective, ThemeDirective, IconDirective, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormsModule, FormDirective, FormControlDirective, NgStyle
+        TableDirective, ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ModalBodyComponent, ModalFooterComponent, PaginationComponent, PageItemDirective, PageLinkDirective, ButtonCloseDirective, DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, RouterLink, CommonModule, FormSelectDirective, ThemeDirective, IconDirective, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormsModule, FormDirective, FormControlDirective, NgStyle
     ],
-    templateUrl: './merchant.component.html',
-    styleUrl: './merchant.component.scss'
+    templateUrl: './accountDetails.component.html',
+    styleUrl: './accountDetails.component.scss'
 })
-export class MerchantComponent implements OnInit, OnDestroy {
+export class AccountDetailsComponent implements OnInit, OnDestroy {
 
-    public merchantForm: any;
+    public accountForm: any;
     private paramsubscriptions: Subscription[] = [];
     public access: any = null;
     public accessModule: any = null;
     public currentUserRole: any = this.utilService.getCurrentUserRole();
     private params: Subscription | undefined
-    public merchantList: any = [];
+    public accountList: any = [];
     public totalPages: number = 1;
     public currentPage: number = 1;
-    private editMerchantData: any;
+    private editAccountData: any;
     public deleteData: any;
     public deleteModalVisible = false;
+    public accessSubModule: any = null;
 
     constructor(
         private route: ActivatedRoute,
@@ -43,16 +43,29 @@ export class MerchantComponent implements OnInit, OnDestroy {
         private utilService: UtilService,
         private toastrService: ToastService,
         private loaderService: LoaderService,
-        private merchantService: MerchantService
+        private accountDetailsService: AccountDetailsService
     ) {
         const params = this.route.data.subscribe((data: Params) => {
             this.accessModule = data['module'];
+            this.accessSubModule = data['subModule'];
             if (this.accessModule) {
                 let access = this.localStorageService.getValue('user')?.permissions ? JSON.parse(this.localStorageService.getValue('user').permissions) : appConstants.permissionList;
                 if (access && access.length) {
                     let item = access.filter((a: any) => a.key === this.accessModule)[0];
-                    this.access = item.access;
+                    if (item && item.submodule && item.submodule.length) {
+                        console.log(item.subModule)
+                        this.access = item.submodule.filter((b: any) => b.key === this.accessSubModule)[0].access;
+                    } else {
+                        this.access = item.access;
+                    }
+                    console.log(this.access)
                     this.access = this.access[this.currentUserRole];
+                    if (!(this.access && this.access.view)) {
+                        this.toastrService.showWarning('Warning!', "You donot have permission to view this page. Please contact to administrator!")
+                        this.utilService.goto('/dashboard');
+                    } else {
+                        this.getAll();
+                    }
                 }
             }
         })
@@ -89,8 +102,12 @@ export class MerchantComponent implements OnInit, OnDestroy {
     }
 
     private buildForm = (data?: any) => {
-        this.merchantForm = new FormGroup({
-            merchantname: new FormControl(data && data.merchantname ? data.merchantname : null, [Validators.required]),
+        this.accountForm = new FormGroup({
+            mode: new FormControl(data && data.mode ? data.mode : 'upi'),
+            upiId: new FormControl(data && data.upiId ? data.upiId : null),
+            accountName: new FormControl(data && data.accountName ? data.accountName : null),
+            accountNumber: new FormControl(data && data.accountNumber ? data.accountNumber : null),
+            ifsc: new FormControl(data && data.ifsc ? data.ifsc : null),
         });
     }
 
@@ -99,20 +116,21 @@ export class MerchantComponent implements OnInit, OnDestroy {
         this.deleteModalVisible = !this.deleteModalVisible;
     }
 
+    public editAccount = (data: any) => {
+        this.editAccountData = data;
+        this.buildForm(data);
+    }
+
     handleDeleteToggleChange(event: boolean) {
         this.deleteModalVisible = event;
     }
 
+
     public cancel = () => {
-        this.editMerchantData = null;
+        this.editAccountData = null;
         this.deleteData = null;
         this.deleteModalVisible = false;
         this.buildForm();
-    }
-
-    public editMerchant = (data: any) => {
-        this.editMerchantData = data;
-        this.buildForm(data);
     }
 
     public deleteRecord = () => {
@@ -131,7 +149,17 @@ export class MerchantComponent implements OnInit, OnDestroy {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while deleting record.')
         }
         this.loaderService.showLoader();
-        this.merchantService.deleteById({ merchantId: this.deleteData.merchantId }, success, failure)
+        this.accountDetailsService.deleteById({ accountId: this.deleteData.accountId }, success, failure)
+    }
+
+    numSequence(n: number): Array<number> {
+        return Array(n);
+    }
+
+    public handlePagination = (pageNumber: number) => {
+        this.currentPage = pageNumber;
+        this.accountList = [];
+        this.getAll();
     }
 
     public submit = () => {
@@ -148,36 +176,26 @@ export class MerchantComponent implements OnInit, OnDestroy {
         }
         let failure = (error: any) => {
             this.loaderService.hideLoader();
-            this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while add/update merchant..')
+            this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while add/update account details..')
         }
         this.loaderService.showLoader();
-        if (this.editMerchantData?.merchantId) {
-            this.merchantForm.value['merchantId'] = this.editMerchantData?.merchantId;
-            this.merchantService.update(this.merchantForm.value, success, failure)
+        if (this.editAccountData?.accountId) {
+            this.accountForm.value['accountId'] = this.editAccountData?.accountId;
+            this.accountDetailsService.update(this.accountForm.value, success, failure)
         } else {
-            this.merchantService.add(this.merchantForm.value, success, failure)
+            this.accountDetailsService.add(this.accountForm.value, success, failure)
         }
-    }
-
-    numSequence(n: number): Array<number> {
-        return Array(n);
-    }
-
-    public handlePagination = (pageNumber: number) => {
-        this.currentPage = pageNumber;
-        this.merchantList = [];
-        this.getAll();
     }
 
     private getAll = () => {
         let success = (data: any) => {
             if (data && data.success) {
                 if (data.data && data.data.length) {
-                    this.merchantList = data.data;
+                    this.accountList = data.data;
                     this.currentPage = data.currentPage;
                     this.totalPages = data.totalPages;
                 } else {
-                    this.merchantList = [];
+                    this.accountList = [];
                 }
             } else {
                 this.toastrService.showError('Error!', data.message)
@@ -186,23 +204,9 @@ export class MerchantComponent implements OnInit, OnDestroy {
         }
         let failure = (error: any) => {
             this.loaderService.hideLoader();
-            this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching merchant.')
+            this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching account details.')
         }
         this.loaderService.showLoader();
-        this.merchantService.getAll({ pageQuery: this.currentPage }, success, failure)
-    }
-
-    public copyText = (text: any, type: any) => {
-        var copyText = text;
-        // Select the text field
-        // copyText.select();
-        // copyText.setSelectionRange(0, 99999); // For mobile devices
-        // Copy the text inside the text field
-        // this.router.navigate(['/deposit-add'], {queryParams:  { id: copyText.url }})
-        if (type === 'withdrawal') {
-            navigator.clipboard.writeText(environment.UIURL + "/withdrawal-add;id=" + btoa(copyText.merchantId));
-        } else {
-            navigator.clipboard.writeText(environment.UIURL + "/deposit-add;id=" + btoa(copyText.merchantId));
-        }
+        this.accountDetailsService.getAll({ pageQuery: this.currentPage }, success, failure)
     }
 }

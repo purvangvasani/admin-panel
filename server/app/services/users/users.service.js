@@ -1,5 +1,4 @@
 const UserCollection = require('../../models/user');
-const RoleCollection = require('../../models/roles');
 const ObjectId = require('mongoose').Types.ObjectId;
 const helper = require('../../utility');
 
@@ -9,7 +8,7 @@ module.exports = {
     update,
     deleteById,
     changePassword,
-    runScript
+    runScript,
 }
 
 function runScript() {

@@ -240,6 +240,52 @@ const permissionList: any = [
         name: 'Settings',
         submodule: [
             {
+                key: 'accountDetails',
+                name: 'Account Details',
+                access: {
+                    supersuper: {
+                        view: true,
+                        add: true,
+                        edit: true,
+                        delete: true,
+                        download: true,
+                        upload: true,
+                    },
+                    super: {
+                        view: true,
+                        add: true,
+                        edit: true,
+                        delete: true,
+                        download: true,
+                        upload: true,
+                    },
+                    admin: {
+                        view: true,
+                        add: true,
+                        edit: true,
+                        delete: true,
+                        download: true,
+                        upload: true,
+                    },
+                    viewer: {
+                        view: true,
+                        add: false,
+                        edit: false,
+                        delete: false,
+                        download: false,
+                        upload: false,
+                    },
+                    editor: {
+                        view: true,
+                        add: true,
+                        edit: true,
+                        delete: false,
+                        download: false,
+                        upload: false,
+                    }
+                }
+            },
+            {
                 key: 'role',
                 name: 'Role',
                 access: {

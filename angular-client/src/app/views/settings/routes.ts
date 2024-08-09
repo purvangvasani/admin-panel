@@ -3,15 +3,30 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
     {
         path: '',
-        // loadComponent: () => import('./settings.component').then(m => m.SettingsComponent),
-        // data: {
-        //     title: 'Settings'
-        // },
         children: [
             {
                 path: '',
                 redirectTo: 'roles',
                 pathMatch: 'full'
+            },
+            {
+                path: 'account-details',
+                children: [
+                    {
+                        path: '',
+                        redirectTo: 'account-details',
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: '',
+                        loadComponent: () => import('./accountDetails/accountDetails.component').then(m => m.AccountDetailsComponent),
+                        data: {
+                            title: 'Account Details',
+                            module: 'setting',
+                            subModule: 'accountDetails'
+                        },
+                    }
+                ]
             },
             {
                 path: 'roles',

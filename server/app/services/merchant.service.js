@@ -67,7 +67,7 @@ function add(criteria) {
         try {
 
             let isExists = await MerchantCollection.findOne({ merchantname: criteria.merchantname }).lean().exec();
-            if (isExists && isExists.rolesId) {
+            if (isExists && isExists.merchantId) {
                 reject({ success: false, message: 'Merchant already exists' });
                 return;
             }

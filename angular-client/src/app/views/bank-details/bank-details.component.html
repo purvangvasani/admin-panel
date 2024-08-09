@@ -26,14 +26,14 @@
                                 <c-row class="row">
                                     <c-col sm="12" xs="12" md="6" lg="4">
                                         <label cLabel="col" for="bankLabel">
-                                            Bank Name
+                                            Bank
                                         </label>
                                         <input cFormControl placeholder="Bank Name" type="text"
                                             formControlName="bankName" id="bankLabel" name="bankName" />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4">
                                         <label cLabel="col" for="ref">
-                                            Ref
+                                            Merchant
                                         </label>
                                         <ng-select formControlName="ref" name="ref" [items]="merchantList" [multiple]="false"
                                             bindValue="merchantId" [clearable]="false" bindLabel="merchantname"></ng-select>

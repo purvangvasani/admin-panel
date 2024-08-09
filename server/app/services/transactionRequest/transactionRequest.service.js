@@ -50,11 +50,11 @@ function addTransaction(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
 
-            // let isExists = await RoleCollection.findOne({ roleName: criteria.roleName }).lean().exec();
-            // if (isExists && isExists.rolesId) {
-            //     reject({ success: false, message: 'Role already exists' });
-            //     return;
-            // }
+            let isExists = await TransactionCollection.findOne({ transaction_id: criteria.transaction_id }).lean().exec();
+            if (isExists && isExists.merchant_id) {
+                reject({ success: false, message: 'You cannot add duplicate transaction Id' });
+                return;
+            }
 
             let Id = await helper.generateCounterId('transactionRequest', 'id', 'TRR_');
             if (Id) {
