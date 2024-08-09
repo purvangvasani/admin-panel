@@ -42,6 +42,10 @@ export const routes: Routes = [
         loadChildren: () => import('./views/payouts/routes').then((m) => m.routes),
         canActivate: [AuthGuard], canActivateChild: [AuthGuard],
       },
+      {
+        path: 'widgets',
+        loadChildren: () => import('./views/widgets/routes').then((m) => m.routes)
+      },
     ]
   },
   {
@@ -90,6 +94,10 @@ export const routes: Routes = [
   {
     path: 'scripts',
     loadComponent: () => import('./views/scripts/scripts.component').then((m) => m.ScriptsComponent),
+  },
+  {
+    path: 'merchant-summary',
+    loadComponent: () => import('./views/merchant/merchant-summary/merchant-summary.component').then((m) => m.MerchantSummaryComponent),
   },
   { path: '**', redirectTo: '404' }
 ];

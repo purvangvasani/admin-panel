@@ -19,6 +19,9 @@ function getAll(criteria) {
             if (criteria?.type) {
                 let condition = [];
                 condition.push({ $match: { type: criteria.type } });
+                if (criteria?.merchantId) {
+                    condition.push({ $match: { merchant_id: atob(criteria.merchantId) } });
+                }
 
                 if (criteria.pageQuery) {
 

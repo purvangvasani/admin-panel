@@ -1,0 +1,29 @@
+.example-wrapper {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        /* Space between left and right sections */
+        align-items: center;
+        /* Space below the header container */
+    }
+
+    .right-header {
+        margin-left: 10px;
+        /* Space between buttons */
+    }
+}
+
+#myGrid {
+    flex: 1 1 0px;
+    width: 100%;
+}
+
+.example-header {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-size: 13px;
+    margin-bottom: 5px;
+}

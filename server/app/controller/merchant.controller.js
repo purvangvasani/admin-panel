@@ -6,7 +6,8 @@ module.exports = {
     add,
     update,
     deleteById,
-    getById
+    getById,
+    getMerchantSummaryById,
 }
 
 async function getAll(req, res, next) {
@@ -69,6 +70,22 @@ async function getById(req, res, next) {
     try {
         if (req.body && req.body.merchantId) {
             let result = await MerchantService.getById(req.body);
+            res.json(result);
+        } else {
+            res.json({
+                success: false,
+                status: helper.error.status.InternalServerError,
+                message: helper.error.message.insufficientData
+            })
+        }
+    } catch (e) {
+        res.json(e);
+    }
+}
+async function getMerchantSummaryById(req, res, next) {
+    try {
+        if (req.body && req.body.merchantId) {
+            let result = await MerchantService.getMerchantSummaryById(req.body);
             res.json(result);
         } else {
             res.json({

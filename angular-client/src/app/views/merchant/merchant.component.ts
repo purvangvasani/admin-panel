@@ -201,8 +201,10 @@ export class MerchantComponent implements OnInit, OnDestroy {
         // this.router.navigate(['/deposit-add'], {queryParams:  { id: copyText.url }})
         if (type === 'withdrawal') {
             navigator.clipboard.writeText(environment.UIURL + "/withdrawal-add;id=" + btoa(copyText.merchantId));
-        } else {
+        } else if (type === 'deposit') {
             navigator.clipboard.writeText(environment.UIURL + "/deposit-add;id=" + btoa(copyText.merchantId));
+        } else {
+            navigator.clipboard.writeText(environment.UIURL + "/merchant-summary;id=" + btoa(copyText.merchantId));
         }
     }
 }

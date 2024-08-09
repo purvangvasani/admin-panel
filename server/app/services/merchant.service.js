@@ -3,6 +3,8 @@ const helper = require('../middleware/utils');
 const helpers = require('../utility');
 const MerchantCollection = require('../models/merchant');
 const BankCollection = require('../models/banks');
+const TransactionCollection = require('../models/transaction-request');
+
 const bcrypt = require('bcrypt');
 
 module.exports = {
@@ -10,7 +12,8 @@ module.exports = {
     add,
     update,
     deleteById,
-    getById
+    getById,
+    getMerchantSummaryById,
 }
 
 function getAll(criteria) {
@@ -48,8 +51,9 @@ function getAll(criteria) {
             }
             let merchantData = await MerchantCollection.aggregate(condition).exec();
             for (let i = 0; i < merchantData.length; i++) {
-                merchantData[i]['depositURL'] = '/deposit-add;id=' + merchantData[i]['url']; 
-                merchantData[i]['withdrawalURL'] = '/withdrawal-add;id=' + merchantData[i]['url']; 
+                merchantData[i]['depositURL'] = '/deposit-add;id=' + merchantData[i]['url'];
+                merchantData[i]['withdrawalURL'] = '/withdrawal-add;id=' + merchantData[i]['url'];
+                merchantData[i]['merchantStatusURL'] = '/merchant-summary;id=' + merchantData[i]['url'];
             }
             if (criteria && ((criteria.merchantname && typeof criteria.merchantname !== 'object') || criteria._id)) {
                 merchantData = (merchantData && merchantData.length) ? merchantData[0] : {};
@@ -159,7 +163,7 @@ function getById(criteria) {
 
                 let merchant = null;
                 if (criteria?.for === 'public') {
-                    merchant = await MerchantCollection.findOne({ merchantId: atob(criteria.merchantId)}, {merchantname: 1}).exec();
+                    merchant = await MerchantCollection.findOne({ merchantId: atob(criteria.merchantId) }, { merchantname: 1 }).exec();
                     if (criteria?.get === 'bankDeposits') {
                         let newCondition = [];
                         newCondition.push({ $match: { ref: atob(criteria.merchantId) } })
@@ -208,3 +212,126 @@ function getById(criteria) {
     }
     return new Promise(promiseFunction);
 }
+function getMerchantSummaryById(criteria) {
+    let promiseFunction = async (resolve, reject) => {
+        try {
+            if (criteria && criteria.merchantId) {
+                let merchantIdDecoded = atob(criteria.merchantId);
+                let existingMerchant = await MerchantCollection.findOne({ merchantId: merchantIdDecoded }).exec();
+                if (!existingMerchant) {
+                    reject({ success: false, message: 'Merchant not found' });
+                    return;
+                }
+
+                let condition = [
+                    {
+                        depositAmountTotal: {
+                            $sum: {
+                                $cond: [{ $eq: ["$type", "Deposit"] }, "$amount", 0]
+                            }
+                        }
+                    },
+                    {
+                        withdrawalAmountTotal: {
+                            $sum: {
+                                $cond: [{ $eq: ["$type", "Withdrawal"] }, "$amount", 0]
+                            }
+                        }
+                    },
+                    {
+                        depositApprovedCount: {
+                            $sum: {
+                                $cond: [{ $and: [{ $eq: ["$type", "Deposit"] }, { $eq: ["$status", "Approved"] }] }, 1, 0]
+                            }
+                        }
+                    },
+                    {
+                        depositRejectedCount: {
+                            $sum: {
+                                $cond: [{ $and: [{ $eq: ["$type", "Deposit"] }, { $eq: ["$status", "Rejected"] }] }, 1, 0]
+                            }
+                        }
+                    },
+                    {
+                        withdrawalApprovedCount: {
+                            $sum: {
+                                $cond: [{ $and: [{ $eq: ["$type", "Withdrawal"] }, { $eq: ["$status", "Approved"] }] }, 1, 0]
+                            }
+                        }
+                    },
+                    {
+                        withdrawalRejectedCount: {
+                            $sum: {
+                                $cond: [{ $and: [{ $eq: ["$type", "Withdrawal"] }, { $eq: ["$status", "Rejected"] }] }, 1, 0]
+                            }
+                        }
+                    },
+                    {
+                        depositProcessingCount: {
+                            $sum: {
+                                $cond: [{ $and: [{ $eq: ["$type", "Deposit"] }, { $eq: ["$status", "Processing"] }] }, 1, 0]
+                            }
+                        }
+                    },
+                    {
+                        withdrawalProcessingCount: {
+                            $sum: {
+                                $cond: [{ $and: [{ $eq: ["$type", "Withdrawal"] }, { $eq: ["$status", "Processing"] }] }, 1, 0]
+                            }
+                        }
+                    }
+                ];
+
+                const groupStage = {
+                    $group: {
+                        _id: null,
+                        ...condition.reduce((acc, curr) => ({ ...acc, ...curr }), {})
+                    }
+                };
+
+                const counts = await TransactionCollection.aggregate([
+                    { $match: { merchant_id: merchantIdDecoded } },
+                    groupStage,
+                    {
+                        $project: {
+                            _id: 0,
+                            depositAmountTotal: 1,
+                            withdrawalAmountTotal: 1,
+                            depositApprovedCount: 1,
+                            depositRejectedCount: 1,
+                            withdrawalApprovedCount: 1,
+                            withdrawalRejectedCount: 1,
+                            depositProcessingCount: 1,
+                            withdrawalProcessingCount: 1
+                        }
+                    }
+                ]);
+
+                const totalCount = counts[0] || {
+                    depositAmountTotal: 1,
+                    withdrawalAmountTotal: 0,
+                    depositApprovedCount: 0,
+                    depositRejectedCount: 0,
+                    withdrawalApprovedCount: 0,
+                    withdrawalRejectedCount: 0,
+                    depositProcessingCount: 0,
+                    withdrawalProcessingCount: 0
+                };
+
+                // Merging merchant details with total counts
+                const responseData = {
+                    merchant: existingMerchant.toObject(),
+                    ...totalCount
+                };
+
+                resolve({ success: true, message: 'success!', data: responseData });
+            } else {
+                reject({ success: false, message: 'Merchant Id is not provided' });
+            }
+        } catch (err) {
+            reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
+        }
+    };
+    return new Promise(promiseFunction);
+}
+

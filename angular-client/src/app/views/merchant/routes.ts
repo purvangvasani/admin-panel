@@ -19,6 +19,13 @@ export const routes: Routes = [
                     title: `List`,
                     module: 'merchant',
                 }
+            },
+            {
+                path: 'merchant-summary',
+                loadComponent: () => import('./merchant-summary/merchant-summary.component').then(m => m.MerchantSummaryComponent),
+                data: {
+                    title: $localize`Merchant-Summary`
+                }
             }
         ]
     }

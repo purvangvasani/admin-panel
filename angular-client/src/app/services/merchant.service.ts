@@ -53,5 +53,8 @@ export class MerchantService {
     const url = this.apiUrl + '/merchant/deleteById';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback)
   }
-  
+  getMerchantSummaryById(data: any, successCallback: Function, errorCallback: Function) {
+    const url = this.apiUrl + '/merchant/getMerchantSummaryById';
+    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+  }
 }

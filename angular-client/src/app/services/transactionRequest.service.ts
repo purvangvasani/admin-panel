@@ -39,4 +39,8 @@ export class TransactionService {
         const url = this.apiUrl + '/transactionRequest/updateTransaction';
         return this.delegatorService.post(data, url, null, successCallback, errorCallback);
     }
+    getbyMerchantId(data: any, successCallback: Function, errorCallback: Function) {
+        const url = this.apiUrl + '/transactionRequest/getbyMerchantId';
+        return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+    }
 }
