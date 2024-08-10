@@ -1,5 +1,4 @@
 const AccountDetailsService = require('../services/account-details.service')
-
 module.exports = {
     add,
     update,
@@ -61,21 +60,95 @@ async function add(req, res, next) {
         res.json(e);
     }
 }
-
-async function update(req, res, next) {
+async function add(req, res, next) {
     try {
-        if (req && req.body && req.body.mode) {
-            let criteria = req.body;
-            criteria['userId'] = req.headers.userid;
-            let result = await AccountDetailsService.update(criteria);
-            res.json(result);
-        } else {
-            res.json({
+        // Extract file information and other fields
+        const image = req.file; // File information from multer
+        const { mode, upiId, accountName, accountNumber, ifsc } = req.body;
+
+        // Check for required data
+        if (!mode) {
+            return res.json({
                 success: false,
                 message: 'Please Provide Account mode!'
-            })
+            });
         }
+
+        // Construct the criteria object
+        let criteria = {
+            mode,
+            upiId,
+            accountName,
+            accountNumber,
+            ifsc,
+            userId: req.headers.userid
+        };
+
+        // Include image path if available
+        if (image) {
+            criteria.imageUrl = image.path; // Save image path or URL in criteria
+        }
+        // Call the service to update account details
+        let result = await AccountDetailsService.add(criteria);
+        res.json(result);
     } catch (e) {
-        res.json(e);
+        res.status(500).json({ success: false, message: e.message });
+    }
+}
+
+// async function update(req, res, next) {
+//     try {
+//         if (req && req.body && req.body.mode) {
+//             let criteria = req.body;
+//             let file = req;
+//             criteria['userId'] = req.headers.userid;
+//             let result = await AccountDetailsService.update(criteria);
+//             res.json(result);
+//         } else {
+//             res.json({
+//                 success: false,
+//                 message: 'Please Provide Account mode!'
+//             })
+//         }
+//     } catch (e) {
+//         res.json(e);
+//     }
+// }
+async function update(req, res, next) {
+    try {
+        // Extract file information and other fields
+        const image = req.file; // File information from multer
+        const { mode, accountId, upiId, accountName, accountNumber, ifsc } = req.body;
+
+        // Check for required data
+        if (!mode) {
+            return res.json({
+                success: false,
+                message: 'Please Provide Account mode!'
+            });
+        }
+
+        // Construct the criteria object
+        let criteria = {
+            mode,
+            upiId,
+            accountName,
+            accountNumber,
+            ifsc,
+            userId: req.headers.userid
+        };
+
+        // Include image path if available
+        if (image) {
+            criteria.imageUrl = image.path; // Save image path or URL in criteria
+        }
+        if (accountId) {
+            criteria.accountId = accountId; // Ensure accountId is included if provided
+        }
+        // Call the service to update account details
+        let result = await AccountDetailsService.update(criteria);
+        res.json(result);
+    } catch (e) {
+        res.status(500).json({ success: false, message: e.message });
     }
 }

@@ -22,6 +22,15 @@
                             *ngIf="accountForm.controls['upiId'].hasError('required') && accountForm.controls['upiId'].touched">
                             UPI ID is required</span>
                     </div>
+                    <div class="col-md-4" *ngIf="accountForm.controls['mode'].value === 'upi'">
+                        <label class="col-form-label">QR Code</label>
+                        <c-input-group class="mb-3">
+                            <input cFormControl id="inputGroupFile02" type="file" (change)="onFileSelected($event)"
+                                accept=".jpg,.png" />
+                            <!-- <div *ngIf="fileName">{{ fileName }}</div> -->
+                        </c-input-group>
+                        <img *ngIf="imageSrc" [src]="imageSrc" alt="Image Preview" class="img-preview" />
+                    </div>
                 </div>
                 <div class="form-group row mb-3" *ngIf="accountForm.controls['mode'].value === 'imps'">
                     <div class="col-md-4">
@@ -54,8 +63,7 @@
                 </div>
                 <div class="form-group row mb-3">
                     <div class="col-md-2">
-                        <button (click)="submit()"
-                            [ngClass]="'btn btn-primary submit'">
+                        <button (click)="submit()" [ngClass]="'btn btn-primary submit'">
                             Submit
                         </button>
                     </div>
@@ -75,7 +83,7 @@
             <h5>Account List</h5>
         </c-card-header>
         <c-card-body>
-            <c-pagination align="end">
+            <!-- <c-pagination align="end">
                 <li cPageItem [disabled]="currentPage === 1" [ngStyle]="{'cursor': currentPage === 1 ? '' : 'pointer'}">
                     <a cPageLink (click)="handlePagination(currentPage - 1)" [routerLink]>Previous</a>
                 </li>
@@ -118,7 +126,7 @@
                             <td>{{record.accountNumber}}</td>
                             <td>{{record.ifsc}}</td>
                             <td>
-                                <c-dropdown *ngIf="access?.delete || access?.edit" 
+                                <c-dropdown *ngIf="access?.delete || access?.edit"
                                     [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
                                     <button [caret]="false" cDropdownToggle class="py-0 pe-0"
                                         aria-label="Open user menu">
@@ -141,7 +149,48 @@
                         </tr>
                     </ng-container>
                 </tbody>
-            </table>
+            </table> -->
+            <c-row class="justify-content-center">
+                <c-col lg="12" xl="12">
+                    <div class="example-wrapper">
+                        <div class="example-header">
+                            <div style="margin-top: 6px">
+                                <div style="float: right;">
+                                    <c-pagination align="end">
+                                        <li cPageItem [disabled]="currentPage === 1"
+                                            [ngStyle]="{'cursor': currentPage === 1 ? '' : 'pointer'}">
+                                            <a cPageLink (click)="handlePagination(currentPage - 1)"
+                                                [routerLink]>Previous</a>
+                                        </li>
+                                        <ng-container *ngFor="let n of numSequence(totalPages); let i = index;">
+                                            <li cPageItem [active]="currentPage === (i+1)"
+                                                [ngStyle]="{'cursor': currentPage === (i+1) ? '' : 'pointer'}">
+                                                <a cPageLink
+                                                    (click)="currentPage === (i+1) ? null : handlePagination(i+1)"
+                                                    [routerLink]>{{i+1}}</a>
+                                            </li>
+                                        </ng-container>
+                                        <li cPageItem [disabled]="currentPage === totalPages"
+                                            [ngStyle]="{'cursor': currentPage === totalPages ? '' : 'pointer'}">
+                                            <a cPageLink (click)="handlePagination(currentPage + 1)"
+                                                [routerLink]>Next</a>
+                                        </li>
+                                    </c-pagination>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="data-table">
+                            <ag-grid-angular style="width: 100%; height: 500px;" [columnDefs]="columnDefs"
+                                [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
+                                [paginationPageSize]="paginationPageSize"
+                                [paginationPageSizeSelector]="paginationPageSizeSelector" [pagination]="true"
+                                [suppressPaginationPanel]="true" [suppressScrollOnNewData]="true" [rowData]="rowData"
+                                [class]="themeClass" (paginationChanged)="onPaginationChanged($event)"
+                                [context]="context" (gridReady)="onGridReady($event)" />
+                        </div>
+                    </div>
+                </c-col>
+            </c-row>
         </c-card-body>
     </c-card>
 </div>

@@ -60,11 +60,48 @@ i18n.configure({
 app.use(i18n.init)
 
 // Init all other stuff
-app.use(cors())
+app.use(cors({ exposedHeaders: ['x-filename', 'x-mimetype'], preflightContinue: true }));// Cors
+
+// app.use(cors({
+//   origin: 'http://localhost:4200', // Adjust this to specify the allowed origin(s)
+//   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+//   allowedHeaders: [
+//     'Content-Type',
+//     'Authorization',
+//     'Content-Security-Policy-Report-Only', // Add the required header here
+//     'X-Requested-With' // Add any other headers you expect
+//   ]
+// }));
+
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Adjust as needed for security
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  
+  // Allow specific headers
+  // res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Content-Security-Policy');
+  
+  // CSP header for additional security (consider if it's necessary)
+  res.setHeader('Content-Security-Policy', 'frame-ancestors none;');
+  
+  // Prevents the page from being framed
+  res.setHeader('X-Frame-Options', 'DENY');
+  
+  // HSTS header to enforce secure connections
+  res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end(); // Respond with 204 No Content for OPTIONS requests
+  }
+
+  next(); // Continue to the next middleware/route handler
+});
+
+
 app.use(passport.initialize())
 app.use(compression())
 app.use(helmet())
-// app.use(express.static('public'))
+app.use(express.static('public'))
 // app.set('views', path.join(__dirname, 'views'))
 // app.engine('html', require('ejs').renderFile)
 // app.set('view engine', 'html')

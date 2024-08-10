@@ -77,6 +77,7 @@ function add(criteria) {
                     upiId: criteria.upiId,
                     userId: criteria.userId,
                     accountId: accountId,
+                    imageUrl: criteria.imageUrl,
                 });
 
                 await accountData.save();

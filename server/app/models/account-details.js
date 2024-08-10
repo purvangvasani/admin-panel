@@ -8,7 +8,9 @@ const AccountDetailsSchema = new Schema({
     accountName: { type: String },
     accountNumber: { type: String },
     ifsc: { type: String },
-    userId: { type: String, required: true }
+    userId: { type: String, required: true },
+    imageUrl: { type: String }
+
 
 }, { collection: 'accountDetails', timestamps: true });
 

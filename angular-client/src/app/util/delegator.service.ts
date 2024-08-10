@@ -13,12 +13,12 @@ interface RequestConfig {
     url: string;
     data?: any;
     options?: {
-      headers?: HttpHeaders;
-      params?: HttpParams;
-      [key: string]: any;
+        headers?: HttpHeaders;
+        params?: HttpParams;
+        [key: string]: any;
     };
     noDelay?: boolean;
-  }
+}
 /**
  * This class handles REST interaction with server, send REST to server and recieve response from server
  *
@@ -27,8 +27,8 @@ interface RequestConfig {
 export class DelegatorService {
 
     private lockedForRefresh = false;
-    private delayRequests: {[index: string]:any} = {};
-    private runningRequests: {[index: string]:any} = {};
+    private delayRequests: { [index: string]: any } = {};
+    private runningRequests: { [index: string]: any } = {};
     private requestCounter = 0;
     private apiUrl = `${environment.apiUrl}`;
 
@@ -54,21 +54,21 @@ export class DelegatorService {
     //     } else {
     //       const requestId = this.nextRequestId();
     //       let observer: Observable<any>;
-    
+
     //       // Type guard to ensure config.method is one of the expected methods
     //       if (['get', 'delete'].includes(config.method)) {
     //         observer = this._http[config.method](config.url, config.options); // ...using get/delete request
     //       } else {
     //         observer = this._http[config.method](config.url, config.data, config.options); // ...using post/put request
     //       }
-    
+
     //       // store request's config and store it in runningRequests
     //       const tracker = {
     //         requestId: requestId,
     //         config: config,
     //       };
     //       this.runningRequests[requestId] = tracker;
-    
+
     //       return this.handleRespone<T>(observer, tracker);
     //     }
     //   };
@@ -105,13 +105,48 @@ export class DelegatorService {
      * @param  {} method
      * @param  {} successCallback
      */
-    private buildConfig = (url: any, data: any, method: any, successCallback: any, errorCallback: any) => {
+    // private buildConfig = (url: any, data: any, method: any, successCallback: any, errorCallback: any) => {
+    //     const config: any = {};
+
+    //     // Prepare header
+    //     let headers: HttpHeaders = this.prepareHeader(data);
+
+    //     if (data && (data.isSOAP || data.isFileUpload)) {
+    //         data = data.body;
+    //     }
+
+    //     // Create a request option
+    //     let options;
+    //     if (data && data.isFileDownload) {
+    //         options = {
+    //             headers: headers,
+    //             responseType: 'blob',
+    //             observe: "response" as 'body', // to display the full response & as 'body' for type cast
+    //         };
+    //     } else {
+    //         options = {
+    //             headers: headers,
+    //             responseType: 'json',
+    //             observe: "response" as 'body', // to display the full response & as 'body' for type cast
+    //         };
+    //     }
+
+    //     config.url = url;
+    //     config.options = options;
+    //     config.data = data;
+    //     config.method = method;
+    //     config.successCallback = successCallback;
+    //     config.errorCallback = errorCallback;
+
+    //     return config;
+    // }
+    private buildConfig = (url: string, data: any, method: string, successCallback: any, errorCallback: any) => {
         const config: any = {};
 
         // Prepare header
-        let headers: HttpHeaders = this.prepareHeader(data);
+        const headers: HttpHeaders = this.prepareHeader(data);
 
-        if (data && (data.isSOAP || data.isFileUpload)) {
+        if (data && (data.isFileUpload)) {
             data = data.body;
         }
 
@@ -150,7 +185,14 @@ export class DelegatorService {
      * @param  {} successCallback
      * @returns Observable
      */
-    public post = <T>(data: { new(): T; }, url: string, customConfig: any, successCallback: any, errorCallback: any): Observable<T[]> => {
+    // public post = <T>(data: { new(): T; }, url: string, customConfig: any, successCallback: any, errorCallback: any): Observable<T[]> => {
+    //     const config = this.buildConfig(url, data, 'post', successCallback, errorCallback);
+    //     if (customConfig) {
+    //         config.noDelay = customConfig.noDelay;
+    //     }
+    //     return this.http<T>(config);
+    // }
+    public post = <T>(data: any, url: string, customConfig: any, successCallback: any, errorCallback: any): Observable<T[]> => {
         const config = this.buildConfig(url, data, 'post', successCallback, errorCallback);
         if (customConfig) {
             config.noDelay = customConfig.noDelay;

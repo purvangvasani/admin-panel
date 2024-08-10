@@ -2,7 +2,7 @@ import { CommonModule, NgStyle } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Params, Router, RouterLink } from '@angular/router';
-import { ButtonCloseDirective, ButtonDirective, CardBodyComponent, CardComponent, CardHeaderComponent, DropdownComponent, DropdownItemDirective, DropdownMenuDirective, DropdownToggleDirective, FormControlDirective, FormDirective, FormSelectDirective, ModalBodyComponent, ModalComponent, ModalFooterComponent, ModalHeaderComponent, ModalTitleDirective, ModalToggleDirective, PageItemDirective, PageLinkDirective, PaginationComponent, TableDirective, ThemeDirective } from '@coreui/angular';
+import { ButtonCloseDirective, ButtonDirective, CardBodyComponent, CardComponent, CardHeaderComponent, ColComponent, DropdownComponent, DropdownItemDirective, DropdownMenuDirective, DropdownToggleDirective, FormControlDirective, FormDirective, FormSelectDirective, InputGroupComponent, InputGroupTextDirective, ModalBodyComponent, ModalComponent, ModalFooterComponent, ModalHeaderComponent, ModalTitleDirective, ModalToggleDirective, PageItemDirective, PageLinkDirective, PaginationComponent, RowComponent, TableDirective, ThemeDirective } from '@coreui/angular';
 import { IconDirective } from '@coreui/icons-angular';
 import { Subscription } from 'rxjs';
 import { LoaderService } from '../../../util/loader.service';
@@ -11,12 +11,17 @@ import { UtilService } from '../../../util/util.service';
 import { AccountDetailsService } from '../../../services/accountDetals.service';
 import { LocalStorageService } from '../../../util/local-storage.service';
 import { appConstants } from '../../../util/app.constant';
+import { ColDef, GridApi, GridReadyEvent, ValueFormatterParams } from 'ag-grid-community';
+import { ToggleDropdownComponent } from '../../toggle-dropdown/toggle-dropdown.component';
+import { AgGridAngular } from 'ag-grid-angular';
 
 @Component({
     selector: 'app-account-Details',
     standalone: true,
-    imports: [
+    imports: [AgGridAngular,
         TableDirective, ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ModalBodyComponent, ModalFooterComponent, PaginationComponent, PageItemDirective, PageLinkDirective, ButtonCloseDirective, DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, RouterLink, CommonModule, FormSelectDirective, ThemeDirective, IconDirective, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormsModule, FormDirective, FormControlDirective, NgStyle
+        , RowComponent, ColComponent,
+        InputGroupComponent, InputGroupTextDirective,
     ],
     templateUrl: './accountDetails.component.html',
     styleUrl: './accountDetails.component.scss'
@@ -36,6 +41,24 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
     public deleteData: any;
     public deleteModalVisible = false;
     public accessSubModule: any = null;
+    private gridApi!: GridApi<any>;
+    context = {
+        componentParent: this
+    };
+
+    public columnDefs: ColDef[] = [];
+    public defaultColDef: ColDef = {
+        filter: true,
+    };
+    public rowSelection: "single" | "multiple" = "multiple";
+    public paginationPageSize = 10;
+    public paginationPageSizeSelector: number[] | boolean = [10, 20, 50];
+    public rowData!: any[];
+    public themeClass: string =
+        "ag-theme-quartz";
+    fileName: string = '';
+    selectedFile: File | null = null; // Store the selected file separately
+    imageSrc: string | ArrayBuffer | null = null;
 
     constructor(
         private route: ActivatedRoute,
@@ -64,6 +87,37 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
                         this.toastrService.showWarning('Warning!', "You donot have permission to view this page. Please contact to administrator!")
                         this.utilService.goto('/dashboard');
                     } else {
+                        this.columnDefs = [
+                            // this row just shows the row index, doesn't use any data from the row
+                            {
+                                headerName: "#",
+                                filter: false,
+                                sortable: false,
+                                valueFormatter: (params: ValueFormatterParams) => {
+                                    return `${params.node!.data.userId}`;
+                                }, suppressMovable: true
+                            },
+                            { headerName: "Mode", field: "mode", suppressMovable: true },
+                            { headerName: "UPI", field: "upiId", suppressMovable: true },
+                            { headerName: "Account Name", field: "accountName", suppressMovable: true },
+                            { headerName: "Account Number", field: "accountNumber", suppressMovable: true },
+
+                        ];
+                        if (this.access?.edit) {
+                            this.columnDefs.push({
+                                headerName: 'Action',
+                                filter: false,
+                                sortable: false,
+                                valueFormatter: (params: ValueFormatterParams) => {
+                                    return `${params.node!.data}`;
+                                },
+                                cellRenderer: ToggleDropdownComponent,
+                                cellRendererParams: {
+                                    specificId: 'actionToggleButton', // Custom parameter 
+                                    onClick: this.onButtonClick.bind(this) // pass method to renderer
+                                }
+                            });
+                        }
                         this.getAll();
                     }
                 }
@@ -71,7 +125,16 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
         })
         this.paramsubscriptions.push(params);
     }
-
+    // onButtonClick(data: any, value: any) {
+    //     this.handleToggleEvent(data, value)
+    // }
+    onButtonClick(data: any, value: any) {
+        if (value === 'update') {
+            this.editAccount(data)
+        } else {
+            this.toggleDeleteModal(data);
+        }
+    }
     ngOnInit(): void {
         if (!(this.access && this.access.view)) {
             this.toastrService.showWarning('Warning!', "You donot have permission to view this page. Please contact to administrator!")
@@ -108,8 +171,39 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
             accountName: new FormControl(data && data.accountName ? data.accountName : null),
             accountNumber: new FormControl(data && data.accountNumber ? data.accountNumber : null),
             ifsc: new FormControl(data && data.ifsc ? data.ifsc : null),
+            image: new FormControl(data?.image ?? null, Validators.required) // Use a separate control for validation
+
         });
     }
+    onFileSelected(event: any): void {
+        const fileInput = event.target as HTMLInputElement;
+        const file: File = fileInput.files![0];
+
+        if (file) {
+            const validExtensions = ['image/jpeg', 'image/png'];
+            if (!validExtensions.includes(file.type)) {
+                this.toastrService.showWarning('Warning!', 'Only JPG and PNG files are allowed!');
+                this.selectedFile = null;
+                this.fileName = '';
+                fileInput.value = '';  // Clear the file input
+                return;
+            }
+
+            this.fileName = file.name;
+            this.selectedFile = file;
+            // Create a FileReader to read the file and generate a preview
+            const reader = new FileReader();
+            reader.onload = (e: any) => {
+                this.imageSrc = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            this.accountForm.patchValue({
+                image: file.name // Update with file name for the form control
+            });
+            this.accountForm.get('image')?.updateValueAndValidity();
+        }
+    }
+
 
     toggleDeleteModal(data: any) {
         this.deleteData = data;
@@ -179,11 +273,33 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while add/update account details..')
         }
         this.loaderService.showLoader();
+        const formData = new FormData();
+        // Append the selected file if available
+        if (this.selectedFile) {
+            formData.append('image', this.selectedFile);
+        }
+        // Append other form values to FormData
+        Object.keys(this.accountForm.controls).forEach(key => {
+            const value = this.accountForm.get(key)?.value;
+            if (key !== 'imageName') { // Exclude imageName as it is only used for validation
+                formData.append(key, value);
+            }
+        });
+
+        // if (this.editAccountData?.accountId) {
+        //     this.accountForm.value['accountId'] = this.editAccountData?.accountId;
+        //     this.accountDetailsService.update(this.accountForm.value, success, failure)
+        // } else {
+        //     this.accountDetailsService.add(this.accountForm.value, success, failure)
+        // }
+
+        // Submit the form data
         if (this.editAccountData?.accountId) {
-            this.accountForm.value['accountId'] = this.editAccountData?.accountId;
-            this.accountDetailsService.update(this.accountForm.value, success, failure)
+            // Include accountId in FormData if editing an existing account
+            formData.append('accountId', this.editAccountData.accountId);
+            this.accountDetailsService.update(formData, success, failure);
         } else {
-            this.accountDetailsService.add(this.accountForm.value, success, failure)
+            this.accountDetailsService.add(formData, success, failure);
         }
     }
 
@@ -191,7 +307,8 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
         let success = (data: any) => {
             if (data && data.success) {
                 if (data.data && data.data.length) {
-                    this.accountList = data.data;
+                    this.accountList = data.data || [];
+                    this.rowData = data.data;
                     this.currentPage = data.currentPage;
                     this.totalPages = data.totalPages;
                 } else {
@@ -208,5 +325,12 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
         }
         this.loaderService.showLoader();
         this.accountDetailsService.getAll({ pageQuery: this.currentPage }, success, failure)
+    }
+    onPaginationChanged = (event: any) => {
+        console.log("onPaginationPageLoaded");
+    }
+    onGridReady = (params: GridReadyEvent<any>) => {
+        this.gridApi = params.api;
+        this.getAll();
     }
 }

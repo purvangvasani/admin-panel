@@ -13,19 +13,36 @@
         </ul>
     </c-dropdown>
 </div>
+<div *ngIf="toggleData?.specificId === 'actionToggleButton'">
+    <c-dropdown *ngIf="access.edit" [popperOptions]="{ placement: 'bottom-start' }" variant="nav-item">
+        <button [caret]="false" cDropdownToggle class="py-0 pe-0" aria-label="Open user menu">
+            <svg cIcon name="cilSettings" style="height: 2rem; width: 2rem;"></svg>
+        </button>
+        <ul cDropdownMenu class="pt-0 w-auto">
+            <li *ngIf="access?.edit">
+                <a cDropdownItem style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('update')"><svg
+                        cIcon class="me-2" name="cilPencil"></svg>Edit</a>
+            </li>
+            <li *ngIf="access?.delete">
+                <a cDropdownItem style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('delete')"><svg
+                        cIcon class="me-2" name="cilTrash"></svg>Delete</a>
+            </li>
+        </ul>
+    </c-dropdown>
+</div>
 <div *ngIf="toggleData?.specificId === 'roleButtons'">
     <td *ngIf="toggleData?.data?.isDeletable">
-        <a *ngIf="access?.edit" style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('update')"><svg cIcon class="me-2"
-                name="cilPencil"></svg></a>
-        <a *ngIf="access?.delete" style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('delete')"><svg cIcon class="me-2"
-                name="cilTrash"></svg></a>
+        <a *ngIf="access?.edit" style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('update')"><svg
+                cIcon class="me-2" name="cilPencil"></svg></a>
+        <a *ngIf="access?.delete" style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('delete')"><svg
+                cIcon class="me-2" name="cilTrash"></svg></a>
     </td>
 </div>
 <div *ngIf="toggleData?.specificId === 'actionButtons'">
     <td>
-        <a title="Edit" style="cursor: pointer; text-decoration: none;"
-            (click)="buttonClicked('update')" *ngIf="access?.edit"><svg cIcon class="me-2" name="cilPencil"></svg></a>
-        <a title="Delete" style="cursor: pointer; text-decoration: none;"
-            (click)="buttonClicked('delete')" *ngIf="access?.delete"><svg cIcon class="me-2" name="cilTrash"></svg></a>
+        <a title="Edit" style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('update')"
+            *ngIf="access?.edit"><svg cIcon class="me-2" name="cilPencil"></svg></a>
+        <a title="Delete" style="cursor: pointer; text-decoration: none;" (click)="buttonClicked('delete')"
+            *ngIf="access?.delete"><svg cIcon class="me-2" name="cilTrash"></svg></a>
     </td>
 </div>

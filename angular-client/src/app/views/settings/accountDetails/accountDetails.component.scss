@@ -23,3 +23,22 @@
     text-align: right;
     padding-right: 2px;
 }
+
+.data-table {
+    ::ng-deep .ag-cell-value.ag-cell.ag-cell-not-inline-editing.ag-cell-normal-height.ag-column-last.ag-cell-focus {
+        overflow: visible;
+    }
+
+    ::ng-deep .ag-row {
+        z-index: 0;
+    }
+
+    ::ng-deep .ag-row.ag-row-focus {
+        z-index: 1;
+    }
+}
+.img-preview {
+    max-width: 100%;
+    max-height: 200px; /* Adjust as necessary */
+    margin-top: 10px;
+  }
