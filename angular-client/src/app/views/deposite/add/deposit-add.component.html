@@ -7,27 +7,13 @@
                         <c-card-header>Deposit Request Form</c-card-header>
                         <c-card-body>
                             <form cForm [formGroup]="depositForm">
-                                <c-row class="row">
+                                <!-- <c-row class="row">
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
                                         <label cLabel="col" for="merchantId">
                                             Merchant
                                         </label>
                                         <input cFormControl placeholder="Merchant Id" type="text" value={{merchant}}
                                             formControlName="merchantId" id="merchantId" name="merchantId" />
-                                    </c-col>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <label cLabel="col" for="accountName">
-                                            Account Name
-                                        </label>
-                                        <input cFormControl placeholder="Account Name" type="text"
-                                            formControlName="accountName" id="accountName" name="accountName" />
-                                    </c-col>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <label cLabel="col" for="accountNumber">
-                                            Account Number
-                                        </label>
-                                        <input cFormControl placeholder="Account Number" type="text"
-                                            formControlName="accountNumber" id="accountNumber" name="accountNumber" />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
                                         <label cLabel="col" for="account">
@@ -43,12 +29,23 @@
                                         <input cFormControl placeholder="Transaction Id" type="text"
                                             formControlName="transactionId" id="transactionId" name="transactionId" />
                                     </c-col>
+                                </c-row> -->
+                                <c-row class="row">
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <label cLabel="col" for="operationType">
-                                            Operation Type
+                                        <label cLabel="col" for="merchantId">
+                                            Merchant
                                         </label>
-                                        <input cFormControl placeholder="Operation Type" type="text"
-                                            formControlName="operationType" id="operationType" name="operationType" />
+                                        <input cFormControl placeholder="Merchant Id" type="text" value={{merchant}}
+                                            formControlName="merchantId" id="merchantId" name="merchantId" />
+                                    </c-col>
+                                    <c-col *ngFor="let field of getFormFields()" sm="12" xs="12" md="6" lg="4"
+                                        style="padding: 5px;">
+                                        <label cLabel="col" [for]="field.key">
+                                            {{ breakCamelCase(field.key) }}
+                                        </label>
+                                        <input cFormControl [attr.placeholder]="'Enter ' + breakCamelCase(field.key)"
+                                            [type]="getInputType(field.key)" [formControlName]="field.key"
+                                            [id]="field.key" [name]="field.key" [value]="field.value" />
                                     </c-col>
                                 </c-row>
                             </form>

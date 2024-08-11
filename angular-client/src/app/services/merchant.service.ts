@@ -43,7 +43,7 @@ export class MerchantService {
     const url = this.apiUrl + '/merchant/add';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
-  
+
   update(data: any, successCallback: Function, errorCallback: Function) {
     const url = this.apiUrl + '/merchant/update';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
@@ -55,6 +55,10 @@ export class MerchantService {
   }
   getMerchantSummaryById(data: any, successCallback: Function, errorCallback: Function) {
     const url = this.apiUrl + '/merchant/getMerchantSummaryById';
+    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
+  }
+  getMerchantForAccounts(data: any, successCallback: Function, errorCallback: Function) {
+    const url = this.apiUrl + '/merchant/getMerchantForAccounts';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
 }

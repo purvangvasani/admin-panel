@@ -273,34 +273,34 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while add/update account details..')
         }
         this.loaderService.showLoader();
-        const formData = new FormData();
-        // Append the selected file if available
-        if (this.selectedFile) {
-            formData.append('image', this.selectedFile);
-        }
-        // Append other form values to FormData
-        Object.keys(this.accountForm.controls).forEach(key => {
-            const value = this.accountForm.get(key)?.value;
-            if (key !== 'imageName') { // Exclude imageName as it is only used for validation
-                formData.append(key, value);
-            }
-        });
-
-        // if (this.editAccountData?.accountId) {
-        //     this.accountForm.value['accountId'] = this.editAccountData?.accountId;
-        //     this.accountDetailsService.update(this.accountForm.value, success, failure)
-        // } else {
-        //     this.accountDetailsService.add(this.accountForm.value, success, failure)
+        // const formData = new FormData();
+        // // Append the selected file if available
+        // if (this.selectedFile) {
+        //     formData.append('image', this.selectedFile);
         // }
+        // // Append other form values to FormData
+        // Object.keys(this.accountForm.controls).forEach(key => {
+        //     const value = this.accountForm.get(key)?.value;
+        //     if (key !== 'imageName') { // Exclude imageName as it is only used for validation
+        //         formData.append(key, value);
+        //     }
+        // });
+
+        if (this.editAccountData?.accountId) {
+            this.accountForm.value['accountId'] = this.editAccountData?.accountId;
+            this.accountDetailsService.update(this.accountForm.value, success, failure)
+        } else {
+            this.accountDetailsService.add(this.accountForm.value, success, failure)
+        }
 
         // Submit the form data
-        if (this.editAccountData?.accountId) {
-            // Include accountId in FormData if editing an existing account
-            formData.append('accountId', this.editAccountData.accountId);
-            this.accountDetailsService.update(formData, success, failure);
-        } else {
-            this.accountDetailsService.add(formData, success, failure);
-        }
+        // if (this.editAccountData?.accountId) {
+        //     // Include accountId in FormData if editing an existing account
+        //     formData.append('accountId', this.editAccountData.accountId);
+        //     this.accountDetailsService.update(formData, success, failure);
+        // } else {
+        //     this.accountDetailsService.add(formData, success, failure);
+        // }
     }
 
     private getAll = () => {

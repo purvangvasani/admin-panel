@@ -6,8 +6,11 @@
         <c-card-body>
             <form [formGroup]="merchantForm">
                 <div class="form-group row mb-3">
-                    <label class="col-md-2 col-form-label">Merchant Name</label>
+                    <!-- <label class="col-md-2 col-form-label">Merchant Name</label> -->
                     <div class="col-md-4">
+                        <label cLabel="col" for="account">
+                            Merchant Name
+                        </label>
                         <input type="text" formControlName="merchantname" class="form-control" id="merchantname"
                             placeholder="Enter Merchant Name" required
                             [ngStyle]="{'border': merchantForm.controls['merchantname'].hasError('required') && merchantForm.controls['merchantname'].touched ? '2px solid red' : '' }">
@@ -15,13 +18,32 @@
                             *ngIf="merchantForm.controls['merchantname'].hasError('required') && merchantForm.controls['merchantname'].touched">
                             Merchant Name is required</span>
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-4">
+                        <label cLabel="col" for="Mode">
+                            Mode
+                        </label>
+                        <select formControlName="mode" aria-label="Default select example" cSelect
+                            (change)="updateOptionStates($event)">
+                            <option value="upi">UPI ID
+                            </option>
+                            <option value="imps">IMPS
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+
+                        <label cLabel="col" for="account">
+                            Account
+                        </label>
+                        <ng-select formControlName="accountId" name="accountId" [items]="accountList" [multiple]="false"
+                            [bindValue]="'accountId'" [bindLabel]="labelType" [clearable]="false"></ng-select>
+
+                    </div>
+                    <div style="margin-top: 20px;" class="col-md-4">
                         <button [disabled]="merchantForm.invalid" (click)="submit()"
                             [ngClass]="(merchantForm.invalid) ? 'btn btn-danger submit' : 'btn btn-primary submit'">
                             Submit
                         </button>
-                    </div>
-                    <div class="col-md-2">
                         <button (click)="cancel()" [ngClass]="'btn btn-default'">
                             Cancel
                         </button>

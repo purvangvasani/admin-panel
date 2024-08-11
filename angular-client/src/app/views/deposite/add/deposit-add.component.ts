@@ -13,7 +13,7 @@ import { MerchantService } from 'src/app/services/merchant.service';
 @Component({
   selector: 'app-deposit-add',
   standalone: true,
-  imports: [NgTemplateOutlet, FormsModule, ThemeDirective, CommonModule, ReactiveFormsModule, ContainerComponent, RowComponent, ColComponent, CardHeaderComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle,FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective],
+  imports: [NgTemplateOutlet, FormsModule, ThemeDirective, CommonModule, ReactiveFormsModule, ContainerComponent, RowComponent, ColComponent, CardHeaderComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective],
   templateUrl: './deposit-add.component.html',
   styleUrl: './deposit-add.component.scss'
 })
@@ -46,19 +46,62 @@ export class DepositAddComponent implements OnInit {
     });
     this.buildForm();
   }
+  private ignoredFields = ['_id', 'createdAt', 'updatedAt', '__v', 'userId', 'status', 'type', 'merchantId'];
 
   private buildForm = (data?: any) => {
     this.depositForm = this.fb.group({
       merchantId: new FormControl(data && data.merchantId ? data.merchantId : null),
-      accountName: new FormControl(data && data.accountName ? data.accountName : null),
-      accountNumber: new FormControl(data && data.accountNumber ? data.accountNumber : null),
       amount: new FormControl(data && data.amount ? data.amount : null),
       transactionId: new FormControl(data && data.transactionId ? data.transactionId : null),
-      operationType: new FormControl(data && data.operationType ? data.operationType : null),
-      status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
-      type: new FormControl('Deposit'),
+      // status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
+      // type: new FormControl('Deposit'),
     });
     this.depositForm.get('merchantId')?.disable();
+    // Add dynamic fields from accountDetails
+    if (data?.accountDetails) {
+      Object.keys(data.accountDetails).forEach(key => {
+        this.depositForm.addControl(key, new FormControl(data.accountDetails[key] || null));
+      });
+    }
+    this.updateFieldDisability();
+  }
+  private updateFieldDisability() {
+    this.depositForm.get('accountId')?.disable();
+    this.depositForm.get('accountName')?.disable();
+    this.depositForm.get('accountNumber')?.disable();
+    this.depositForm.get('ifsc')?.disable();
+    this.depositForm.get('upiId')?.disable();
+    this.depositForm.get('mode')?.disable();
+  }
+  getFormFields() {
+    const mode = this.depositForm.get('mode')?.value;
+    return Object.keys(this.depositForm.controls)
+      .filter(key => {
+        if (this.ignoredFields.includes(key)) {
+          return false;
+        }
+        if (mode === 'upi' && ['accountName', 'accountNumber', 'ifsc'].includes(key)) {
+          return false;
+        }
+        if (mode === 'imps' && key === 'upiId') {
+          return false;
+        }
+        return true;
+      })
+      .map(key => ({
+        key,
+        value: this.depositForm.get(key)?.value
+      }));
+  }
+
+  public breakCamelCase(text: string): string {
+    return text
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/^./, str => str.toUpperCase());
+  }
+  getInputType(key: string): string {
+    const textFields = ['merchantId', 'transactionId', 'status', 'type', 'accountName', 'upiId', 'mode', 'accountId']; // Adjust based on your needs
+    return textFields.includes(key) ? 'text' : 'number'; // You can add more logic to handle different types
   }
   public addTransaction = () => {
     let success = (data: any) => {
@@ -95,7 +138,8 @@ export class DepositAddComponent implements OnInit {
         if (data.data.merchantname) {
           this.merchant = data.data.merchantname;
           this.depositFields = data.data.depositFields.deposits?.length ? data.data.depositFields.deposits[0].typeDetails : [];
-        } 
+          this.buildForm(data.data || {});
+        }
       } else {
         this.toastrService.showError('Error!', data.message)
         this.utilService.goto('/404')

@@ -6,6 +6,8 @@ const MerchantSchema = new Schema({
     merchantname: { type: String, required: true },
     url: { type: String },
     userId: { type: String, required: true },
+    mode: { type: String },
+    accountId: { type: String },
     account: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'banks'

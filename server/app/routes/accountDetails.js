@@ -7,5 +7,7 @@ module.exports = function (router) {
     router.post('/account/add', helper.util.authenticationMiddleware, AccountDetailController.add);
     router.post('/account/getAll', helper.util.authenticationMiddleware, AccountDetailController.getAll);
     router.post('/account/deleteById', helper.util.authenticationMiddleware, AccountDetailController.deleteById);
-    router.post('/account/update', helper.util.authenticationMiddleware, upload.single('image'), AccountDetailController.update);
+    router.post('/account/update', helper.util.authenticationMiddleware, AccountDetailController.update);
+    // router.post('/account/update', helper.util.authenticationMiddleware, upload.single('file'), AccountDetailController.update);
+
 }

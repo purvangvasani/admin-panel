@@ -19,11 +19,7 @@
                                         </ng-template>
                                         <ng-template cTemplateId="widgetActionTemplate">
                                             <c-dropdown alignment="end" variant="btn-group">
-                                                <button [caret]="false" cButton cDropdownToggle class="p-0"
-                                                    color="transparent">
-                                                    <svg [cIcon]="icons.cilOptions"
-                                                        class="text-high-emphasis-inverse"></svg>
-                                                </button>
+                                               
                                             </c-dropdown>
                                         </ng-template>
                                         <ng-template cTemplateId="widgetChartTemplate">
@@ -42,11 +38,7 @@
                                         </ng-template>
                                         <ng-template cTemplateId="widgetActionTemplate">
                                             <c-dropdown alignment="end" variant="btn-group">
-                                                <button [caret]="false" cButton cDropdownToggle class="p-0"
-                                                    color="transparent">
-                                                    <svg [cIcon]="icons.cilOptions"
-                                                        class="text-high-emphasis-inverse"></svg>
-                                                </button>
+                                                
                                             </c-dropdown>
                                         </ng-template>
                                         <ng-template cTemplateId="widgetChartTemplate">
@@ -65,11 +57,7 @@
                                         </ng-template>
                                         <ng-template cTemplateId="widgetActionTemplate">
                                             <c-dropdown alignment="end" variant="btn-group">
-                                                <button [caret]="false" cButton cDropdownToggle class="p-0"
-                                                    color="transparent">
-                                                    <svg [cIcon]="icons.cilOptions"
-                                                        class="text-high-emphasis-inverse"></svg>
-                                                </button>
+
                                             </c-dropdown>
                                         </ng-template>
                                         <ng-template cTemplateId="widgetChartTemplate">
@@ -88,11 +76,7 @@
                                         </ng-template>
                                         <ng-template cTemplateId="widgetActionTemplate">
                                             <c-dropdown alignment="end" variant="btn-group">
-                                                <button [caret]="false" cButton cDropdownToggle class="p-0"
-                                                    color="transparent">
-                                                    <svg [cIcon]="icons.cilOptions"
-                                                        class="text-high-emphasis-inverse"></svg>
-                                                </button>
+
                                             </c-dropdown>
                                         </ng-template>
                                         <ng-template cTemplateId="widgetChartTemplate">
@@ -113,11 +97,7 @@
                                         </ng-template>
                                         <ng-template cTemplateId="widgetActionTemplate">
                                             <c-dropdown alignment="end" variant="btn-group">
-                                                <button [caret]="false" cButton cDropdownToggle class="p-0"
-                                                    color="transparent">
-                                                    <svg [cIcon]="icons.cilOptions"
-                                                        class="text-high-emphasis-inverse"></svg>
-                                                </button>
+
                                             </c-dropdown>
                                         </ng-template>
                                         <ng-template cTemplateId="widgetChartTemplate">
@@ -136,11 +116,7 @@
                                         </ng-template>
                                         <ng-template cTemplateId="widgetActionTemplate">
                                             <c-dropdown alignment="end" variant="btn-group">
-                                                <button [caret]="false" cButton cDropdownToggle class="p-0"
-                                                    color="transparent">
-                                                    <svg [cIcon]="icons.cilOptions"
-                                                        class="text-high-emphasis-inverse"></svg>
-                                                </button>
+
                                             </c-dropdown>
                                         </ng-template>
                                         <ng-template cTemplateId="widgetChartTemplate">
@@ -159,11 +135,6 @@
                                         </ng-template>
                                         <ng-template cTemplateId="widgetActionTemplate">
                                             <c-dropdown alignment="end" variant="btn-group">
-                                                <button [caret]="false" cButton cDropdownToggle class="p-0"
-                                                    color="transparent">
-                                                    <svg [cIcon]="icons.cilOptions"
-                                                        class="text-high-emphasis-inverse"></svg>
-                                                </button>
                                             </c-dropdown>
                                         </ng-template>
                                         <ng-template cTemplateId="widgetChartTemplate">
@@ -173,7 +144,7 @@
                                     </c-widget-stat-a>
                                 </c-col>
                                 <c-col xl="3" md="6" sm="6">
-                                    <c-widget-stat-a class="mb-4" color="warning"
+                                    <c-widget-stat-a class="mb-4" color="danger"
                                         [title]="'Total Withdrawal Processing'">
                                         <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
                                             {{totalNoOfCounts.withdrawalProcessingCount|| '0'}}
@@ -183,15 +154,10 @@
                                         </ng-template>
                                         <ng-template cTemplateId="widgetActionTemplate">
                                             <c-dropdown alignment="end" variant="btn-group">
-                                                <button [caret]="false" cButton cDropdownToggle class="p-0"
-                                                    color="transparent">
-                                                    <svg [cIcon]="icons.cilOptions"
-                                                        class="text-high-emphasis-inverse"></svg>
-                                                </button>
                                             </c-dropdown>
                                         </ng-template>
                                         <ng-template cTemplateId="widgetChartTemplate">
-                                            <c-chart [data]="data.warning" [options]="options" class="mt-3 mx-3"
+                                            <c-chart [data]="data.danger" [options]="options" class="mt-3 mx-3"
                                                 height="50" type="line" />
                                         </ng-template>
                                     </c-widget-stat-a>

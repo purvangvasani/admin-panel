@@ -9,8 +9,12 @@
                     <div class="col-md-4">
                         <label class="col-form-label">Mode</label>
                         <select formControlName="mode" aria-label="Default select example" cSelect>
-                            <option value="upi">UPI ID</option>
-                            <option value="imps">IMPS</option>
+                            <!-- <option value="upi">UPI ID</option>
+                            <option value="imps">IMPS</option> -->
+                            <option value="upi" [attr.disabled]="accountForm.get('ifsc').value ? true : null">UPI ID
+                            </option>
+                            <option value="imps" [attr.disabled]="accountForm.get('upiId').value ? true : null">IMPS
+                            </option>
                         </select>
                     </div>
                     <div class="col-md-4" *ngIf="accountForm.controls['mode'].value === 'upi'">
@@ -25,8 +29,8 @@
                     <div class="col-md-4" *ngIf="accountForm.controls['mode'].value === 'upi'">
                         <label class="col-form-label">QR Code</label>
                         <c-input-group class="mb-3">
-                            <input cFormControl id="inputGroupFile02" type="file" (change)="onFileSelected($event)"
-                                accept=".jpg,.png" />
+                            <input cFormControl id="inputGroupFile02" type="file" name="file"
+                                (change)="onFileSelected($event)" accept=".jpg,.png" />
                             <!-- <div *ngIf="fileName">{{ fileName }}</div> -->
                         </c-input-group>
                         <img *ngIf="imageSrc" [src]="imageSrc" alt="Image Preview" class="img-preview" />

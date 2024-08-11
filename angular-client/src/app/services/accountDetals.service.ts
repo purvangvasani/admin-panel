@@ -37,27 +37,27 @@ export class AccountDetailsService {
     return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
 
-  // add(data: any, successCallback: any, errorCallback: any) {
-  //   const url = this.apiUrl + '/account/add';
-  //   return this.delegatorService.post(data, url, null, successCallback, errorCallback);
-  // }
-  add(formData: FormData, successCallback: any, errorCallback: any) {
-    const url = `${this.apiUrl}/account/update`;
-    return this.delegatorService.post(formData, url, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    }, successCallback, errorCallback);
+  add(data: any, successCallback: any, errorCallback: any) {
+    const url = this.apiUrl + '/account/add';
+    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
+  // add(formData: FormData, successCallback: any, errorCallback: any) {
+  //   const url = `${this.apiUrl}/account/update`;
+  //   return this.delegatorService.post(formData, url, {
+  //     headers: { 'Content-Type': 'multipart/form-data' }
+  //   }, successCallback, errorCallback);
+  // }
 
-  // update(data: any, successCallback: any, errorCallback: any) {
-  //   const url = this.apiUrl + '/account/update';
-  //   return this.delegatorService.post(data, url, null, successCallback, errorCallback);
-  // }
-  update(formData: FormData, successCallback: any, errorCallback: any) {
-    const url = `${this.apiUrl}/account/update`;
-    return this.delegatorService.post(formData, url, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    }, successCallback, errorCallback);
+  update(data: any, successCallback: any, errorCallback: any) {
+    const url = this.apiUrl + '/account/update';
+    return this.delegatorService.post(data, url, null, successCallback, errorCallback);
   }
+  // update(formData: FormData, successCallback: any, errorCallback: any) {
+  //   const url = `${this.apiUrl}/account/update`;
+  //   return this.delegatorService.post(formData, url, {
+  //     headers: { 'Content-Type': 'multipart/form-data' }
+  //   }, successCallback, errorCallback);
+  // }
 
 
   deleteById(data: any, successCallback: any, errorCallback: any) {

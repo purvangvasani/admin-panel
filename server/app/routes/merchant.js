@@ -8,5 +8,7 @@ module.exports = function (router) {
     router.post('/merchant/update', helper.util.authenticationMiddleware, MerchantController.update);
     router.post('/merchant/deleteById', helper.util.authenticationMiddleware, MerchantController.deleteById);
     router.post('/merchant/getMerchantSummaryById', MerchantController.getMerchantSummaryById);
+    router.post('/merchant/getMerchantForAccounts', MerchantController.getMerchantForAccounts);
+
 
 }

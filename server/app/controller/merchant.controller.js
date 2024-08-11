@@ -8,6 +8,7 @@ module.exports = {
     deleteById,
     getById,
     getMerchantSummaryById,
+    getMerchantForAccounts,
 }
 
 async function getAll(req, res, next) {
@@ -18,7 +19,14 @@ async function getAll(req, res, next) {
         res.json(e);
     }
 }
-
+async function getMerchantForAccounts(req, res, next) {
+    try {
+        let result = await MerchantService.getMerchantForAccounts(req.body);
+        res.json(result);
+    } catch (e) {
+        res.json(e);
+    }
+}
 async function add(req, res, next) {
     try {
         if (req && req.body && req.body.merchantname) {

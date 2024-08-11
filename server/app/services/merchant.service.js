@@ -4,6 +4,7 @@ const helpers = require('../utility');
 const MerchantCollection = require('../models/merchant');
 const BankCollection = require('../models/banks');
 const TransactionCollection = require('../models/transaction-request');
+const AccountDetailsCollection = require('../models/account-details');
 
 const bcrypt = require('bcrypt');
 
@@ -14,6 +15,7 @@ module.exports = {
     deleteById,
     getById,
     getMerchantSummaryById,
+    getMerchantForAccounts,
 }
 
 function getAll(criteria) {
@@ -65,7 +67,39 @@ function getAll(criteria) {
     }
     return new Promise(promiseFunction);
 }
+function getMerchantForAccounts(criteria) {
+    let promiseFunction = async (resolve, reject) => {
+        try {
 
+            let condition = [];
+            if (criteria) {
+                if (criteria._id) {
+                    condition.push({ $match: { _id: new ObjectId(criteria._id) } });
+                }
+                if (criteria.merchantId) {
+                    condition.push({ $match: { merchantId: criteria.merchantId } });
+                }
+                if (criteria.merchantname) {
+                    condition.push({ $match: { merchantname: criteria.merchantname } });
+                }
+            }
+            if (criteria && criteria.sort) {
+                condition.push({ $sort: criteria.sort });
+            } else {
+                condition.push({ $sort: { updatedAt: 1 } });
+            }
+            let merchantData = await MerchantCollection.aggregate(condition).exec();
+
+            // if (criteria && ((criteria.merchantname && typeof criteria.merchantname !== 'object') || criteria._id)) {
+            //     merchantData = (merchantData && merchantData.length) ? merchantData[0] : {};
+            // }
+            resolve({ success: true, message: 'success!', data: merchantData, });
+        } catch (err) {
+            reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
+        }
+    }
+    return new Promise(promiseFunction);
+}
 function add(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
@@ -83,6 +117,8 @@ function add(criteria) {
                     merchantname: criteria.merchantname,
                     userId: criteria.userId,
                     merchantId: merchantId,
+                    accountId: criteria.accountId,
+                    mode: criteria.mode,
                 });
 
                 const hashURL = await bcrypt.hash(
@@ -163,7 +199,7 @@ function getById(criteria) {
 
                 let merchant = null;
                 if (criteria?.for === 'public') {
-                    merchant = await MerchantCollection.findOne({ merchantId: atob(criteria.merchantId) }, { merchantname: 1 }).exec();
+                    merchant = await MerchantCollection.findOne({ merchantId: atob(criteria.merchantId) }, { merchantname: 1, accountId: 1 }).exec();
                     if (criteria?.get === 'bankDeposits') {
                         let newCondition = [];
                         newCondition.push({ $match: { ref: atob(criteria.merchantId) } })
@@ -198,6 +234,8 @@ function getById(criteria) {
                 } else {
                     merchant = await MerchantCollection.aggregate(condition).exec();
                 }
+                let accountDetails = await AccountDetailsCollection.findOne({ accountId: merchant.accountId }).exec();
+                merchant._doc['accountDetails'] = accountDetails;
                 if (criteria && ((criteria.merchantname && typeof criteria.merchantname !== 'object') || criteria.merchantId)) {
                     merchant = (merchant && merchant.length) ? merchant[0] : merchant;
                 }

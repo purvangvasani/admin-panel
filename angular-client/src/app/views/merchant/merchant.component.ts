@@ -12,12 +12,15 @@ import { UtilService } from 'src/app/util/util.service';
 import { MerchantService } from 'src/app/services/merchant.service';
 import { environment } from '../../../environments/environment';
 import { LocalStorageService } from 'src/app/util/local-storage.service';
+import { AccountDetailsService } from 'src/app/services/accountDetals.service';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 @Component({
     selector: 'app-merchant',
     standalone: true,
     imports: [
-        ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ModalBodyComponent, ModalFooterComponent, ButtonCloseDirective, DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, PaginationComponent, PageItemDirective, TableDirective, RouterLink, PageLinkDirective, CommonModule, FormSelectDirective, ThemeDirective, IconDirective, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormsModule, FormDirective, FormControlDirective, NgStyle
+        ModalComponent, ModalToggleDirective, ModalHeaderComponent, ModalTitleDirective, ModalBodyComponent, ModalFooterComponent, ButtonCloseDirective, DropdownComponent, DropdownToggleDirective, DropdownMenuDirective, DropdownItemDirective, PaginationComponent, PageItemDirective, TableDirective, RouterLink, PageLinkDirective, CommonModule, FormSelectDirective, ThemeDirective, IconDirective, CardComponent, CardHeaderComponent, CardBodyComponent, ButtonDirective, ReactiveFormsModule, FormsModule, FormDirective, FormControlDirective, NgStyle,
+        NgSelectModule
     ],
     templateUrl: './merchant.component.html',
     styleUrl: './merchant.component.scss'
@@ -31,11 +34,17 @@ export class MerchantComponent implements OnInit, OnDestroy {
     public currentUserRole: any = this.utilService.getCurrentUserRole();
     private params: Subscription | undefined
     public merchantList: any = [];
+    public merchantDetails: any = [];
+
+    public accountList: any = [];
+    public accountDetails: any = [];
+
     public totalPages: number = 1;
     public currentPage: number = 1;
     private editMerchantData: any;
     public deleteData: any;
     public deleteModalVisible = false;
+    labelType: string = 'accountName'; // default label type
 
     constructor(
         private route: ActivatedRoute,
@@ -43,7 +52,9 @@ export class MerchantComponent implements OnInit, OnDestroy {
         private utilService: UtilService,
         private toastrService: ToastService,
         private loaderService: LoaderService,
-        private merchantService: MerchantService
+        private merchantService: MerchantService,
+        private accountDetailsService: AccountDetailsService,
+
     ) {
         const params = this.route.data.subscribe((data: Params) => {
             this.accessModule = data['module'];
@@ -65,7 +76,11 @@ export class MerchantComponent implements OnInit, OnDestroy {
             this.utilService.goto('/home');
         } else {
             this.getAll();
+            this.getMerchantForAccounts();
             this.buildForm();
+            setTimeout(() => {
+                this.updateOptionStates('upi');
+            }, 500);
         }
     }
 
@@ -90,8 +105,15 @@ export class MerchantComponent implements OnInit, OnDestroy {
 
     private buildForm = (data?: any) => {
         this.merchantForm = new FormGroup({
+            mode: new FormControl(data && data.mode ? data.mode : 'upi'),
+            accountId: new FormControl(data && data.accountId ? data.accountId : null, [Validators.required]),
             merchantname: new FormControl(data && data.merchantname ? data.merchantname : null, [Validators.required]),
         });
+
+        this.merchantForm.get('mode').valueChanges.subscribe((value: any) => {
+            this.updateLabelType(value);
+        });
+        this.updateLabelType(this.merchantForm.get('mode').value);
     }
 
     toggleDeleteModal(data: any) {
@@ -102,7 +124,53 @@ export class MerchantComponent implements OnInit, OnDestroy {
     handleDeleteToggleChange(event: boolean) {
         this.deleteModalVisible = event;
     }
+    async updateOptionStates(event: any, currentMerchantRecord: any = null) {
+        if (!currentMerchantRecord) {
+            this.merchantForm.get('accountId')?.reset();
+        }
+        const value = event?.target?.value ? event.target.value : event;
+        let success = (data: any) => {
+            if (data && data.success) {
+                data.data = Array.isArray(data.data) ? data.data : [data.data];
+                if (data.data && data.data.length) {
+                    this.accountList = this.differenceById(data.data, this.merchantDetails, currentMerchantRecord);
+                } else {
+                    this.accountList = [];
+                }
+            } else {
+                this.toastrService.showError('Error!', data.message);
+            }
+            this.loaderService.hideLoader();
+        }
+        let failure = (error: any) => {
+            this.loaderService.hideLoader();
+            this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching account details.');
+        }
 
+        this.accountList = [];
+        this.loaderService.showLoader();
+        this.accountDetailsService.getAll({ mode: value, isMerchantAccount: true }, success, failure);
+    }
+    private differenceById = (arr1: any, arr2: any, currentMerchantRecord: any) => {
+        const ids2 = new Set(arr2.map((item: any) => item.accountId));
+        let filteredList = arr1.filter((item: any) => !ids2.has(item.accountId));
+        if (currentMerchantRecord) {
+            const matchingRecord = arr1.find((item: any) => item.accountId === currentMerchantRecord.accountId);
+            if (matchingRecord) {
+                filteredList.push(matchingRecord);
+            }
+        }
+        return filteredList;
+    }
+
+
+    updateLabelType(mode: string) {
+        if (mode === 'upi') {
+            this.labelType = 'upiId';
+        } else if (mode === 'imps') {
+            this.labelType = 'accountName';
+        }
+    }
     public cancel = () => {
         this.editMerchantData = null;
         this.deleteData = null;
@@ -113,6 +181,7 @@ export class MerchantComponent implements OnInit, OnDestroy {
     public editMerchant = (data: any) => {
         this.editMerchantData = data;
         this.buildForm(data);
+        this.updateOptionStates(data?.mode ? data.mode : this.merchantForm.get('mode').value, data);
     }
 
     public deleteRecord = () => {
@@ -122,6 +191,7 @@ export class MerchantComponent implements OnInit, OnDestroy {
                 this.toastrService.showSuccess('Success!', data.message)
                 this.cancel()
                 this.getAll();
+                this.getMerchantForAccounts();
             } else {
                 this.toastrService.showError('Error!', data.message)
             }
@@ -141,6 +211,7 @@ export class MerchantComponent implements OnInit, OnDestroy {
                 this.loaderService.hideLoader();
                 this.cancel();
                 this.getAll();
+                this.getMerchantForAccounts();
             } else {
                 this.loaderService.hideLoader();
                 this.toastrService.showError('Error!', data.message || data.msg)
@@ -191,7 +262,26 @@ export class MerchantComponent implements OnInit, OnDestroy {
         this.loaderService.showLoader();
         this.merchantService.getAll({ pageQuery: this.currentPage }, success, failure)
     }
-
+    private getMerchantForAccounts = () => {
+        let success = (data: any) => {
+            if (data && data.success) {
+                if (data.data && data.data.length) {
+                    this.merchantDetails = data.data;
+                } else {
+                    this.merchantDetails = [];
+                }
+            } else {
+                this.toastrService.showError('Error!', data.message)
+            }
+            this.loaderService.hideLoader();
+        }
+        let failure = (error: any) => {
+            this.loaderService.hideLoader();
+            this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching merchant.')
+        }
+        this.loaderService.showLoader();
+        this.merchantService.getMerchantForAccounts({}, success, failure)
+    }
     public copyText = (text: any, type: any) => {
         var copyText = text;
         // Select the text field

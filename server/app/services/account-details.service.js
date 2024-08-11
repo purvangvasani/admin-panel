@@ -45,7 +45,7 @@ function getAll(criteria) {
                 condition.push({ $skip: skip }, { $limit: pageSize })
             }
             let accountData = await AccountDetailsCollection.aggregate(condition).exec();
-            if (criteria && ((criteria.mode && typeof criteria.mode !== 'object') || criteria._id)) {
+            if (criteria && !criteria.isMerchantAccount && ((criteria.mode && typeof criteria.mode !== 'object') || criteria._id)) {
                 accountData = (accountData && accountData.length) ? accountData[0] : {};
             }
             resolve({ success: true, message: 'success!', data: accountData, currentPage: page, totalPages, totalCount });
@@ -59,11 +59,15 @@ function getAll(criteria) {
 function add(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
-
-            let isExists = await AccountDetailsCollection.findOne({ accountNumber: criteria.accountNumber }).lean().exec();
-            if (isExists && isExists.accountId) {
-                reject({ success: false, message: 'Account with Account Number already exists' });
-                return;
+            if (criteria.accountNumber != null) { // Check if accountNumber is not null or undefined
+                try {
+                    let isExists = await AccountDetailsCollection.findOne({ accountNumber: criteria.accountNumber }).lean().exec();
+                    if (isExists) {
+                        reject({ success: false, message: 'Account with Account Number already exists' });
+                    }
+                } catch (error) {
+                    console.error('Error checking account existence:', error);
+                }
             }
 
             let accountId = await helper.generateCounterId('accountDetails', 'accountId', 'QQAD_');
