@@ -70,15 +70,16 @@ function add(criteria) {
                     console.error('Error checking account existence:', error);
                 }
             }
-            if (!new RegExp(/^[0-9]{9,18}$/).test(criteria.accountNumber)) {
-                reject({ success: false, message: 'Account Number Validation Failed!' });
-                return;
+            if (criteria.mode === 'imps') {
+                if (!new RegExp(/^[0-9]{9,18}$/).test(criteria.accountNumber)) {
+                    reject({ success: false, message: 'Account Number Validation Failed!' });
+                    return;
+                }
+                if (!new RegExp(/[A-Z|a-z]{4}[0][a-zA-Z0-9]{6}$/).test(criteria.ifsc)) {
+                    reject({ success: false, message: 'IFSC Validation Failed!' });
+                    return;
+                }
             }
-            if (!new RegExp(/[A-Z|a-z]{4}[0][a-zA-Z0-9]{6}$/).test(criteria.ifsc)) {
-                reject({ success: false, message: 'IFSC Validation Failed!' });
-                return;
-            }
-
             let accountId = await helper.generateCounterId('accountDetails', 'accountId', 'QQAD_');
             if (accountId) {
 

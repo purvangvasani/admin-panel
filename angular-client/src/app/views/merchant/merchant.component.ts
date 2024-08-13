@@ -178,6 +178,7 @@ export class MerchantComponent implements OnInit, OnDestroy {
         this.merchantId = null
         this.merchantForm.reset();
         this.deleteModalVisible = false;
+        this.updateOptionStates('upi');
         this.buildForm();
     }
 

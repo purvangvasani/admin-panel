@@ -60,6 +60,7 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
   public editBankData: any;
   private params: Subscription;
   public bankId: any;
+  public refId: any;
   public merchantList: any = [];
   public bankIdList: any = [];
   constructor(
@@ -74,6 +75,9 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     this.params = this.route.params.subscribe((params: Params) => {
       if (params['bankId']) {
         this.bankId = params['bankId'];
+      }
+      if (params['ref']) {
+        this.refId = params['ref'];
       }
     });
     if (this.bankId) {
@@ -119,9 +123,9 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
       if (data && data.success) {
         if (data.data && data.data.length) {
           this.merchantList = data.data;
-          if (!this.bankId) {
+          // if (!this.bankId) {
             this.getBankID();
-          }
+          // }
         } else {
           this.merchantList = [];
         }
@@ -138,18 +142,28 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
     this.merchantService.getAll({}, success, failure)
   }
 
-  private differenceById = (arr1: any, arr2: any) => {
+  // private differenceById = (arr1: any, arr2: any) => {
+  //   const ids2 = new Set(arr2.map((item: any) => item.ref));
+  //   return arr1.filter((item: any) => !ids2.has(item.merchantId));
+  // }
+  private differenceById = (arr1: any, arr2: any, refId: any) => {
     const ids2 = new Set(arr2.map((item: any) => item.ref));
-    return arr1.filter((item: any) => !ids2.has(item.merchantId));
+    let filteredList = arr1.filter((item: any) => !ids2.has(item.merchantId));
+    if (refId) {
+      const matchingRecord = arr1.find((item: any) => item.merchantId === refId);
+      if (matchingRecord) {
+        filteredList.push(matchingRecord);
+      }
+    }
+    return filteredList;
   }
-
   public getBankID = () => {
     let success = (data: any) => {
       this.loaderService.hideLoader();
       if (data && data.success) {
         if (data.data && data.data.length) {
           this.bankIdList = data.data;
-          this.merchantList = this.differenceById(this.merchantList, data.data);
+          this.merchantList = this.differenceById(this.merchantList, data.data, this.refId);
         } else {
           this.bankIdList = [];
         }
