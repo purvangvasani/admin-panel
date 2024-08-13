@@ -60,13 +60,13 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
     public onSelectFile = (event: any): void => {
 
         if (event.target.files && event.target.files[0]) {
-          var reader = new FileReader();
-          reader.readAsDataURL(event.target.files[0]); 
-          reader.onload = (event) => {
-            this.url = event?.target?.result;
-          };
+            var reader = new FileReader();
+            reader.readAsDataURL(event.target.files[0]);
+            reader.onload = (event) => {
+                this.url = event?.target?.result;
+            };
         }
-      }
+    }
     constructor(
         private route: ActivatedRoute,
         private localStorageService: LocalStorageService,
@@ -102,9 +102,12 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
                                     return `${params.node!.data.accountId}`;
                                 }, suppressMovable: true
                             },
-                            { headerName: "Mode", valueFormatter: (params: ValueFormatterParams) => {
-                                return `${params.node!.data.mode === 'upi' ? 'UPI ID' : 'IMPS'}`;
-                            }, suppressMovable: true },
+                            {
+                                headerName: "Mode", filter: false,
+                                sortable: false, valueFormatter: (params: ValueFormatterParams) => {
+                                    return `${params.node!.data.mode === 'upi' ? 'UPI ID' : 'IMPS'}`;
+                                }, suppressMovable: true
+                            },
                             { headerName: "UPI", field: "upiId", suppressMovable: true },
                             { headerName: "Account Name", field: "accountName", suppressMovable: true },
                             { headerName: "Account Number", field: "accountNumber", suppressMovable: true },
