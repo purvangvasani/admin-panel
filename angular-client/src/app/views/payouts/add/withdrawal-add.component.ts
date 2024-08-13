@@ -51,11 +51,11 @@ export class WithdrawalAddComponent implements OnInit {
   private buildForm = (data?: any) => {
     this.withdrawalForm = this.fb.group({
       merchantId: new FormControl(data && data.merchantId ? data.merchantId : null),
-      accountName: new FormControl(data && data.accountName ? data.accountName : null),
-      accountNumber: new FormControl(data && data.accountNumber ? data.accountNumber : null),
-      amount: new FormControl(data && data.amount ? data.amount : null),
-      transactionId: new FormControl(data && data.transactionId ? data.transactionId : null),
-      operationType: new FormControl(data && data.operationType ? data.operationType : null),
+      // accountName: new FormControl(data && data.accountName ? data.accountName : null),
+      // accountNumber: new FormControl(data && data.accountNumber ? data.accountNumber : null),
+      // amount: new FormControl(data && data.amount ? data.amount : null),
+      // transactionId: new FormControl(data && data.transactionId ? data.transactionId : null),
+      // operationType: new FormControl(data && data.operationType ? data.operationType : null),
       status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
       type: new FormControl('Withdrawal'),
     });

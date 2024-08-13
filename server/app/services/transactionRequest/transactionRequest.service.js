@@ -98,6 +98,7 @@ function addTransaction(criteria) {
                 // }); 
                 const newTransaction = new TransactionCollection(transactionData);
                 newTransaction['id'] = Id;
+                newTransaction['merchant_id'] = criteria.merchant_id;
                 await newTransaction.save();
                 resolve({ success: true, message: criteria.type + ' Request Submitted!' });
             }

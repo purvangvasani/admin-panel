@@ -206,42 +206,7 @@ export class MerchantSummaryComponent implements OnInit {
       // this row just shows the row index, doesn't use any data from the row
       { headerName: "Account Name", field: "accountName", suppressMovable: true },
       { headerName: "Amount", field: "amount", suppressMovable: true }, 
-      { headerName: "Status", field: "status", suppressMovable: true },
-      {
-        field: 'createdAt',
-        filter: 'agDateColumnFilter',
-        valueFormatter: (params) => {
-          const date = new Date(params.value);
-          return format(date, 'yyyy-dd-MM HH:mm:ss');
-        },
-        filterParams: {
-          comparator: (filterLocalDateAtMidnight: any, cellValue: any) => {
-            if (!cellValue) return -1;
-
-            const cellDate = new Date(cellValue);
-
-            // Clear the time part for comparison
-            const cellDateWithoutTime = new Date(
-              cellDate.getFullYear(),
-              cellDate.getMonth(),
-              cellDate.getDate()
-            );
-
-            if (filterLocalDateAtMidnight.getTime() === cellDateWithoutTime.getTime()) {
-              return 0;
-            }
-            if (cellDateWithoutTime < filterLocalDateAtMidnight) {
-              return -1;
-            }
-            if (cellDateWithoutTime > filterLocalDateAtMidnight) {
-              return 1;
-            }
-
-            // Fallback return value
-            return 0;
-          }
-        }
-      },
+      { headerName: "Status", field: "status", suppressMovable: true }
     ];
 
     this.getAllDeposite();

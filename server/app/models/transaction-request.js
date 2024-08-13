@@ -5,7 +5,7 @@ const depositeSchema = new Schema({
     id: { type: String, required: true, unique: true },
     user_id: { type: String },
     merchant_id: { type: String, required: true },
-    transaction_id: { type: String, required: true },
+    transaction_id: { type: String },
     accountName: { type: String },
     accountNumber: { type: String, default: 0 }, 
     amount: { type: Number, default: 0 },

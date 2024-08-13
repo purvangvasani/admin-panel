@@ -1,178 +1,169 @@
-<div class="bg-light dark:bg-transparent d-flex flex-row align-items-center" style="min-height: 45vh !important">
+<div class="bg-light dark:bg-transparent d-flex flex-row align-items-center mt-3">
     <c-container breakpoint="md">
-        <c-row class="justify-content-center">
+        <c-row class="justify-content-center mb-3">
             <c-col>
                 <header>
                     <h1 class="text-body-secondary">{{merchant}}</h1>
                 </header>
-                <c-card-group>
-                    <c-card>
-                        <c-card-body>
-                            <c-row class="g-4" style="margin-bottom: 10px;">
-                                <c-col xl="3" md="6" sm="6">
-                                    <c-widget-stat-a class="mb-4" color="primary" [title]="'Total Deposit Amount'">
-                                        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-                                            {{totalNoOfCounts.depositAmountTotal|| '0'}}
-                                            <!-- <span class="fs-6 fw-normal">
-                                                (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
-                                            </span> -->
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetActionTemplate">
-                                            <c-dropdown alignment="end" variant="btn-group">
-                                               
-                                            </c-dropdown>
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetChartTemplate">
-                                            <c-chart [data]="data.primary" [options]="options" class="mt-3 mx-3"
-                                                height="50" type="line" />
-                                        </ng-template>
-                                    </c-widget-stat-a>
-                                </c-col>
-                                <c-col xl="3" md="6" sm="6">
-                                    <c-widget-stat-a class="mb-4" color="info" [title]="'Total Deposit Approved'">
-                                        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-                                            {{totalNoOfCounts.depositApprovedCount|| '0'}}
-                                            <!-- <span class="fs-6 fw-normal">
-                                                (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
-                                            </span> -->
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetActionTemplate">
-                                            <c-dropdown alignment="end" variant="btn-group">
-                                                
-                                            </c-dropdown>
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetChartTemplate">
-                                            <c-chart [data]="data.info" [options]="options" class="mt-3 mx-3"
-                                                height="50" type="line" />
-                                        </ng-template>
-                                    </c-widget-stat-a>
-                                </c-col>
-                                <c-col xl="3" md="6" sm="6">
-                                    <c-widget-stat-a class="mb-4" color="warning" [title]="'Total Deposit Rejected'">
-                                        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-                                            {{totalNoOfCounts.depositRejectedCount|| '0'}}
-                                            <!-- <span class="fs-6 fw-normal">
-                                                (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
-                                            </span> -->
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetActionTemplate">
-                                            <c-dropdown alignment="end" variant="btn-group">
+                <c-row class="g-4 mb-3 mt-1">
+                    <c-col xl="3" md="6" sm="6">
+                        <c-widget-stat-a color="primary" [title]="'Total Deposit Amount'">
+                            <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
+                                {{totalNoOfCounts.depositAmountTotal|| '0'}}
+                                <!-- <span class="fs-6 fw-normal">
+                                    (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
+                                </span> -->
+                            </ng-template>
+                            <ng-template cTemplateId="widgetActionTemplate">
+                                <c-dropdown alignment="end" variant="btn-group">
+                                   
+                                </c-dropdown>
+                            </ng-template>
+                            <ng-template cTemplateId="widgetChartTemplate">
+                                <c-chart [data]="data.primary" [options]="options" class="mt-3 mx-3"
+                                    height="50" type="line" />
+                            </ng-template>
+                        </c-widget-stat-a>
+                    </c-col>
+                    <c-col xl="3" md="6" sm="6">
+                        <c-widget-stat-a color="info" [title]="'Total Deposit Approved'">
+                            <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
+                                {{totalNoOfCounts.depositApprovedCount|| '0'}}
+                                <!-- <span class="fs-6 fw-normal">
+                                    (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
+                                </span> -->
+                            </ng-template>
+                            <ng-template cTemplateId="widgetActionTemplate">
+                                <c-dropdown alignment="end" variant="btn-group">
+                                    
+                                </c-dropdown>
+                            </ng-template>
+                            <ng-template cTemplateId="widgetChartTemplate">
+                                <c-chart [data]="data.info" [options]="options" class="mt-3 mx-3"
+                                    height="50" type="line" />
+                            </ng-template>
+                        </c-widget-stat-a>
+                    </c-col>
+                    <c-col xl="3" md="6" sm="6">
+                        <c-widget-stat-a color="warning" [title]="'Total Deposit Rejected'">
+                            <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
+                                {{totalNoOfCounts.depositRejectedCount|| '0'}}
+                                <!-- <span class="fs-6 fw-normal">
+                                    (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
+                                </span> -->
+                            </ng-template>
+                            <ng-template cTemplateId="widgetActionTemplate">
+                                <c-dropdown alignment="end" variant="btn-group">
 
-                                            </c-dropdown>
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetChartTemplate">
-                                            <c-chart [data]="data.warning" [options]="options" class="mt-3 mx-3"
-                                                height="50" type="line" />
-                                        </ng-template>
-                                    </c-widget-stat-a>
-                                </c-col>
-                                <c-col xl="3" md="6" sm="6">
-                                    <c-widget-stat-a class="mb-4" color="danger" [title]="'Total Deposit Processing'">
-                                        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-                                            {{totalNoOfCounts.depositProcessingCount|| '0'}}
-                                            <!-- <span class="fs-6 fw-normal">
-                                                (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
-                                            </span> -->
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetActionTemplate">
-                                            <c-dropdown alignment="end" variant="btn-group">
+                                </c-dropdown>
+                            </ng-template>
+                            <ng-template cTemplateId="widgetChartTemplate">
+                                <c-chart [data]="data.warning" [options]="options" class="mt-3 mx-3"
+                                    height="50" type="line" />
+                            </ng-template>
+                        </c-widget-stat-a>
+                    </c-col>
+                    <c-col xl="3" md="6" sm="6">
+                        <c-widget-stat-a color="danger" [title]="'Total Deposit Processing'">
+                            <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
+                                {{totalNoOfCounts.depositProcessingCount|| '0'}}
+                                <!-- <span class="fs-6 fw-normal">
+                                    (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
+                                </span> -->
+                            </ng-template>
+                            <ng-template cTemplateId="widgetActionTemplate">
+                                <c-dropdown alignment="end" variant="btn-group">
 
-                                            </c-dropdown>
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetChartTemplate">
-                                            <c-chart [data]="data.danger" [options]="options" class="mt-3 mx-3"
-                                                height="50" type="line" />
-                                        </ng-template>
-                                    </c-widget-stat-a>
-                                </c-col>
-                            </c-row>
-                            <c-row class="g-4" style="margin-bottom: 10px;">
-                                <c-col xl="3" md="6" sm="6">
-                                    <c-widget-stat-a class="mb-4" color="primary" [title]="'Total Withdrawal Amount'">
-                                        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-                                            {{totalNoOfCounts.withdrawalAmountTotal|| '0'}}
-                                            <!-- <span class="fs-6 fw-normal">
-                                                    (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
-                                                </span> -->
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetActionTemplate">
-                                            <c-dropdown alignment="end" variant="btn-group">
+                                </c-dropdown>
+                            </ng-template>
+                            <ng-template cTemplateId="widgetChartTemplate">
+                                <c-chart [data]="data.danger" [options]="options" class="mt-3 mx-3"
+                                    height="50" type="line" />
+                            </ng-template>
+                        </c-widget-stat-a>
+                    </c-col>
+                </c-row>
+                <c-row class="g-4 mb-3">
+                    <c-col xl="3" md="6" sm="6">
+                        <c-widget-stat-a color="primary" [title]="'Total Withdrawal Amount'">
+                            <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
+                                {{totalNoOfCounts.withdrawalAmountTotal|| '0'}}
+                                <!-- <span class="fs-6 fw-normal">
+                                        (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
+                                    </span> -->
+                            </ng-template>
+                            <ng-template cTemplateId="widgetActionTemplate">
+                                <c-dropdown alignment="end" variant="btn-group">
 
-                                            </c-dropdown>
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetChartTemplate">
-                                            <c-chart [data]="data.primary" [options]="options" class="mt-3 mx-3"
-                                                height="50" type="line" />
-                                        </ng-template>
-                                    </c-widget-stat-a>
-                                </c-col>
-                                <c-col xl="3" md="6" sm="6">
-                                    <c-widget-stat-a class="mb-4" color="info" [title]="'Total Withdrawal Approved'">
-                                        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-                                            {{totalNoOfCounts.withdrawalApprovedCount|| '0'}}
-                                            <!-- <span class="fs-6 fw-normal">
-                                                    (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
-                                                </span> -->
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetActionTemplate">
-                                            <c-dropdown alignment="end" variant="btn-group">
+                                </c-dropdown>
+                            </ng-template>
+                            <ng-template cTemplateId="widgetChartTemplate">
+                                <c-chart [data]="data.primary" [options]="options" class="mt-3 mx-3"
+                                    height="50" type="line" />
+                            </ng-template>
+                        </c-widget-stat-a>
+                    </c-col>
+                    <c-col xl="3" md="6" sm="6">
+                        <c-widget-stat-a color="info" [title]="'Total Withdrawal Approved'">
+                            <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
+                                {{totalNoOfCounts.withdrawalApprovedCount|| '0'}}
+                                <!-- <span class="fs-6 fw-normal">
+                                        (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
+                                    </span> -->
+                            </ng-template>
+                            <ng-template cTemplateId="widgetActionTemplate">
+                                <c-dropdown alignment="end" variant="btn-group">
 
-                                            </c-dropdown>
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetChartTemplate">
-                                            <c-chart [data]="data.info" [options]="options" class="mt-3 mx-3"
-                                                height="50" type="line" />
-                                        </ng-template>
-                                    </c-widget-stat-a>
-                                </c-col>
-                                <c-col xl="3" md="6" sm="6">
-                                    <c-widget-stat-a class="mb-4" color="warning" [title]="'Total Withdrawal Rejected'">
-                                        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-                                            {{totalNoOfCounts.withdrawalRejectedCount|| '0'}}
-                                            <!-- <span class="fs-6 fw-normal">
-                                                        (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
-                                                    </span> -->
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetActionTemplate">
-                                            <c-dropdown alignment="end" variant="btn-group">
-                                            </c-dropdown>
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetChartTemplate">
-                                            <c-chart [data]="data.warning" [options]="options" class="mt-3 mx-3"
-                                                height="50" type="line" />
-                                        </ng-template>
-                                    </c-widget-stat-a>
-                                </c-col>
-                                <c-col xl="3" md="6" sm="6">
-                                    <c-widget-stat-a class="mb-4" color="danger"
-                                        [title]="'Total Withdrawal Processing'">
-                                        <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
-                                            {{totalNoOfCounts.withdrawalProcessingCount|| '0'}}
-                                            <!-- <span class="fs-6 fw-normal">
-                                                        (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
-                                                    </span> -->
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetActionTemplate">
-                                            <c-dropdown alignment="end" variant="btn-group">
-                                            </c-dropdown>
-                                        </ng-template>
-                                        <ng-template cTemplateId="widgetChartTemplate">
-                                            <c-chart [data]="data.danger" [options]="options" class="mt-3 mx-3"
-                                                height="50" type="line" />
-                                        </ng-template>
-                                    </c-widget-stat-a>
-                                </c-col>
-                            </c-row>
-                        </c-card-body>
-                    </c-card>
-                </c-card-group>
+                                </c-dropdown>
+                            </ng-template>
+                            <ng-template cTemplateId="widgetChartTemplate">
+                                <c-chart [data]="data.info" [options]="options" class="mt-3 mx-3"
+                                    height="50" type="line" />
+                            </ng-template>
+                        </c-widget-stat-a>
+                    </c-col>
+                    <c-col xl="3" md="6" sm="6">
+                        <c-widget-stat-a color="warning" [title]="'Total Withdrawal Rejected'">
+                            <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
+                                {{totalNoOfCounts.withdrawalRejectedCount|| '0'}}
+                                <!-- <span class="fs-6 fw-normal">
+                                            (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
+                                        </span> -->
+                            </ng-template>
+                            <ng-template cTemplateId="widgetActionTemplate">
+                                <c-dropdown alignment="end" variant="btn-group">
+                                </c-dropdown>
+                            </ng-template>
+                            <ng-template cTemplateId="widgetChartTemplate">
+                                <c-chart [data]="data.warning" [options]="options" class="mt-3 mx-3"
+                                    height="50" type="line" />
+                            </ng-template>
+                        </c-widget-stat-a>
+                    </c-col>
+                    <c-col xl="3" md="6" sm="6">
+                        <c-widget-stat-a color="danger"
+                            [title]="'Total Withdrawal Processing'">
+                            <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
+                                {{totalNoOfCounts.withdrawalProcessingCount|| '0'}}
+                                <!-- <span class="fs-6 fw-normal">
+                                            (40.9% <svg [cIcon]="icons.cilArrowTop"></svg>)
+                                        </span> -->
+                            </ng-template>
+                            <ng-template cTemplateId="widgetActionTemplate">
+                                <c-dropdown alignment="end" variant="btn-group">
+                                </c-dropdown>
+                            </ng-template>
+                            <ng-template cTemplateId="widgetChartTemplate">
+                                <c-chart [data]="data.danger" [options]="options" class="mt-3 mx-3"
+                                    height="50" type="line" />
+                            </ng-template>
+                        </c-widget-stat-a>
+                    </c-col>
+                </c-row>
             </c-col>
         </c-row>
-        <c-row class="justify-content-center">
+        <c-row class="justify-content-center mb-4">
             <c-col>
-                <header>
-                    <h1> </h1>
-                </header>
                 <c-card-group>
                     <c-card>
                         <c-card-body>
@@ -180,35 +171,6 @@
                                 <c-col lg="12" xl="12">
                                     <div class="example-wrapper">
                                         <div class="example-header">
-
-                                            <!-- <div style="margin-top: 6px">
-                                                <div style="float: right;">
-                                                    <c-pagination align="end" size="sm">
-                                                        <li cPageItem [disabled]="currentDepositPage === 1"
-                                                            [ngStyle]="{'cursor': currentDepositPage === 1 ? '' : 'pointer'}">
-                                                            <a cPageLink
-                                                                (click)="handleDepositPagination(currentDepositPage - 1)"
-                                                                [routerLink]>Previous</a>
-                                                        </li>
-                                                        <ng-container
-                                                            *ngFor="let n of numSequence(totalDepositPages); let i = index;">
-                                                            <li cPageItem [active]="currentDepositPage === (i+1)"
-                                                                [ngStyle]="{'cursor': currentDepositPage === (i+1) ? '' : 'pointer'}">
-                                                                <a cPageLink
-                                                                    (click)="currentDepositPage === (i+1) ? null : handleDepositPagination(i+1)"
-                                                                    [routerLink]>{{i+1}}</a>
-                                                            </li>
-                                                        </ng-container>
-                                                        <li cPageItem
-                                                            [disabled]="currentDepositPage === totalDepositPages"
-                                                            [ngStyle]="{'cursor': currentDepositPage === totalDepositPages ? '' : 'pointer'}">
-                                                            <a cPageLink
-                                                                (click)="handleDepositPagination(currentDepositPage + 1)"
-                                                                [routerLink]>Next</a>
-                                                        </li>
-                                                    </c-pagination>
-                                                </div>
-                                            </div> -->
                                             <div class="header-container">
                                                 <div class="left-header">
                                                     <!-- <strong class="b-strong">Deposit</strong> -->
@@ -243,7 +205,7 @@
                                             </div>
                                         </div>
                                         <div class="data-table">
-                                            <ag-grid-angular style="width: 100%; height: 500px;"
+                                            <ag-grid-angular style="width: 100%; height: 350px;"
                                                 [columnDefs]="columnDefs" [defaultColDef]="defaultColDef"
                                                 [rowSelection]="rowSelection" [paginationPageSize]="paginationPageSize"
                                                 [paginationPageSizeSelector]="paginationPageSizeSelector"
@@ -263,12 +225,8 @@
                                 <c-col lg="12" xl="12">
                                     <div class="example-wrapper">
                                         <div class="example-header">
-
-                                            <!-- <div style="margin-top: 6px"> -->
-
                                             <div class="header-container">
                                                 <div class="left-header">
-                                                    <!-- <strong class="b-strong">Deposit</strong> -->
                                                     <h5 class="b-strong">Withdrawal </h5>
                                                 </div>
                                                 <div class="right-header">
@@ -298,36 +256,9 @@
                                                     </c-pagination>
                                                 </div>
                                             </div>
-                                            <!-- <div style="float: right;">
-                                                    <c-pagination align="end" size="sm">
-                                                        <li cPageItem [disabled]="currentWithdrawalPage === 1"
-                                                            [ngStyle]="{'cursor': currentWithdrawalPage === 1 ? '' : 'pointer'}">
-                                                            <a cPageLink
-                                                                (click)="handleWithdrawalPagination(currentWithdrawalPage - 1)"
-                                                                [routerLink]>Previous</a>
-                                                        </li>
-                                                        <ng-container
-                                                            *ngFor="let n of numSequence(totalWithdrawalPages); let i = index;">
-                                                            <li cPageItem [active]="currentWithdrawalPage === (i+1)"
-                                                                [ngStyle]="{'cursor': currentWithdrawalPage === (i+1) ? '' : 'pointer'}">
-                                                                <a cPageLink
-                                                                    (click)="currentWithdrawalPage === (i+1) ? null : handleWithdrawalPagination(i+1)"
-                                                                    [routerLink]>{{i+1}}</a>
-                                                            </li>
-                                                        </ng-container>
-                                                        <li cPageItem
-                                                            [disabled]="currentWithdrawalPage === totalWithdrawalPages"
-                                                            [ngStyle]="{'cursor': currentWithdrawalPage === totalWithdrawalPages ? '' : 'pointer'}">
-                                                            <a cPageLink
-                                                                (click)="handleWithdrawalPagination(currentWithdrawalPage + 1)"
-                                                                [routerLink]>Next</a>
-                                                        </li>
-                                                    </c-pagination>
-                                                </div> -->
-                                            <!-- </div> -->
                                         </div>
                                         <div class="data-table">
-                                            <ag-grid-angular style="width: 100%; height: 500px;"
+                                            <ag-grid-angular style="width: 100%; height: 350px;"
                                                 [columnDefs]="columnDefs" [defaultColDef]="defaultColDef"
                                                 [rowSelection]="rowSelection" [paginationPageSize]="paginationPageSize"
                                                 [paginationPageSizeSelector]="paginationPageSizeSelector"

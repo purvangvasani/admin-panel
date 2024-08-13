@@ -41,7 +41,8 @@ export class MerchantComponent implements OnInit, OnDestroy {
 
     public totalPages: number = 1;
     public currentPage: number = 1;
-    private editMerchantData: any;
+    private editMerchantData: any = null;
+    public merchantId: any = null;
     public deleteData: any;
     public deleteModalVisible = false;
     labelType: string = 'accountName'; // default label type
@@ -174,11 +175,14 @@ export class MerchantComponent implements OnInit, OnDestroy {
     public cancel = () => {
         this.editMerchantData = null;
         this.deleteData = null;
+        this.merchantId = null
+        this.merchantForm.reset();
         this.deleteModalVisible = false;
         this.buildForm();
     }
 
     public editMerchant = (data: any) => {
+        this.merchantId = data.merchantId;
         this.editMerchantData = data;
         this.buildForm(data);
         this.updateOptionStates(data?.mode ? data.mode : this.merchantForm.get('mode').value, data);
@@ -192,6 +196,7 @@ export class MerchantComponent implements OnInit, OnDestroy {
                 this.cancel()
                 this.getAll();
                 this.getMerchantForAccounts();
+                this.updateOptionStates('upi');
             } else {
                 this.toastrService.showError('Error!', data.message)
             }
@@ -212,6 +217,7 @@ export class MerchantComponent implements OnInit, OnDestroy {
                 this.cancel();
                 this.getAll();
                 this.getMerchantForAccounts();
+                this.updateOptionStates('upi');
             } else {
                 this.loaderService.hideLoader();
                 this.toastrService.showError('Error!', data.message || data.msg)

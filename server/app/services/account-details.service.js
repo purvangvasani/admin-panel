@@ -16,7 +16,7 @@ function getAll(criteria) {
         try {
             let totalPages = 0;
             const page = parseInt(criteria.pageQuery) || 1; // Page number from the request query, default is 1
-            const pageSize = 2; // Number of records per page
+            const pageSize = criteria.pageSize || 5; // Number of records per page
             let totalCount = 0;
 
             let condition = [];
@@ -64,10 +64,19 @@ function add(criteria) {
                     let isExists = await AccountDetailsCollection.findOne({ accountNumber: criteria.accountNumber }).lean().exec();
                     if (isExists) {
                         reject({ success: false, message: 'Account with Account Number already exists' });
+                        return
                     }
                 } catch (error) {
                     console.error('Error checking account existence:', error);
                 }
+            }
+            if (!new RegExp(/^[0-9]{9,18}$/).test(criteria.accountNumber)) {
+                reject({ success: false, message: 'Account Number Validation Failed!' });
+                return;
+            }
+            if (!new RegExp(/[A-Z|a-z]{4}[0][a-zA-Z0-9]{6}$/).test(criteria.ifsc)) {
+                reject({ success: false, message: 'IFSC Validation Failed!' });
+                return;
             }
 
             let accountId = await helper.generateCounterId('accountDetails', 'accountId', 'QQAD_');
@@ -81,7 +90,7 @@ function add(criteria) {
                     upiId: criteria.upiId,
                     userId: criteria.userId,
                     accountId: accountId,
-                    imageUrl: criteria.imageUrl,
+                    qrcode: criteria.qrcode,
                 });
 
                 await accountData.save();

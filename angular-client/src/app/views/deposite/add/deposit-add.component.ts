@@ -23,6 +23,8 @@ export class DepositAddComponent implements OnInit {
   public merchant = "";
   public depositFields: any = [];
   public id: any;
+  public url: any;
+  public merchantData: any = null;
 
   constructor(
     private fb: FormBuilder,
@@ -53,8 +55,9 @@ export class DepositAddComponent implements OnInit {
       merchantId: new FormControl(data && data.merchantId ? data.merchantId : null),
       amount: new FormControl(data && data.amount ? data.amount : null),
       transactionId: new FormControl(data && data.transactionId ? data.transactionId : null),
-      // status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
-      // type: new FormControl('Deposit'),
+      mode: new FormControl(data && data.accountDetails?.mode ? data.accountDetails?.mode : null),
+      status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
+      type: new FormControl('Deposit'),
     });
     this.depositForm.get('merchantId')?.disable();
     // Add dynamic fields from accountDetails
@@ -136,7 +139,10 @@ export class DepositAddComponent implements OnInit {
     let success = (data: any) => {
       if (data && data.success) {
         if (data.data.merchantname) {
+          this.merchantData = data.data;
+          console.log(data.data)
           this.merchant = data.data.merchantname;
+          this.url = data.data.accountDetails?.qrcode || '';
           this.depositFields = data.data.depositFields.deposits?.length ? data.data.depositFields.deposits[0].typeDetails : [];
           this.buildForm(data.data || {});
         }

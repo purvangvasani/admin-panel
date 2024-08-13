@@ -2,7 +2,12 @@
     <c-row>
         <c-col>
             <button cButton color="primary" (click)="handleCreateEvent()" *ngIf="access.add"
-                style="float: left;">Create</button>
+                style="float: left;">
+                <svg width="1rem" height="1rem" viewBox="0 0 24 24" fill="#000000" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 12H20M12 4V20" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Create
+            </button>
         </c-col>
     </c-row>
 </div>

@@ -26,14 +26,29 @@
                             *ngIf="accountForm.controls['upiId'].hasError('required') && accountForm.controls['upiId'].touched">
                             UPI ID is required</span>
                     </div>
-                    <div class="col-md-4" *ngIf="accountForm.controls['mode'].value === 'upi'">
+                    <!-- <div class="col-md-4" *ngIf="accountForm.controls['mode'].value === 'upi'">
                         <label class="col-form-label">QR Code</label>
                         <c-input-group class="mb-3">
                             <input cFormControl id="inputGroupFile02" type="file" name="file"
                                 (change)="onFileSelected($event)" accept=".jpg,.png" />
-                            <!-- <div *ngIf="fileName">{{ fileName }}</div> -->
                         </c-input-group>
                         <img *ngIf="imageSrc" [src]="imageSrc" alt="Image Preview" class="img-preview" />
+                    </div> -->
+                    <div class="col-md-4" *ngIf="accountForm.controls['mode'].value === 'upi'">
+                        <label for="staticEmail" class="col-form-label">QR Code</label>
+                        <div class="col-form-label">
+                            <div class="image-container">
+                                <div class="imagePreview" *ngIf="url && url !== ''">
+                                    <img [src]="url" [alt]="accountForm.value.upiId">
+                                </div>
+                                <label class="hoverable" for="fileInput">
+                                    <div class="hover-text" *ngIf="!url">Select Logo</div>
+                                </label>
+                                <br />
+                                <input id="fileInput" type="file" (ngModel)="url" class="select-profile-picture"
+                                    accept="image/x-png,image/jpg,image/jpeg" (change)="onSelectFile($event)" />
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group row mb-3" *ngIf="accountForm.controls['mode'].value === 'imps'">
@@ -184,7 +199,7 @@
                             </div>
                         </div>
                         <div class="data-table">
-                            <ag-grid-angular style="width: 100%; height: 500px;" [columnDefs]="columnDefs"
+                            <ag-grid-angular style="width: 100%; height: 400px;" [columnDefs]="columnDefs"
                                 [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
                                 [paginationPageSize]="paginationPageSize"
                                 [paginationPageSizeSelector]="paginationPageSizeSelector" [pagination]="true"

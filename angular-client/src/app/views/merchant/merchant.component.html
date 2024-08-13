@@ -22,7 +22,7 @@
                         <label cLabel="col" for="Mode">
                             Mode
                         </label>
-                        <select formControlName="mode" aria-label="Default select example" cSelect
+                        <select formControlName="mode" aria-label="Default select example" cSelect [attr.disabled]="merchantId ? true : null"
                             (change)="updateOptionStates($event)">
                             <option value="upi">UPI ID
                             </option>

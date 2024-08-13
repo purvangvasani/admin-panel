@@ -7,35 +7,13 @@
                         <c-card-header>Deposit Request Form</c-card-header>
                         <c-card-body>
                             <form cForm [formGroup]="depositForm">
-                                <!-- <c-row class="row">
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <label cLabel="col" for="merchantId">
-                                            Merchant
-                                        </label>
-                                        <input cFormControl placeholder="Merchant Id" type="text" value={{merchant}}
-                                            formControlName="merchantId" id="merchantId" name="merchantId" />
-                                    </c-col>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <label cLabel="col" for="account">
-                                            Amount
-                                        </label>
-                                        <input cFormControl placeholder="Amount" type="number" formControlName="amount"
-                                            id="amount" name="amount" />
-                                    </c-col>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <label cLabel="col" for="transactionId">
-                                            Transaction Id
-                                        </label>
-                                        <input cFormControl placeholder="Transaction Id" type="text"
-                                            formControlName="transactionId" id="transactionId" name="transactionId" />
-                                    </c-col>
-                                </c-row> -->
                                 <c-row class="row">
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
                                         <label cLabel="col" for="merchantId">
                                             Merchant
                                         </label>
-                                        <input cFormControl placeholder="Merchant Id" type="text" value={{merchant}}
+                                        {{merchantData?.merchantname || 'N/A'}}
+                                        <input cFormControl placeholder="Merchant Name" type="text" value={{merchant}}
                                             formControlName="merchantId" id="merchantId" name="merchantId" />
                                     </c-col>
                                     <c-col *ngFor="let field of getFormFields()" sm="12" xs="12" md="6" lg="4"
@@ -49,6 +27,9 @@
                                     </c-col>
                                 </c-row>
                             </form>
+                            <div class="imagePreview" *ngIf="url && url !== ''">
+                                <img height="300px" width="300px" [src]="url" [alt]="merchant">
+                            </div>
                             <c-row class="row mt-2">
                                 <ng-container *ngIf="depositFields.length">
                                     <ng-container *ngFor="let fields of depositFields">

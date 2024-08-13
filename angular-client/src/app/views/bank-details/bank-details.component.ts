@@ -41,23 +41,11 @@ export class BankDetailsComponent implements OnInit, OnDestroy {
   public refList = [{ label: "All Partners", value: 'allPartners' }, { label: "22bet.com", value: '22bet.com' }];
   public displayModeList = [
     { label: 'input', value: 'input' },
-    { label: 'time', value: 'time' },
-    { label: 'birthdate', value: 'birthdate' },
     { label: 'textarea', value: 'textarea' },
-    { label: 'file', value: 'file' },
-    { label: 'select', value: 'select' },
-    { label: 'html', value: 'html' },
-    { label: 'qrcode', value: 'qrcode' },
-    { label: 'phone number', value: 'phone number' },
-    { label: 'link', value: 'link' },
-
   ];
   public fieldList = [
     { label: 'text', value: 'text' },
     { label: 'number', value: 'number' },
-    { label: 'checkbox', value: 'checkbox' },
-    { label: 'null', value: 'null' },
-
   ]
 
   public deleteModalVisible = false;

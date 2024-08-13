@@ -61,7 +61,7 @@ export class AccountDetailsService {
 
 
   deleteById(data: any, successCallback: any, errorCallback: any) {
-    const url = this.apiUrl + '/account/delete';
+    const url = this.apiUrl + '/account/deleteById';
     return this.delegatorService.post(data, url, null, successCallback, errorCallback)
   }
 

@@ -9,7 +9,7 @@ const AccountDetailsSchema = new Schema({
     accountNumber: { type: String },
     ifsc: { type: String },
     userId: { type: String, required: true },
-    imageUrl: { type: String }
+    qrcode: { type: String }
 
 
 }, { collection: 'accountDetails', timestamps: true });

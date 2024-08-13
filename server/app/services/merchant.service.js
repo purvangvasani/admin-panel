@@ -23,7 +23,7 @@ function getAll(criteria) {
         try {
             let totalPages = 0;
             const page = parseInt(criteria.pageQuery) || 1; // Page number from the request query, default is 1
-            const pageSize = 2; // Number of records per page
+            const pageSize = criteria.pageSize || 5; // Number of records per page
             let totalCount = 0;
 
             let condition = [];
@@ -89,10 +89,7 @@ function getMerchantForAccounts(criteria) {
                 condition.push({ $sort: { updatedAt: 1 } });
             }
             let merchantData = await MerchantCollection.aggregate(condition).exec();
-
-            // if (criteria && ((criteria.merchantname && typeof criteria.merchantname !== 'object') || criteria._id)) {
-            //     merchantData = (merchantData && merchantData.length) ? merchantData[0] : {};
-            // }
+            
             resolve({ success: true, message: 'success!', data: merchantData, });
         } catch (err) {
             reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
@@ -229,6 +226,9 @@ function getById(criteria) {
                         if (bank.length) {
                             bank = (bank && bank.length) ? bank[0] : {};
                             merchant._doc['depositFields'] = bank;
+                        } else {
+                            reject({ success: false, message: 'Bank is not linked with the Merchant! Please contact the administrator.' });
+                            return;
                         }
                     }
                 } else {

@@ -37,7 +37,7 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
     public accountList: any = [];
     public totalPages: number = 1;
     public currentPage: number = 1;
-    private editAccountData: any;
+    public editAccountData: any;
     public deleteData: any;
     public deleteModalVisible = false;
     public accessSubModule: any = null;
@@ -56,10 +56,17 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
     public rowData!: any[];
     public themeClass: string =
         "ag-theme-quartz";
-    fileName: string = '';
-    selectedFile: File | null = null; // Store the selected file separately
-    imageSrc: string | ArrayBuffer | null = null;
+    public url: any = null;
+    public onSelectFile = (event: any): void => {
 
+        if (event.target.files && event.target.files[0]) {
+          var reader = new FileReader();
+          reader.readAsDataURL(event.target.files[0]); 
+          reader.onload = (event) => {
+            this.url = event?.target?.result;
+          };
+        }
+      }
     constructor(
         private route: ActivatedRoute,
         private localStorageService: LocalStorageService,
@@ -94,10 +101,12 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
                                 filter: false,
                                 sortable: false,
                                 valueFormatter: (params: ValueFormatterParams) => {
-                                    return `${params.node!.data.userId}`;
+                                    return `${params.node!.data.accountId}`;
                                 }, suppressMovable: true
                             },
-                            { headerName: "Mode", field: "mode", suppressMovable: true },
+                            { headerName: "Mode", valueFormatter: (params: ValueFormatterParams) => {
+                                return `${params.node!.data.mode === 'upi' ? 'UPI ID' : 'IMPS'}`;
+                            }, suppressMovable: true },
                             { headerName: "UPI", field: "upiId", suppressMovable: true },
                             { headerName: "Account Name", field: "accountName", suppressMovable: true },
                             { headerName: "Account Number", field: "accountNumber", suppressMovable: true },
@@ -175,34 +184,34 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
 
         });
     }
-    onFileSelected(event: any): void {
-        const fileInput = event.target as HTMLInputElement;
-        const file: File = fileInput.files![0];
+    // onFileSelected(event: any): void {
+    //     const fileInput = event.target as HTMLInputElement;
+    //     const file: File = fileInput.files![0];
 
-        if (file) {
-            const validExtensions = ['image/jpeg', 'image/png'];
-            if (!validExtensions.includes(file.type)) {
-                this.toastrService.showWarning('Warning!', 'Only JPG and PNG files are allowed!');
-                this.selectedFile = null;
-                this.fileName = '';
-                fileInput.value = '';  // Clear the file input
-                return;
-            }
+    //     if (file) {
+    //         const validExtensions = ['image/jpeg', 'image/png'];
+    //         if (!validExtensions.includes(file.type)) {
+    //             this.toastrService.showWarning('Warning!', 'Only JPG and PNG files are allowed!');
+    //             this.selectedFile = null;
+    //             this.fileName = '';
+    //             fileInput.value = '';  // Clear the file input
+    //             return;
+    //         }
 
-            this.fileName = file.name;
-            this.selectedFile = file;
-            // Create a FileReader to read the file and generate a preview
-            const reader = new FileReader();
-            reader.onload = (e: any) => {
-                this.imageSrc = e.target.result;
-            };
-            reader.readAsDataURL(file);
-            this.accountForm.patchValue({
-                image: file.name // Update with file name for the form control
-            });
-            this.accountForm.get('image')?.updateValueAndValidity();
-        }
-    }
+    //         this.fileName = file.name;
+    //         this.selectedFile = file;
+    //         // Create a FileReader to read the file and generate a preview
+    //         const reader = new FileReader();
+    //         reader.onload = (e: any) => {
+    //             this.imageSrc = e.target.result;
+    //         };
+    //         reader.readAsDataURL(file);
+    //         this.accountForm.patchValue({
+    //             image: file.name // Update with file name for the form control
+    //         });
+    //         this.accountForm.get('image')?.updateValueAndValidity();
+    //     }
+    // }
 
 
     toggleDeleteModal(data: any) {
@@ -212,6 +221,7 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
 
     public editAccount = (data: any) => {
         this.editAccountData = data;
+        this.url = data.qrcode;
         this.buildForm(data);
     }
 
@@ -223,6 +233,8 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
     public cancel = () => {
         this.editAccountData = null;
         this.deleteData = null;
+        this.url = '';
+        this.accountForm.reset();
         this.deleteModalVisible = false;
         this.buildForm();
     }
@@ -273,19 +285,7 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while add/update account details..')
         }
         this.loaderService.showLoader();
-        // const formData = new FormData();
-        // // Append the selected file if available
-        // if (this.selectedFile) {
-        //     formData.append('image', this.selectedFile);
-        // }
-        // // Append other form values to FormData
-        // Object.keys(this.accountForm.controls).forEach(key => {
-        //     const value = this.accountForm.get(key)?.value;
-        //     if (key !== 'imageName') { // Exclude imageName as it is only used for validation
-        //         formData.append(key, value);
-        //     }
-        // });
-
+        this.accountForm.value['qrcode'] = this.url;
         if (this.editAccountData?.accountId) {
             this.accountForm.value['accountId'] = this.editAccountData?.accountId;
             this.accountDetailsService.update(this.accountForm.value, success, failure)
@@ -324,7 +324,7 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
             this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching account details.')
         }
         this.loaderService.showLoader();
-        this.accountDetailsService.getAll({ pageQuery: this.currentPage }, success, failure)
+        this.accountDetailsService.getAll({ pageQuery: this.currentPage, pageSize: this.paginationPageSize }, success, failure)
     }
     onPaginationChanged = (event: any) => {
         console.log("onPaginationPageLoaded");

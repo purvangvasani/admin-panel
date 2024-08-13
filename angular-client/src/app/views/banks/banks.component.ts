@@ -34,6 +34,7 @@ export class BanksComponent implements OnInit, OnDestroy {
   private paramsubscriptions: Subscription[] = [];
   public editBankData: any;
   private params: Subscription | undefined
+  public paginationPageSize = 10;
 
   constructor(
     private toastrService: ToastService,
@@ -110,7 +111,7 @@ export class BanksComponent implements OnInit, OnDestroy {
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while validating credentials.')
     }
     this.loaderService.showLoader();
-    this.bankService.getAll({ pageQuery: this.currentPage }, success, failure)
+    this.bankService.getAll({ pageQuery: this.currentPage, pageSize: this.paginationPageSize }, success, failure)
   }
 
   numSequence(n: number): Array<number> {
