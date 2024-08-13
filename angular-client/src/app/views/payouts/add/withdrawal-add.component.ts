@@ -23,6 +23,7 @@ export class WithdrawalAddComponent implements OnInit {
 
   public withdrawalForm: FormGroup | any;
   public merchant = "";
+  public merchantData: any = null;
   public withdrawalFields: any = [];
   public id: any;
   constructor(
@@ -51,11 +52,11 @@ export class WithdrawalAddComponent implements OnInit {
   private buildForm = (data?: any) => {
     this.withdrawalForm = this.fb.group({
       merchantId: new FormControl(data && data.merchantId ? data.merchantId : null),
-      // accountName: new FormControl(data && data.accountName ? data.accountName : null),
-      // accountNumber: new FormControl(data && data.accountNumber ? data.accountNumber : null),
-      // amount: new FormControl(data && data.amount ? data.amount : null),
-      // transactionId: new FormControl(data && data.transactionId ? data.transactionId : null),
-      // operationType: new FormControl(data && data.operationType ? data.operationType : null),
+      accountName: new FormControl(data && data.accountName ? data.accountName : null),
+      accountNumber: new FormControl(data && data.accountNumber ? data.accountNumber : null),
+      amount: new FormControl(data && data.amount ? data.amount : null),
+      ifsc: new FormControl(data && data.ifsc ? data.ifsc : null),
+      upiId: new FormControl(data && data.upiId ? data.upiId : null),
       status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
       type: new FormControl('Withdrawal'),
     });
@@ -97,6 +98,7 @@ export class WithdrawalAddComponent implements OnInit {
     let success = (data: any) => {
       if (data && data.success) {
         if (data.data.merchantname) {
+          this.merchantData = data.data;
           this.merchant = data.data.merchantname;
           this.withdrawalFields = data.data.depositFields.withdrawals?.length ? data.data.depositFields.withdrawals[0].typeDetails : [];
         } 

@@ -204,7 +204,9 @@ export class MerchantSummaryComponent implements OnInit {
   private makeTableDeposit() {
     this.columnDefs = [
       // this row just shows the row index, doesn't use any data from the row
-      { headerName: "Account Name", field: "accountName", suppressMovable: true },
+      { headerName: "Merchant", valueFormatter: (params: ValueFormatterParams) => {
+        return `${params.node!.data.merchantInfo.merchantname + '- (' + params.node!.data.merchantInfo?.mode + ')' || '-'}`;
+      }, suppressMovable: true },
       { headerName: "Amount", field: "amount", suppressMovable: true }, 
       { headerName: "Status", field: "status", suppressMovable: true }
     ];

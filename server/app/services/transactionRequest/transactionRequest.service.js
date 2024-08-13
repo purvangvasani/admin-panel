@@ -31,9 +31,20 @@ function getAll(criteria) {
                     const skip = (page - 1) * pageSize;
                     condition.push({ $skip: skip }, { $limit: pageSize })
                 }
+                let merchantLookup = {
+                    $lookup: {
+                        from: 'merchant',           // collection to join
+                        localField: 'merchant_id',   // field from the transactions collection
+                        foreignField: 'merchantId', // field from the merchants collection
+                        as: 'merchantInfo'          // output array field
+                    }
+                }
+                condition.push(merchantLookup)
+                condition.push({
+                    $unwind: '$merchantInfo' // Unwind the user array created by $lookup
+                })
 
                 let transactions = await TransactionCollection.aggregate(condition).exec();
-                // let transactions = PREDEFINEDDATA.data;
                 if (transactions && !transactions.length) {
                     return reject({ success: false, status: helpers.error.status.Forbidden, message: 'No Data found' });
                 }
@@ -53,9 +64,9 @@ function addTransaction(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
 
-            let isExists = await TransactionCollection.findOne({ transaction_id: criteria.transaction_id }).lean().exec();
-            if (isExists && isExists.merchant_id) {
-                reject({ success: false, message: 'You cannot add duplicate transaction Id' });
+            let isExists = await TransactionCollection.findOne({ transaction_id: criteria.transactionId }).lean().exec();
+            if (isExists && isExists.id) {
+                reject({ success: false, message: 'Duplicate Transaction Id detected.' });
                 return;
             }
 

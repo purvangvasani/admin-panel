@@ -91,7 +91,9 @@ export class DepositeComponent implements OnInit, OnDestroy {
                   return `${params.node!.data.id}`;
                 }, suppressMovable: true
               },
-              { headerName: "Merchant Id", field: "merchant_id", suppressMovable: true },
+              { headerName: "Merchant", valueFormatter: (params: ValueFormatterParams) => {
+                return `${params.node!.data.merchantInfo.merchantname + '- (' + params.node!.data.merchantInfo?.mode + ')' || '-'}`;
+              }, suppressMovable: true },
               {
                 field: 'createdAt',
                 filter: 'agDateColumnFilter',
@@ -127,12 +129,10 @@ export class DepositeComponent implements OnInit, OnDestroy {
                   }
                 }
               },
-              { headerName: "Operation Type", field: "operationType", suppressMovable: true },
               { headerName: "Transaction Id", field: "transaction_id", suppressMovable: true },
               { headerName: "Amount", field: "amount", suppressMovable: true },
               { headerName: "Status", field: "status", suppressMovable: true },
-              { headerName: "Account Number", field: "accountNumber", suppressMovable: true },
-              { headerName: "Account Name", field: "accountName", suppressMovable: true }
+              { headerName: "User Info", field: "accountName", suppressMovable: true }
             ];
             if (this.access?.edit) {
               this.columnDefs.push({

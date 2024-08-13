@@ -53,19 +53,19 @@ export class DepositAddComponent implements OnInit {
   private buildForm = (data?: any) => {
     this.depositForm = this.fb.group({
       merchantId: new FormControl(data && data.merchantId ? data.merchantId : null),
-      amount: new FormControl(data && data.amount ? data.amount : null),
-      transactionId: new FormControl(data && data.transactionId ? data.transactionId : null),
+      amount: new FormControl(data && data.amount ? data.amount : null, [Validators.required]),
+      transactionId: new FormControl(data && data.transactionId ? data.transactionId : null, [Validators.required]),
       mode: new FormControl(data && data.accountDetails?.mode ? data.accountDetails?.mode : null),
       status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
       type: new FormControl('Deposit'),
     });
     this.depositForm.get('merchantId')?.disable();
     // Add dynamic fields from accountDetails
-    if (data?.accountDetails) {
-      Object.keys(data.accountDetails).forEach(key => {
-        this.depositForm.addControl(key, new FormControl(data.accountDetails[key] || null));
-      });
-    }
+    // if (data?.accountDetails) {
+    //   Object.keys(data.accountDetails).forEach(key => {
+    //     this.depositForm.addControl(key, new FormControl(data.accountDetails[key] || null));
+    //   });
+    // }
     this.updateFieldDisability();
   }
   private updateFieldDisability() {
@@ -122,13 +122,16 @@ export class DepositAddComponent implements OnInit {
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Something Went Wrong.')
     }
     this.loaderService.showLoader();
-    const updatedData = this.mergeAdditionalFields(this.depositForm.value, this.depositFields);
+    let updatedData = this.mergeAdditionalFields(this.depositForm.value, this.depositFields);
+    // updatedData = this.mergeAdditionalFields(updatedData, [this.merchantData]);
     updatedData['merchantId'] = this.id;
     this.transactionService.addTransaction(updatedData, success, failure)
   }
   public mergeAdditionalFields = (data: any, fields: any) => {
     fields.forEach((field: any) => {
-      data[field.fieldName] = field.value;
+      if (field.fieldName) {
+        data[field.fieldName] = field.value;
+      }
     });
     return data;
   };
@@ -140,7 +143,6 @@ export class DepositAddComponent implements OnInit {
       if (data && data.success) {
         if (data.data.merchantname) {
           this.merchantData = data.data;
-          console.log(data.data)
           this.merchant = data.data.merchantname;
           this.url = data.data.accountDetails?.qrcode || '';
           this.depositFields = data.data.depositFields.deposits?.length ? data.data.depositFields.deposits[0].typeDetails : [];

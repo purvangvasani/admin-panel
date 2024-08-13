@@ -12,11 +12,59 @@
                                         <label cLabel="col" for="merchantId">
                                             Merchant
                                         </label>
-                                        {{merchantData?.merchantname || 'N/A'}}
-                                        <input cFormControl placeholder="Merchant Name" type="text" value={{merchant}}
-                                            formControlName="merchantId" id="merchantId" name="merchantId" />
+                                        <input cFormControl placeholder="Merchant Name" type="text" value={{merchantData?.merchantname}}
+                                            id="merchantId" name="merchantId" disabled/>
                                     </c-col>
-                                    <c-col *ngFor="let field of getFormFields()" sm="12" xs="12" md="6" lg="4"
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                        <label cLabel="col" for="mode">
+                                            Payment Type
+                                        </label>
+                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.mode}}
+                                            id="mode" name="mode" disabled/>
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;" *ngIf="merchantData?.accountDetails?.mode === 'upi'">
+                                        <label cLabel="col" for="UPIID">
+                                            UPI ID
+                                        </label>
+                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.upiId}}
+                                            id="UPIID" name="UPIID" disabled/>
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;" *ngIf="merchantData?.accountDetails?.mode === 'imps'">
+                                        <label cLabel="col" for="accountName">
+                                            Account Name
+                                        </label>
+                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.accountName}}
+                                            id="accountName" name="accountName" disabled/>
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;" *ngIf="merchantData?.accountDetails?.mode === 'imps'">
+                                        <label cLabel="col" for="accountNumber">
+                                            Account Number
+                                        </label>
+                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.accountNumber}}
+                                            id="accountNumber" name="accountNumber" disabled/>
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;" *ngIf="merchantData?.accountDetails?.mode === 'imps'">
+                                        <label cLabel="col" for="ifsc">
+                                            IFSC
+                                        </label>
+                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.ifsc}}
+                                            id="ifsc" name="ifsc" disabled/>
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                        <label cLabel="col" for="amount">
+                                            Amount
+                                        </label>
+                                        <input cFormControl placeholder="Amount" type="number"
+                                            formControlName="amount" id="amount" name="amount" required />
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                        <label cLabel="col" for="transactionId">
+                                            Transaction Id
+                                        </label>
+                                        <input cFormControl placeholder="Transaction Id" type="text"
+                                            formControlName="transactionId" id="transactionId" name="transactionId" />
+                                    </c-col>
+                                    <!-- <c-col *ngFor="let field of getFormFields()" sm="12" xs="12" md="6" lg="4"
                                         style="padding: 5px;">
                                         <label cLabel="col" [for]="field.key">
                                             {{ breakCamelCase(field.key) }}
@@ -24,12 +72,9 @@
                                         <input cFormControl [attr.placeholder]="'Enter ' + breakCamelCase(field.key)"
                                             [type]="getInputType(field.key)" [formControlName]="field.key"
                                             [id]="field.key" [name]="field.key" [value]="field.value" />
-                                    </c-col>
+                                    </c-col> -->
                                 </c-row>
                             </form>
-                            <div class="imagePreview" *ngIf="url && url !== ''">
-                                <img height="300px" width="300px" [src]="url" [alt]="merchant">
-                            </div>
                             <c-row class="row mt-2">
                                 <ng-container *ngIf="depositFields.length">
                                     <ng-container *ngFor="let fields of depositFields">
@@ -63,9 +108,19 @@
                                     </ng-container>
                                 </ng-container>
                             </c-row>
+                            <div class="imagePreview" *ngIf="url && url !== ''">
+                                <c-row class="row">
+                                    <c-col sm="12" xs="12" md="6" lg="6" style="padding: 5px;">
+                                        <label cLabel="col" for="ifsc">
+                                            Scan the QR Code to deposit the amount
+                                        </label>
+                                            <img height="300px" width="300px" [src]="url" [alt]="merchant">
+                                    </c-col>
+                                </c-row>
+                            </div>
                             <c-row class="row mt-2">
                                 <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                    <button (click)="addTransaction()" cButton class="px-4" color="primary">
+                                    <button (click)="addTransaction()" cButton class="px-4" color="primary" [disabled]="depositForm.invalid">
                                         Submit
                                     </button>
                                 </c-col>
