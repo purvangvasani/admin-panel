@@ -27,3 +27,43 @@
     font-size: 13px;
     margin-bottom: 5px;
 }
+
+.d-header {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    background-color: #f8f9fa;
+
+    .text-body-secondary {
+        color: #6c757d;
+    }
+
+    .button-container {
+        margin-top: 20px;
+        display: flex;
+        gap: 20px;
+    }
+
+    .icon-button {
+        display: flex;
+        align-items: center;
+        background-color: #007bff;
+        /* Example background color */
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .icon-button:hover {
+        background-color: #0056b3;
+    }
+
+    .icon-img {
+        width: 24px;
+        height: 24px;
+        margin-right: 8px;
+    }
+}

@@ -2,9 +2,20 @@
     <c-container breakpoint="md">
         <c-row class="justify-content-center mb-3">
             <c-col>
-                <header>
-                    <h1 class="text-body-secondary">{{merchant}}</h1>
+                <header class="d-header">
+                    <h1 class="text-body-secondary">{{ merchant }}</h1>
+                    <div class="button-container">
+                        <button class="icon-button" (click)="exportPDF()">
+                            <img src="assets/export-pdf.png" alt="Export PDF Icon" class="icon-img" />
+                            Export PDF
+                        </button>
+                        <button class="icon-button" (click)="exportExcel()">
+                            <img src="assets/xls-export.png" alt="Export Excel Icon" class="icon-img" />
+                            Export Excel
+                        </button>
+                    </div>
                 </header>
+
                 <c-row class="g-4 mb-3 mt-1">
                     <c-col xl="3" md="6" sm="6">
                         <c-widget-stat-a color="primary" [title]="'Total Deposit Amount'">
@@ -16,12 +27,12 @@
                             </ng-template>
                             <ng-template cTemplateId="widgetActionTemplate">
                                 <c-dropdown alignment="end" variant="btn-group">
-                                   
+
                                 </c-dropdown>
                             </ng-template>
                             <ng-template cTemplateId="widgetChartTemplate">
-                                <c-chart [data]="data.primary" [options]="options" class="mt-3 mx-3"
-                                    height="50" type="line" />
+                                <c-chart [data]="data.primary" [options]="options" class="mt-3 mx-3" height="50"
+                                    type="line" />
                             </ng-template>
                         </c-widget-stat-a>
                     </c-col>
@@ -35,12 +46,12 @@
                             </ng-template>
                             <ng-template cTemplateId="widgetActionTemplate">
                                 <c-dropdown alignment="end" variant="btn-group">
-                                    
+
                                 </c-dropdown>
                             </ng-template>
                             <ng-template cTemplateId="widgetChartTemplate">
-                                <c-chart [data]="data.info" [options]="options" class="mt-3 mx-3"
-                                    height="50" type="line" />
+                                <c-chart [data]="data.info" [options]="options" class="mt-3 mx-3" height="50"
+                                    type="line" />
                             </ng-template>
                         </c-widget-stat-a>
                     </c-col>
@@ -58,8 +69,8 @@
                                 </c-dropdown>
                             </ng-template>
                             <ng-template cTemplateId="widgetChartTemplate">
-                                <c-chart [data]="data.warning" [options]="options" class="mt-3 mx-3"
-                                    height="50" type="line" />
+                                <c-chart [data]="data.warning" [options]="options" class="mt-3 mx-3" height="50"
+                                    type="line" />
                             </ng-template>
                         </c-widget-stat-a>
                     </c-col>
@@ -77,8 +88,8 @@
                                 </c-dropdown>
                             </ng-template>
                             <ng-template cTemplateId="widgetChartTemplate">
-                                <c-chart [data]="data.danger" [options]="options" class="mt-3 mx-3"
-                                    height="50" type="line" />
+                                <c-chart [data]="data.danger" [options]="options" class="mt-3 mx-3" height="50"
+                                    type="line" />
                             </ng-template>
                         </c-widget-stat-a>
                     </c-col>
@@ -98,8 +109,8 @@
                                 </c-dropdown>
                             </ng-template>
                             <ng-template cTemplateId="widgetChartTemplate">
-                                <c-chart [data]="data.primary" [options]="options" class="mt-3 mx-3"
-                                    height="50" type="line" />
+                                <c-chart [data]="data.primary" [options]="options" class="mt-3 mx-3" height="50"
+                                    type="line" />
                             </ng-template>
                         </c-widget-stat-a>
                     </c-col>
@@ -117,8 +128,8 @@
                                 </c-dropdown>
                             </ng-template>
                             <ng-template cTemplateId="widgetChartTemplate">
-                                <c-chart [data]="data.info" [options]="options" class="mt-3 mx-3"
-                                    height="50" type="line" />
+                                <c-chart [data]="data.info" [options]="options" class="mt-3 mx-3" height="50"
+                                    type="line" />
                             </ng-template>
                         </c-widget-stat-a>
                     </c-col>
@@ -135,14 +146,13 @@
                                 </c-dropdown>
                             </ng-template>
                             <ng-template cTemplateId="widgetChartTemplate">
-                                <c-chart [data]="data.warning" [options]="options" class="mt-3 mx-3"
-                                    height="50" type="line" />
+                                <c-chart [data]="data.warning" [options]="options" class="mt-3 mx-3" height="50"
+                                    type="line" />
                             </ng-template>
                         </c-widget-stat-a>
                     </c-col>
                     <c-col xl="3" md="6" sm="6">
-                        <c-widget-stat-a color="danger"
-                            [title]="'Total Withdrawal Processing'">
+                        <c-widget-stat-a color="danger" [title]="'Total Withdrawal Processing'">
                             <ng-template cTemplateId="widgetValueTemplate" ngPreserveWhitespaces>
                                 {{totalNoOfCounts.withdrawalProcessingCount|| '0'}}
                                 <!-- <span class="fs-6 fw-normal">
@@ -154,8 +164,8 @@
                                 </c-dropdown>
                             </ng-template>
                             <ng-template cTemplateId="widgetChartTemplate">
-                                <c-chart [data]="data.danger" [options]="options" class="mt-3 mx-3"
-                                    height="50" type="line" />
+                                <c-chart [data]="data.danger" [options]="options" class="mt-3 mx-3" height="50"
+                                    type="line" />
                             </ng-template>
                         </c-widget-stat-a>
                     </c-col>

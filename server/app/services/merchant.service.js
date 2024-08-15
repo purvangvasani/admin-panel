@@ -89,7 +89,7 @@ function getMerchantForAccounts(criteria) {
                 condition.push({ $sort: { updatedAt: 1 } });
             }
             let merchantData = await MerchantCollection.aggregate(condition).exec();
-            
+
             resolve({ success: true, message: 'success!', data: merchantData, });
         } catch (err) {
             reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
@@ -346,7 +346,7 @@ function getMerchantSummaryById(criteria) {
                 ]);
 
                 const totalCount = counts[0] || {
-                    depositAmountTotal: 1,
+                    depositAmountTotal: 0,
                     withdrawalAmountTotal: 0,
                     depositApprovedCount: 0,
                     depositRejectedCount: 0,

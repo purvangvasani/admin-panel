@@ -125,7 +125,29 @@ export class PayoutsComponent implements OnInit, OnDestroy {
               }, { headerName: "Amount", field: "amount", suppressMovable: true },
               { headerName: "Status", field: "status", suppressMovable: true },
               { headerName: "Account Number", field: "accountNumber", suppressMovable: true },
-              { headerName: "Account Name", field: "accountName", suppressMovable: true }
+              { headerName: "Account Name", field: "accountName", suppressMovable: true },
+              {
+                headerName: "Dynamic Fields",
+                field: "dynamicFields",
+                suppressMovable: true,
+                // cellStyle: { 
+                //   fontWeight: 'bold',
+                //   textAlign: 'right'
+                // },
+                filter: false,
+                sortable: false,
+                cellRenderer: (params: any) => {
+                  const dynamicFields = params.value;
+                  if (!dynamicFields) {
+                    return '';
+                  }
+                  const listItems = Object.entries(dynamicFields)
+                    .map(([key, value]) => `<strong>${key}:</strong> ${value ?? 'none'}`)
+                    .join(', ');
+
+                  return `<p>${listItems}</p>`;
+                }
+              }
             ]
             if (this.access?.edit) {
               this.columnDefs.push({

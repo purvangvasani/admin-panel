@@ -25,8 +25,13 @@
             z-index: 0;
         }
 
-        ::ng-deep .ag-row.ag-row-focus {
-            z-index: 1;
+        ::ng-deep .ag-ltr .ag-cell {
+            height: auto;
+            width: auto;
+        }
+
+        ::ng-deep .ag-row {
+            z-index: 0;
         }
     }
 }
