@@ -83,12 +83,10 @@ export class AccountDetailsComponent implements OnInit, OnDestroy {
                 if (access && access.length) {
                     let item = access.filter((a: any) => a.key === this.accessModule)[0];
                     if (item && item.submodule && item.submodule.length) {
-                        console.log(item.subModule)
                         this.access = item.submodule.filter((b: any) => b.key === this.accessSubModule)[0].access;
                     } else {
                         this.access = item.access;
                     }
-                    console.log(this.access)
                     this.access = this.access[this.currentUserRole];
                     if (!(this.access && this.access.view)) {
                         this.toastrService.showWarning('Warning!', "You donot have permission to view this page. Please contact to administrator!")

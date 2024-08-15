@@ -87,7 +87,9 @@ export class PayoutsComponent implements OnInit, OnDestroy {
                   return `${params.node!.data.id}`;
                 }, suppressMovable: true
               },
-              { headerName: "Merchant Id", field: "merchant_id", suppressMovable: true },
+              { headerName: "Merchant", valueFormatter: (params: ValueFormatterParams) => {
+                return `${params.node!.data.merchantInfo.merchantname + '- (' + params.node!.data.merchantInfo?.mode + ')' || '-'}`;
+              }, suppressMovable: true },
               {
                 field: 'createdAt',
                 filter: 'agDateColumnFilter',

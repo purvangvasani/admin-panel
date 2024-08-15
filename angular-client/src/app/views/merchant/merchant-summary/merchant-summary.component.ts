@@ -13,7 +13,7 @@ import { WidgetsDropdownComponent } from '../../widgets/widgets-dropdown/widgets
 import { WidgetsEComponent } from '../../widgets/widgets-e/widgets-e.component';
 import { WidgetsBrandComponent } from '../../widgets/widgets-brand/widgets-brand.component';
 import { AgGridAngular } from 'ag-grid-angular';
-import { ColDef, GridApi, GridReadyEvent } from 'ag-grid-community';
+import { ColDef, GridApi, GridReadyEvent, ValueFormatterParams } from 'ag-grid-community';
 import { format } from 'date-fns';
 import { Subscription } from 'rxjs';
 import { ChartjsComponent } from '@coreui/angular-chartjs';
@@ -210,8 +210,10 @@ export class MerchantSummaryComponent implements OnInit {
   private makeTableDeposit() {
     this.columnDefs = [
       // this row just shows the row index, doesn't use any data from the row
-      { headerName: "Account Name", field: "accountName", suppressMovable: true },
-      { headerName: "Amount", field: "amount", suppressMovable: true },
+      { headerName: "Merchant", valueFormatter: (params: ValueFormatterParams) => {
+        return `${params.node!.data.merchantInfo.merchantname + '- (' + params.node!.data.merchantInfo?.mode + ')' || '-'}`;
+      }, suppressMovable: true },
+      { headerName: "Amount", field: "amount", suppressMovable: true }, 
       { headerName: "Status", field: "status", suppressMovable: true }
     ];
 

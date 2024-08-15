@@ -10,10 +10,45 @@
                                 <c-row class="row">
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
                                         <label cLabel="col" for="merchantId">
-                                            Merchant Id
+                                            Merchant
                                         </label>
-                                        <input cFormControl placeholder="Merchant Id" type="text" value={{merchant}}
-                                            formControlName="merchantId" id="merchantId" name="merchantId" />
+                                        <input cFormControl placeholder="Merchant Name" type="text" value={{merchantData?.merchantname}}
+                                            id="merchantId" name="merchantId" disabled/>
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                        <label cLabel="col" for="accountName">
+                                            Account Name
+                                        </label>
+                                        <input cFormControl placeholder="Amount Name" type="text"
+                                            formControlName="accountName" id="accountName" name="accountName" required />
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                        <label cLabel="col" for="accountNumber">
+                                            Account Number
+                                        </label>
+                                        <input cFormControl placeholder="Amount Number" type="number"
+                                            formControlName="accountNumber" id="accountNumber" name="accountNumber" required />
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                        <label cLabel="col" for="ifsc">
+                                            IFSC
+                                        </label>
+                                        <input cFormControl placeholder="IFSC" type="number"
+                                            formControlName="ifsc" id="ifsc" name="ifsc" />
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                        <label cLabel="col" for="amount">
+                                            Amount
+                                        </label>
+                                        <input cFormControl placeholder="Amount" type="number"
+                                            formControlName="amount" id="amount" name="amount" required />
+                                    </c-col>
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
+                                        <label cLabel="col" for="upiId">
+                                            UPI ID
+                                        </label>
+                                        <input cFormControl placeholder="UPI Id" type="text"
+                                            formControlName="upiId" id="upiId" name="upiId" />
                                     </c-col>
                                 </c-row>
                             </form>

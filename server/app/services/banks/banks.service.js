@@ -260,10 +260,6 @@ function getById(criteria) {
                     }
                 }
                 condition.push(withdrawalLookup)
-                // let item = await BankCollection.findOne({ bankId: criteria.bankId })
-                //     .populate('deposits', 'withdrawals')
-                //     .lean().exec();
-                // console.log(item)
                 let bank = await BankCollection.aggregate(condition).exec();
                 if (criteria && ((criteria.bankName && typeof criteria.bankName !== 'object') || criteria.bankId)) {
                     bank = (bank && bank.length) ? bank[0] : {};
