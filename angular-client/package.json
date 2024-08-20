@@ -1,19 +1,20 @@
 {
-  "name": "coreui-free-angular-admin-template",
+  "name": "transactionPayments",
   "version": "5.2.3",
-  "copyright": "Copyright 2024 creativeLabs Łukasz Holeczek",
-  "license": "MIT",
-  "author": "The CoreUI Team (https://github.com/orgs/coreui/people) and contributors",
-  "homepage": "https://coreui.io/angular",
+  "copyright": "Copyright 2024",
+  "license": "--",
+  "author": "",
+  "homepage": "---",
   "config": {
     "theme": "default",
     "coreui_library_short_version": "5.2",
-    "coreui_library_docs_url": "https://coreui.io/angular/docs/"
+    "coreui_library_docs_url": "---"
   },
   "scripts": {
     "ng": "ng",
     "start": "ng serve -o",
     "build": "ng build",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
