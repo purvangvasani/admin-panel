@@ -20,6 +20,12 @@ import { ChartjsComponent } from '@coreui/angular-chartjs';
 import { cilArrowTop, cilOptions } from '@coreui/icons';
 import { getStyle } from '@coreui/utils';
 
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
+
+
 @Component({
   selector: 'app-merchant-summary',
   standalone: true,
@@ -211,7 +217,8 @@ export class MerchantSummaryComponent implements OnInit {
       { headerName: "Status", field: "status", suppressMovable: true }
     ];
 
-    this.getAllDeposite();
+    // this.getAllDeposite();
+    // this.getAllWithdrawal();
   }
   private getMerchantSummary = (id: any) => {
     let success = (data: any) => {
@@ -299,6 +306,7 @@ export class MerchantSummaryComponent implements OnInit {
     }
     this.loaderService.showLoader();
     const criteria = {
+      merchantId: this.id,
       pageQuery: this.currentWithdrawalPage, pageSize: this.paginationPageSize,
       type: 'Withdrawal',
     }
@@ -310,5 +318,164 @@ export class MerchantSummaryComponent implements OnInit {
     this.getAllWithdrawal();
   }
 
+  exportPDF() {
+    const columnDefs = this.columnDefs.map(col => ({
+      headerName: col.headerName,
+      field: col.field
+    }));
+    this.generatePDF(
+      columnDefs, this.deositeList, 'Deposit',
+      columnDefs, this.payoutsList, 'Withdrawal',
+      this.totalNoOfCounts
+    );
+  }
+
+  generatePDF(
+    depositColumns: any[],
+    depositRowData: any[],
+    depositTitle: string,
+    withdrawalColumns: any[],
+    withdrawalRowData: any[],
+    withdrawalTitle: string,
+    summaryData: any
+  ) {
+    const doc = new jsPDF();
+
+    let finalY = 30;
+    const depositSummary = [
+      [`Deposit Amount Total: ${summaryData.depositAmountTotal}`],
+      [`Deposit Approved Count: ${summaryData.depositApprovedCount}`],
+      [`Deposit Rejected Count: ${summaryData.depositRejectedCount}`],
+      [`Deposit Processing Count: ${summaryData.depositProcessingCount}`]
+    ];
+
+    const withdrawalSummary = [
+      [`Withdrawal Amount Total: ${summaryData.withdrawalAmountTotal}`],
+      [`Withdrawal Approved Count: ${summaryData.withdrawalApprovedCount}`],
+      [`Withdrawal Rejected Count: ${summaryData.withdrawalRejectedCount}`],
+      [`Withdrawal Processing Count: ${summaryData.withdrawalProcessingCount}`]
+    ];
+
+    // Add Deposit and Withdrawal Summary Table with merged headers
+    autoTable(doc, {
+      startY: finalY,
+      head: [['Deposit Statistics', 'Withdrawal Statistics']],
+      body: depositSummary.map((row, index) => [
+        row[0], // Deposit metrics and values
+        withdrawalSummary[index] ? withdrawalSummary[index][0] : '' // Withdrawal metrics and values
+      ]),
+      theme: 'striped',
+      styles: { fontSize: 10 },
+      // margin: { left: 10, right: 10 },
+      // columnStyles: {
+      //   0: { cellWidth: 100 }, // Width for Deposit Statistics column
+      //   1: { cellWidth: 100 }  // Width for Withdrawal Statistics column
+      // },
+      // Merge cells for the header row
+      headStyles: {
+        fillColor: [0, 0, 0],
+        textColor: [255, 255, 255],
+        fontSize: 12
+      }
+    });
+
+    finalY = (doc as any).lastAutoTable.finalY + 20;
+
+    // Add Deposit Table
+    doc.text(depositTitle, 15, finalY);
+    autoTable(doc, {
+      head: [depositColumns.map(col => col.headerName)],
+      body: depositRowData.map(row => depositColumns.map(col => row[col.field])),
+      headStyles: { fillColor: [0, 0, 0] },
+      styles: { fontSize: 10 },
+      startY: finalY + 5,
+    });
+    finalY = (doc as any).lastAutoTable.finalY + 20;
+
+    // Add Withdrawal Table
+    doc.text(withdrawalTitle, 15, finalY);
+    autoTable(doc, {
+      head: [withdrawalColumns.map(col => col.headerName)],
+      body: withdrawalRowData.map(row => withdrawalColumns.map(col => row[col.field])),
+      headStyles: { fillColor: [0, 0, 0] }, // Black background for header 
+      styles: { fontSize: 10 },
+      startY: finalY + 5,
+    });
+
+    doc.save('merchantSummary.pdf');
+  }
+
+  exportExcel() {
+    const fixedHeaders = ["Account Name", "Amount", "Status"];
+    const filterRowData = (data: any[]) => {
+      return data.map(row => {
+        const filteredRow: any = {};
+        fixedHeaders.forEach(header => {
+          const field = this.columnDefs.find(col => col.headerName === header)?.field;
+          if (field) {
+            filteredRow[header] = row[field];
+          }
+        });
+        return filteredRow;
+      });
+    };
+
+    const depositRowData = filterRowData(this.deositeList);
+    const withdrawalRowData = filterRowData(this.payoutsList);
+
+    const depositSheet = XLSX.utils.json_to_sheet(depositRowData, { header: fixedHeaders });
+    const withdrawalSheet = XLSX.utils.json_to_sheet(withdrawalRowData, { header: fixedHeaders });
+
+    const depositSummary = [
+      ["Deposit Amount Total", this.totalNoOfCounts.depositAmountTotal],
+      ["Deposit Approved Count", this.totalNoOfCounts.depositApprovedCount],
+      ["Deposit Rejected Count", this.totalNoOfCounts.depositRejectedCount],
+      ["Deposit Processing Count", this.totalNoOfCounts.depositProcessingCount]
+    ];
+
+    const withdrawalSummary = [
+      ["Withdrawal Amount Total", this.totalNoOfCounts.withdrawalAmountTotal],
+      ["Withdrawal Approved Count", this.totalNoOfCounts.withdrawalApprovedCount],
+      ["Withdrawal Rejected Count", this.totalNoOfCounts.withdrawalRejectedCount],
+      ["Withdrawal Processing Count", this.totalNoOfCounts.withdrawalProcessingCount]
+    ];
+
+    // Create summary data array with merged headers
+    const summaryData = [
+      ["Deposit Statistics", "Withdrawal Statistics"],
+      ...depositSummary.map((row, index) => [
+        row[0] + ": " + row[1], // Deposit metrics and values
+        withdrawalSummary[index] ? withdrawalSummary[index][0] + ": " + withdrawalSummary[index][1] : '' // Withdrawal metrics and values
+      ])
+    ];
+
+    // Create a summary sheet with merged header and data
+    const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+
+    // Apply styles to summary sheet headers
+    const applySummaryHeaderStyle = (sheet: XLSX.WorkSheet) => {
+      const range = XLSX.utils.decode_range(sheet['!ref']!);
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = XLSX.utils.encode_cell({ r: range.s.r, c: C });
+        if (!sheet[cellAddress]) continue;
+        sheet[cellAddress].s = {
+          fill: { fgColor: { rgb: "DADADA" } },
+          font: { bold: true, color: { rgb: "000000" } }
+        };
+      }
+    };
+
+    applySummaryHeaderStyle(summarySheet);
+    // Create a new workbook and append all sheets
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, summarySheet, 'Summary');
+    XLSX.utils.book_append_sheet(workbook, depositSheet, 'Deposit');
+    XLSX.utils.book_append_sheet(workbook, withdrawalSheet, 'Withdrawal');
+
+    // Generate the Excel file and save it
+    const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const data: Blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(data, 'merchantSummary.xlsx');
+  }
 
 }
