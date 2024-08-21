@@ -55,7 +55,7 @@ export class MerchantComponent implements OnInit, OnDestroy {
         private loaderService: LoaderService,
         private merchantService: MerchantService,
         private accountDetailsService: AccountDetailsService,
-
+        private router: Router,
     ) {
         const params = this.route.data.subscribe((data: Params) => {
             this.accessModule = data['module'];
@@ -296,12 +296,17 @@ export class MerchantComponent implements OnInit, OnDestroy {
         // copyText.setSelectionRange(0, 99999); // For mobile devices
         // Copy the text inside the text field
         // this.router.navigate(['/deposit-add'], {queryParams:  { id: copyText.url }})
+        let url = '';
         if (type === 'withdrawal') {
-            navigator.clipboard.writeText(environment.UIURL + "/withdrawal-add;id=" + btoa(copyText.merchantId));
+            url = `${environment.UIURL}/withdrawal-add;id=${btoa(copyText.merchantId)}`;
+            // navigator.clipboard.writeText(environment.UIURL + "/withdrawal-add;id=" + btoa(copyText.merchantId));
         } else if (type === 'deposit') {
-            navigator.clipboard.writeText(environment.UIURL + "/deposit-add;id=" + btoa(copyText.merchantId));
+            // navigator.clipboard.writeText(environment.UIURL + "/deposit-add;id=" + btoa(copyText.merchantId));
+            url = `${environment.UIURL}/deposit-add;id=${btoa(copyText.merchantId)}`;
         } else {
-            navigator.clipboard.writeText(environment.UIURL + "/merchant-summary;id=" + btoa(copyText.merchantId));
+            url = `${environment.UIURL}/merchant-summary;id=${btoa(copyText.merchantId)}`;
+            // navigator.clipboard.writeText(environment.UIURL + "/merchant-summary;id=" + btoa(copyText.merchantId));
         }
+        window.open(url, '_blank');
     }
 }
