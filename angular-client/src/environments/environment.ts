@@ -8,7 +8,7 @@ export const environment = {
   appVersion: packageInfo.version,
   production: true,
   apiUrl: 'http://40.172.24.48:3000/admin-panel',
-  UIURL: 'http://localhost:4200/#'
+  UIURL: 'http://40.172.24.48:4200/#'
 };
 
 /*
