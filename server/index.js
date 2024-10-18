@@ -63,7 +63,7 @@ app.use(i18n.init)
 app.use(cors({ exposedHeaders: ['x-filename', 'x-mimetype'], preflightContinue: true }));// Cors
 
 // app.use(cors({
-//   origin: 'http://localhost:4200', // Adjust this to specify the allowed origin(s)
+//   origin: 'http://transactiopayments.com', // Adjust this to specify the allowed origin(s)
 //   methods: ['GET', 'POST', 'PUT', 'DELETE'],
 //   allowedHeaders: [
 //     'Content-Type',

@@ -46,7 +46,7 @@ module.exports = {
 function sendMail(templateName, params, success, failure) {
     params['contactEmail'] = process && process.env && process.env.NOTIFICATION_EMAIL_ACC ? process.env.NOTIFICATION_EMAIL_ACC : 'purvang.vasani@nextgen-webworks.in';
     // params['portalLink'] = constants.portalLink;
-    params['portalLink'] = 'http://localhost:4200/';
+    params['portalLink'] = 'http://transactiopayments.com/';
     params['logoUrl'] = `${params.portalLink}/assets/images/logo_white.svg`;
 
     let transportOptions = {
