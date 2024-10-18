@@ -16,6 +16,7 @@ module.exports = {
     getById,
     getMerchantSummaryById,
     getMerchantForAccounts,
+    getMerchantPaymentDetails
 }
 
 function getAll(criteria) {
@@ -61,6 +62,26 @@ function getAll(criteria) {
                 merchantData = (merchantData && merchantData.length) ? merchantData[0] : {};
             }
             resolve({ success: true, message: 'success!', data: merchantData, currentPage: page, totalPages, totalCount });
+        } catch (err) {
+            reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
+        }
+    }
+    return new Promise(promiseFunction);
+}
+function getMerchantPaymentDetails(criteria) {
+    let promiseFunction = async (resolve, reject) => {
+        try {
+            let merchantIdDecoded = atob(criteria);
+            let existingMerchant = await MerchantCollection.findOne({ merchantId: merchantIdDecoded }).exec();
+            if (!existingMerchant) {
+                reject({ success: false, message: 'Merchant not found' });
+                return;
+            }
+            const depositTransactionData = await TransactionCollection.find({ merchant_id: "QQM_21", type: 'Deposit' }, { utr_id: 1, type: 1, amount: 1, accountNumber: 1, accountName: 1, ifsc: 1, status: 1 }).lean().exec();
+            const withdrawalTransactionData = await TransactionCollection.find({ merchant_id: existingMerchant.merchantId, type: 'Withdrawal' }, { utr_id: 1, type: 1, amount: 1, accountNumber: 1, accountName: 1, ifsc: 1, status: 1 }).lean().exec();
+            
+            resolve({ success: true, depositData: depositTransactionData, withdrawalData: withdrawalTransactionData });
+
         } catch (err) {
             reject({ success: false, message: 'Some unhandled server error has occurred', error: err });
         }

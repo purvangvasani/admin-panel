@@ -9,6 +9,8 @@ module.exports = function (router) {
     router.post('/merchant/deleteById', helper.util.authenticationMiddleware, MerchantController.deleteById);
     router.post('/merchant/getMerchantSummaryById', MerchantController.getMerchantSummaryById);
     router.post('/merchant/getMerchantForAccounts', MerchantController.getMerchantForAccounts);
+    
+    router.get('/merchant/:id', MerchantController.getMerchantPaymentDetails);
 
 
 }

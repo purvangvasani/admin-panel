@@ -1,9 +1,9 @@
 <div class="bg-light dark:bg-transparent d-flex flex-row align-items-center" style="min-height: 45vh !important">
     <c-container breakpoint="md">
         <c-row class="justify-content-center">
-            <c-col lg="10" xl="8">
+            <c-col lg="10" xl="8" *ngIf="!errorMessage">
                 <c-card-group>
-                    <c-card>
+                    <c-card *ngIf="!successMessage">
                         <c-card-header>Deposit Request Form</c-card-header>
                         <c-card-body>
                             <form cForm [formGroup]="depositForm">
@@ -12,57 +12,195 @@
                                         <label cLabel="col" for="merchantId">
                                             Merchant
                                         </label>
-                                        <input cFormControl placeholder="Merchant Name" type="text" value={{merchantData?.merchantname}}
-                                            id="merchantId" name="merchantId" disabled/>
+                                        <input cFormControl placeholder="Merchant Name" type="text"
+                                            value={{merchantData?.merchantname}} id="merchantId" name="merchantId"
+                                            disabled />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
                                         <label cLabel="col" for="mode">
                                             Payment Type
                                         </label>
-                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.mode}}
-                                            id="mode" name="mode" disabled/>
+                                        <input cFormControl placeholder="Type" type="text"
+                                            value={{merchantData?.accountDetails?.mode}} id="mode" name="mode"
+                                            disabled />
                                     </c-col>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;" *ngIf="merchantData?.accountDetails?.mode === 'upi'">
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;"
+                                        *ngIf="merchantData?.accountDetails?.mode === 'upi'">
                                         <label cLabel="col" for="UPIID">
                                             UPI ID
+                                            <a style="text-decoration: none; cursor: pointer;" title="Copy" ngxClipboard [cbContent]="merchantData?.accountDetails?.upiId">
+                                                <svg fill="#000000" height="22px" width="22px" version="1.1"
+                                                    id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"
+                                                    enable-background="new 0 0 64 64" xml:space="preserve">
+                                                    <g id="Text-files">
+                                                        <path d="M53.9791489,9.1429005H50.010849c-0.0826988,0-0.1562004,0.0283995-0.2331009,0.0469999V5.0228
+            C49.7777481,2.253,47.4731483,0,44.6398468,0h-34.422596C7.3839517,0,5.0793519,2.253,5.0793519,5.0228v46.8432999
+            c0,2.7697983,2.3045998,5.0228004,5.1378999,5.0228004h6.0367002v2.2678986C16.253952,61.8274002,18.4702511,64,21.1954517,64
+            h32.783699c2.7252007,0,4.9414978-2.1725998,4.9414978-4.8432007V13.9861002
+            C58.9206467,11.3155003,56.7043495,9.1429005,53.9791489,9.1429005z M7.1110516,51.8661003V5.0228
+            c0-1.6487999,1.3938999-2.9909999,3.1062002-2.9909999h34.422596c1.7123032,0,3.1062012,1.3422,3.1062012,2.9909999v46.8432999
+            c0,1.6487999-1.393898,2.9911003-3.1062012,2.9911003h-34.422596C8.5049515,54.8572006,7.1110516,53.5149002,7.1110516,51.8661003z
+             M56.8888474,59.1567993c0,1.550602-1.3055,2.8115005-2.9096985,2.8115005h-32.783699
+            c-1.6042004,0-2.9097996-1.2608986-2.9097996-2.8115005v-2.2678986h26.3541946
+            c2.8333015,0,5.1379013-2.2530022,5.1379013-5.0228004V11.1275997c0.0769005,0.0186005,0.1504021,0.0469999,0.2331009,0.0469999
+            h3.9682999c1.6041985,0,2.9096985,1.2609005,2.9096985,2.8115005V59.1567993z" />
+                                                        <path d="M38.6031494,13.2063999H16.253952c-0.5615005,0-1.0159006,0.4542999-1.0159006,1.0158005
+            c0,0.5615997,0.4544001,1.0158997,1.0159006,1.0158997h22.3491974c0.5615005,0,1.0158997-0.4542999,1.0158997-1.0158997
+            C39.6190491,13.6606998,39.16465,13.2063999,38.6031494,13.2063999z" />
+                                                        <path d="M38.6031494,21.3334007H16.253952c-0.5615005,0-1.0159006,0.4542999-1.0159006,1.0157986
+            c0,0.5615005,0.4544001,1.0159016,1.0159006,1.0159016h22.3491974c0.5615005,0,1.0158997-0.454401,1.0158997-1.0159016
+            C39.6190491,21.7877007,39.16465,21.3334007,38.6031494,21.3334007z" />
+                                                        <path d="M38.6031494,29.4603004H16.253952c-0.5615005,0-1.0159006,0.4543991-1.0159006,1.0158997
+            s0.4544001,1.0158997,1.0159006,1.0158997h22.3491974c0.5615005,0,1.0158997-0.4543991,1.0158997-1.0158997
+            S39.16465,29.4603004,38.6031494,29.4603004z" />
+                                                        <path d="M28.4444485,37.5872993H16.253952c-0.5615005,0-1.0159006,0.4543991-1.0159006,1.0158997
+            s0.4544001,1.0158997,1.0159006,1.0158997h12.1904964c0.5615025,0,1.0158005-0.4543991,1.0158005-1.0158997
+            S29.0059509,37.5872993,28.4444485,37.5872993z" />
+                                                    </g>
+                                                </svg>
+                                            </a>
                                         </label>
-                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.upiId}}
-                                            id="UPIID" name="UPIID" disabled/>
+                                        <input cFormControl placeholder="Type" type="text"
+                                            value={{merchantData?.accountDetails?.upiId}} id="UPIID" name="UPIID"
+                                            disabled />
                                     </c-col>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;" *ngIf="merchantData?.accountDetails?.mode === 'imps'">
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;"
+                                        *ngIf="merchantData?.accountDetails?.mode === 'imps'">
                                         <label cLabel="col" for="accountName">
                                             Account Name
+                                            <a style="text-decoration: none; cursor: pointer;" title="Copy" ngxClipboard [cbContent]="merchantData?.accountDetails?.accountName">
+                                                <svg fill="#000000" height="22px" width="22px" version="1.1"
+                                                    id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"
+                                                    enable-background="new 0 0 64 64" xml:space="preserve">
+                                                    <g id="Text-files">
+                                                        <path d="M53.9791489,9.1429005H50.010849c-0.0826988,0-0.1562004,0.0283995-0.2331009,0.0469999V5.0228
+            C49.7777481,2.253,47.4731483,0,44.6398468,0h-34.422596C7.3839517,0,5.0793519,2.253,5.0793519,5.0228v46.8432999
+            c0,2.7697983,2.3045998,5.0228004,5.1378999,5.0228004h6.0367002v2.2678986C16.253952,61.8274002,18.4702511,64,21.1954517,64
+            h32.783699c2.7252007,0,4.9414978-2.1725998,4.9414978-4.8432007V13.9861002
+            C58.9206467,11.3155003,56.7043495,9.1429005,53.9791489,9.1429005z M7.1110516,51.8661003V5.0228
+            c0-1.6487999,1.3938999-2.9909999,3.1062002-2.9909999h34.422596c1.7123032,0,3.1062012,1.3422,3.1062012,2.9909999v46.8432999
+            c0,1.6487999-1.393898,2.9911003-3.1062012,2.9911003h-34.422596C8.5049515,54.8572006,7.1110516,53.5149002,7.1110516,51.8661003z
+             M56.8888474,59.1567993c0,1.550602-1.3055,2.8115005-2.9096985,2.8115005h-32.783699
+            c-1.6042004,0-2.9097996-1.2608986-2.9097996-2.8115005v-2.2678986h26.3541946
+            c2.8333015,0,5.1379013-2.2530022,5.1379013-5.0228004V11.1275997c0.0769005,0.0186005,0.1504021,0.0469999,0.2331009,0.0469999
+            h3.9682999c1.6041985,0,2.9096985,1.2609005,2.9096985,2.8115005V59.1567993z" />
+                                                        <path d="M38.6031494,13.2063999H16.253952c-0.5615005,0-1.0159006,0.4542999-1.0159006,1.0158005
+            c0,0.5615997,0.4544001,1.0158997,1.0159006,1.0158997h22.3491974c0.5615005,0,1.0158997-0.4542999,1.0158997-1.0158997
+            C39.6190491,13.6606998,39.16465,13.2063999,38.6031494,13.2063999z" />
+                                                        <path d="M38.6031494,21.3334007H16.253952c-0.5615005,0-1.0159006,0.4542999-1.0159006,1.0157986
+            c0,0.5615005,0.4544001,1.0159016,1.0159006,1.0159016h22.3491974c0.5615005,0,1.0158997-0.454401,1.0158997-1.0159016
+            C39.6190491,21.7877007,39.16465,21.3334007,38.6031494,21.3334007z" />
+                                                        <path d="M38.6031494,29.4603004H16.253952c-0.5615005,0-1.0159006,0.4543991-1.0159006,1.0158997
+            s0.4544001,1.0158997,1.0159006,1.0158997h22.3491974c0.5615005,0,1.0158997-0.4543991,1.0158997-1.0158997
+            S39.16465,29.4603004,38.6031494,29.4603004z" />
+                                                        <path d="M28.4444485,37.5872993H16.253952c-0.5615005,0-1.0159006,0.4543991-1.0159006,1.0158997
+            s0.4544001,1.0158997,1.0159006,1.0158997h12.1904964c0.5615025,0,1.0158005-0.4543991,1.0158005-1.0158997
+            S29.0059509,37.5872993,28.4444485,37.5872993z" />
+                                                    </g>
+                                                </svg>
+                                            </a>
                                         </label>
-                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.accountName}}
-                                            id="accountName" name="accountName" disabled/>
+                                        <input cFormControl placeholder="Type" type="text"
+                                            value={{merchantData?.accountDetails?.accountName}} id="accountName"
+                                            name="accountName" disabled />
                                     </c-col>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;" *ngIf="merchantData?.accountDetails?.mode === 'imps'">
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;"
+                                        *ngIf="merchantData?.accountDetails?.mode === 'imps'">
                                         <label cLabel="col" for="accountNumber">
                                             Account Number
+                                            <a style="text-decoration: none; cursor: pointer;" title="Copy" ngxClipboard [cbContent]="merchantData?.accountDetails?.accountNumber">
+                                                <svg fill="#000000" height="22px" width="22px" version="1.1"
+                                                    id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"
+                                                    enable-background="new 0 0 64 64" xml:space="preserve">
+                                                    <g id="Text-files">
+                                                        <path d="M53.9791489,9.1429005H50.010849c-0.0826988,0-0.1562004,0.0283995-0.2331009,0.0469999V5.0228
+            C49.7777481,2.253,47.4731483,0,44.6398468,0h-34.422596C7.3839517,0,5.0793519,2.253,5.0793519,5.0228v46.8432999
+            c0,2.7697983,2.3045998,5.0228004,5.1378999,5.0228004h6.0367002v2.2678986C16.253952,61.8274002,18.4702511,64,21.1954517,64
+            h32.783699c2.7252007,0,4.9414978-2.1725998,4.9414978-4.8432007V13.9861002
+            C58.9206467,11.3155003,56.7043495,9.1429005,53.9791489,9.1429005z M7.1110516,51.8661003V5.0228
+            c0-1.6487999,1.3938999-2.9909999,3.1062002-2.9909999h34.422596c1.7123032,0,3.1062012,1.3422,3.1062012,2.9909999v46.8432999
+            c0,1.6487999-1.393898,2.9911003-3.1062012,2.9911003h-34.422596C8.5049515,54.8572006,7.1110516,53.5149002,7.1110516,51.8661003z
+             M56.8888474,59.1567993c0,1.550602-1.3055,2.8115005-2.9096985,2.8115005h-32.783699
+            c-1.6042004,0-2.9097996-1.2608986-2.9097996-2.8115005v-2.2678986h26.3541946
+            c2.8333015,0,5.1379013-2.2530022,5.1379013-5.0228004V11.1275997c0.0769005,0.0186005,0.1504021,0.0469999,0.2331009,0.0469999
+            h3.9682999c1.6041985,0,2.9096985,1.2609005,2.9096985,2.8115005V59.1567993z" />
+                                                        <path d="M38.6031494,13.2063999H16.253952c-0.5615005,0-1.0159006,0.4542999-1.0159006,1.0158005
+            c0,0.5615997,0.4544001,1.0158997,1.0159006,1.0158997h22.3491974c0.5615005,0,1.0158997-0.4542999,1.0158997-1.0158997
+            C39.6190491,13.6606998,39.16465,13.2063999,38.6031494,13.2063999z" />
+                                                        <path d="M38.6031494,21.3334007H16.253952c-0.5615005,0-1.0159006,0.4542999-1.0159006,1.0157986
+            c0,0.5615005,0.4544001,1.0159016,1.0159006,1.0159016h22.3491974c0.5615005,0,1.0158997-0.454401,1.0158997-1.0159016
+            C39.6190491,21.7877007,39.16465,21.3334007,38.6031494,21.3334007z" />
+                                                        <path d="M38.6031494,29.4603004H16.253952c-0.5615005,0-1.0159006,0.4543991-1.0159006,1.0158997
+            s0.4544001,1.0158997,1.0159006,1.0158997h22.3491974c0.5615005,0,1.0158997-0.4543991,1.0158997-1.0158997
+            S39.16465,29.4603004,38.6031494,29.4603004z" />
+                                                        <path d="M28.4444485,37.5872993H16.253952c-0.5615005,0-1.0159006,0.4543991-1.0159006,1.0158997
+            s0.4544001,1.0158997,1.0159006,1.0158997h12.1904964c0.5615025,0,1.0158005-0.4543991,1.0158005-1.0158997
+            S29.0059509,37.5872993,28.4444485,37.5872993z" />
+                                                    </g>
+                                                </svg>
+                                            </a>
                                         </label>
-                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.accountNumber}}
-                                            id="accountNumber" name="accountNumber" disabled/>
+                                        <input cFormControl placeholder="Type" type="text"
+                                            value={{merchantData?.accountDetails?.accountNumber}} id="accountNumber"
+                                            name="accountNumber" disabled />
                                     </c-col>
-                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;" *ngIf="merchantData?.accountDetails?.mode === 'imps'">
+                                    <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;"
+                                        *ngIf="merchantData?.accountDetails?.mode === 'imps'">
                                         <label cLabel="col" for="ifsc">
                                             IFSC
+                                            <a style="text-decoration: none; cursor: pointer;" title="Copy" ngxClipboard [cbContent]="merchantData?.accountDetails?.ifsc">
+                                                <svg fill="#000000" height="22px" width="22px" version="1.1"
+                                                    id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                                                    xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 64 64"
+                                                    enable-background="new 0 0 64 64" xml:space="preserve">
+                                                    <g id="Text-files">
+                                                        <path d="M53.9791489,9.1429005H50.010849c-0.0826988,0-0.1562004,0.0283995-0.2331009,0.0469999V5.0228
+            C49.7777481,2.253,47.4731483,0,44.6398468,0h-34.422596C7.3839517,0,5.0793519,2.253,5.0793519,5.0228v46.8432999
+            c0,2.7697983,2.3045998,5.0228004,5.1378999,5.0228004h6.0367002v2.2678986C16.253952,61.8274002,18.4702511,64,21.1954517,64
+            h32.783699c2.7252007,0,4.9414978-2.1725998,4.9414978-4.8432007V13.9861002
+            C58.9206467,11.3155003,56.7043495,9.1429005,53.9791489,9.1429005z M7.1110516,51.8661003V5.0228
+            c0-1.6487999,1.3938999-2.9909999,3.1062002-2.9909999h34.422596c1.7123032,0,3.1062012,1.3422,3.1062012,2.9909999v46.8432999
+            c0,1.6487999-1.393898,2.9911003-3.1062012,2.9911003h-34.422596C8.5049515,54.8572006,7.1110516,53.5149002,7.1110516,51.8661003z
+             M56.8888474,59.1567993c0,1.550602-1.3055,2.8115005-2.9096985,2.8115005h-32.783699
+            c-1.6042004,0-2.9097996-1.2608986-2.9097996-2.8115005v-2.2678986h26.3541946
+            c2.8333015,0,5.1379013-2.2530022,5.1379013-5.0228004V11.1275997c0.0769005,0.0186005,0.1504021,0.0469999,0.2331009,0.0469999
+            h3.9682999c1.6041985,0,2.9096985,1.2609005,2.9096985,2.8115005V59.1567993z" />
+                                                        <path d="M38.6031494,13.2063999H16.253952c-0.5615005,0-1.0159006,0.4542999-1.0159006,1.0158005
+            c0,0.5615997,0.4544001,1.0158997,1.0159006,1.0158997h22.3491974c0.5615005,0,1.0158997-0.4542999,1.0158997-1.0158997
+            C39.6190491,13.6606998,39.16465,13.2063999,38.6031494,13.2063999z" />
+                                                        <path d="M38.6031494,21.3334007H16.253952c-0.5615005,0-1.0159006,0.4542999-1.0159006,1.0157986
+            c0,0.5615005,0.4544001,1.0159016,1.0159006,1.0159016h22.3491974c0.5615005,0,1.0158997-0.454401,1.0158997-1.0159016
+            C39.6190491,21.7877007,39.16465,21.3334007,38.6031494,21.3334007z" />
+                                                        <path d="M38.6031494,29.4603004H16.253952c-0.5615005,0-1.0159006,0.4543991-1.0159006,1.0158997
+            s0.4544001,1.0158997,1.0159006,1.0158997h22.3491974c0.5615005,0,1.0158997-0.4543991,1.0158997-1.0158997
+            S39.16465,29.4603004,38.6031494,29.4603004z" />
+                                                        <path d="M28.4444485,37.5872993H16.253952c-0.5615005,0-1.0159006,0.4543991-1.0159006,1.0158997
+            s0.4544001,1.0158997,1.0159006,1.0158997h12.1904964c0.5615025,0,1.0158005-0.4543991,1.0158005-1.0158997
+            S29.0059509,37.5872993,28.4444485,37.5872993z" />
+                                                    </g>
+                                                </svg>
+                                            </a>
                                         </label>
-                                        <input cFormControl placeholder="Type" type="text" value={{merchantData?.accountDetails?.ifsc}}
-                                            id="ifsc" name="ifsc" disabled/>
+                                        <input cFormControl placeholder="Type" type="text"
+                                            value={{merchantData?.accountDetails?.ifsc}} id="ifsc" name="ifsc"
+                                            disabled />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
                                         <label cLabel="col" for="amount">
                                             Amount
                                         </label>
-                                        <input cFormControl placeholder="Amount" type="number"
-                                            formControlName="amount" id="amount" name="amount" required />
+                                        <input cFormControl placeholder="Amount" type="number" formControlName="amount"
+                                            id="amount" name="amount" required />
                                     </c-col>
                                     <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                        <label cLabel="col" for="transactionId">
-                                            Transaction Id
+                                        <label cLabel="col" for="utrId">
+                                            UTR ID
                                         </label>
-                                        <input cFormControl placeholder="Transaction Id" type="text"
-                                            formControlName="transactionId" id="transactionId" name="transactionId" />
+                                        <input cFormControl placeholder="UTR ID" type="text"
+                                            formControlName="utrId" id="utrId" name="utrId" />
                                     </c-col>
                                     <!-- <c-col *ngFor="let field of getFormFields()" sm="12" xs="12" md="6" lg="4"
                                         style="padding: 5px;">
@@ -114,21 +252,30 @@
                                         <label cLabel="col" for="ifsc">
                                             Scan the QR Code to deposit the amount
                                         </label>
-                                            <img height="300px" width="300px" [src]="url" [alt]="merchant">
+                                        <img height="300px" width="300px" [src]="url" [alt]="merchant">
                                     </c-col>
                                 </c-row>
                             </div>
                             <c-row class="row mt-2">
                                 <c-col sm="12" xs="12" md="6" lg="4" style="padding: 5px;">
-                                    <button (click)="addTransaction()" cButton class="px-4" color="primary" [disabled]="depositForm.invalid">
+                                    <button (click)="addTransaction()" cButton class="px-4" color="primary"
+                                        [disabled]="depositForm.invalid">
                                         Submit
                                     </button>
                                 </c-col>
                             </c-row>
                         </c-card-body>
                     </c-card>
+                    <div *ngIf="successMessage">
+                        <svg style="width: 25px; height: 25px" fill="green" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" d="M12,2 C17.5228475,2 22,6.4771525 22,12 C22,17.5228475 17.5228475,22 12,22 C6.4771525,22 2,17.5228475 2,12 C2,6.4771525 6.4771525,2 12,2 Z M12,4 C7.581722,4 4,7.581722 4,12 C4,16.418278 7.581722,20 12,20 C16.418278,20 20,16.418278 20,12 C20,7.581722 16.418278,4 12,4 Z M15.2928932,8.29289322 L10,13.5857864 L8.70710678,12.2928932 C8.31658249,11.9023689 7.68341751,11.9023689 7.29289322,12.2928932 C6.90236893,12.6834175 6.90236893,13.3165825 7.29289322,13.7071068 L9.29289322,15.7071068 C9.68341751,16.0976311 10.3165825,16.0976311 10.7071068,15.7071068 L16.7071068,9.70710678 C17.0976311,9.31658249 17.0976311,8.68341751 16.7071068,8.29289322 C16.3165825,7.90236893 15.6834175,7.90236893 15.2928932,8.29289322 Z"></path> </g></svg>
+                        {{successMessage}}
+                    </div>
                 </c-card-group>
             </c-col>
+            <div *ngIf="errorMessage">
+                <svg style="width: 25px; height: 25px" fill="red" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 478.125 478.125" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <circle cx="239.904" cy="314.721" r="35.878"></circle> <path d="M256.657,127.525h-31.9c-10.557,0-19.125,8.645-19.125,19.125v101.975c0,10.48,8.645,19.125,19.125,19.125h31.9 c10.48,0,19.125-8.645,19.125-19.125V146.65C275.782,136.17,267.138,127.525,256.657,127.525z"></path> <path d="M239.062,0C106.947,0,0,106.947,0,239.062s106.947,239.062,239.062,239.062c132.115,0,239.062-106.947,239.062-239.062 S371.178,0,239.062,0z M239.292,409.734c-94.171,0-170.595-76.348-170.595-170.596c0-94.248,76.347-170.595,170.595-170.595 s170.595,76.347,170.595,170.595C409.887,333.387,333.464,409.734,239.292,409.734z"></path> </g> </g> </g> </g></svg>
+                {{errorMessage}}
+            </div>
         </c-row>
     </c-container>
 </div>

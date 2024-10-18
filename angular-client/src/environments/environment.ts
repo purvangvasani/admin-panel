@@ -7,8 +7,10 @@ import packageInfo from '../../package.json';
 export const environment = {
   appVersion: packageInfo.version,
   production: true,
-  apiUrl: 'http://40.172.24.48:3000/admin-panel',
-  UIURL: 'http://40.172.24.48:4200/#'
+  apiUrl: 'http://localhost:3000/admin-panel',
+  // apiUrl: 'http://40.172.24.48:3000/admin-panel',
+  UIURL: 'http://localhost:4200/#'
+  // UIURL: 'http://transactiopayments.com/#'
 };
 
 /*

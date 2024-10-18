@@ -64,10 +64,12 @@ function addTransaction(criteria) {
     let promiseFunction = async (resolve, reject) => {
         try {
 
-            let isExists = await TransactionCollection.findOne({ transaction_id: criteria.transactionId }).lean().exec();
-            if (isExists && isExists.id) {
-                reject({ success: false, message: 'Duplicate Transaction Id detected.' });
-                return;
+            if (criteria && criteria.utrId) {
+                let isExists = await TransactionCollection.findOne({ utr_id: criteria.utrId }).lean().exec();
+                if (isExists && isExists.id) {
+                    reject({ success: false, message: 'Duplicate UTR Id detected.' });
+                    return;
+                }
             }
 
             let Id = await helper.generateCounterId('transactionRequest', 'id', 'TRR_');
@@ -76,14 +78,14 @@ function addTransaction(criteria) {
                     criteria.merchant_id = atob(criteria.merchantId);
                     delete criteria.merchantId;
                 }
-                if (criteria.transactionId) {
-                    criteria.transaction_id = criteria.transactionId;
-                    delete criteria.transactionId;
+                if (criteria.utrId) {
+                    criteria.utr_id = criteria.utrId;
+                    delete criteria.utrId;
                 }
                 const transactionData = {};
                 const dynamicFields = {};
                 const staticFields = [
-                    'user_id', 'merchant_id', 'transaction_id', 'accountName',
+                    'user_id', 'merchant_id', 'utr_id', 'accountName',
                     'accountNumber', 'amount', 'operationType', 'status',
                     'type', 'comments'
                 ];
@@ -98,7 +100,7 @@ function addTransaction(criteria) {
                 // let transactionData = await TransactionCollection({
                 //     user_id: criteria.user_id,
                 //     merchant_id: criteria.merchantId,
-                //     transaction_id: criteria.transactionId,
+                //     utr_id: criteria.utrId,
                 //     accountName: criteria.accountName,
                 //     accountNumber: criteria.accountNumber,
                 //     amount: criteria.amount,

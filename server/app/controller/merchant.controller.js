@@ -1,5 +1,6 @@
 const MerchantService = require('../services/merchant.service')
 const helper = require('../utility');
+const error = require('../utility/error');
 
 module.exports = {
     getAll,
@@ -9,6 +10,7 @@ module.exports = {
     getById,
     getMerchantSummaryById,
     getMerchantForAccounts,
+    getMerchantPaymentDetails
 }
 
 async function getAll(req, res, next) {
@@ -25,6 +27,17 @@ async function getMerchantForAccounts(req, res, next) {
         res.json(result);
     } catch (e) {
         res.json(e);
+    }
+}
+async function getMerchantPaymentDetails(req, res, next) {
+    try {
+        let result = await MerchantService.getMerchantPaymentDetails(req.params.id);
+        res.json(result);
+    } catch (e) {
+        res.status(error.status.NotFound).json({
+            error: error.message.BadRequest,
+            message: error.message.BadRequest
+        });
     }
 }
 async function add(req, res, next) {

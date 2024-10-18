@@ -129,7 +129,7 @@ export class DepositeComponent implements OnInit, OnDestroy {
                   }
                 }
               },
-              { headerName: "Transaction Id", field: "transaction_id", suppressMovable: true },
+              { headerName: "UTR Id", field: "utr_id", suppressMovable: true },
               { headerName: "Amount", field: "amount", suppressMovable: true },
               { headerName: "Status", field: "status", suppressMovable: true },
               { headerName: "User Info", field: "accountName", suppressMovable: true }

@@ -9,11 +9,12 @@ import { TransactionService } from 'src/app/services/transactionRequest.service'
 import { ActivatedRoute, Params } from '@angular/router';
 import { UtilService } from 'src/app/util/util.service';
 import { MerchantService } from 'src/app/services/merchant.service';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @Component({
   selector: 'app-deposit-add',
   standalone: true,
-  imports: [NgTemplateOutlet, FormsModule, ThemeDirective, CommonModule, ReactiveFormsModule, ContainerComponent, RowComponent, ColComponent, CardHeaderComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective],
+  imports: [ClipboardModule, NgTemplateOutlet, FormsModule, ThemeDirective, CommonModule, ReactiveFormsModule, ContainerComponent, RowComponent, ColComponent, CardHeaderComponent, CardGroupComponent, TextColorDirective, CardComponent, CardBodyComponent, FormDirective, InputGroupComponent, InputGroupTextDirective, IconDirective, FormControlDirective, ButtonDirective, NgStyle, FormCheckComponent, FormCheckInputDirective, FormCheckLabelDirective],
   templateUrl: './deposit-add.component.html',
   styleUrl: './deposit-add.component.scss'
 })
@@ -25,6 +26,8 @@ export class DepositAddComponent implements OnInit {
   public id: any;
   public url: any;
   public merchantData: any = null;
+  public errorMessage: any = "";
+  public successMessage: any = "";
 
   constructor(
     private fb: FormBuilder,
@@ -54,7 +57,7 @@ export class DepositAddComponent implements OnInit {
     this.depositForm = this.fb.group({
       merchantId: new FormControl(data && data.merchantId ? data.merchantId : null),
       amount: new FormControl(data && data.amount ? data.amount : null, [Validators.required]),
-      transactionId: new FormControl(data && data.transactionId ? data.transactionId : null, [Validators.required]),
+      utrId: new FormControl(data && data.utrId ? data.utrId : null, [Validators.required]),
       mode: new FormControl(data && data.accountDetails?.mode ? data.accountDetails?.mode : null),
       status: new FormControl(data && data.merchantId ? data.merchantId : 'Processing'),
       type: new FormControl('Deposit'),
@@ -103,7 +106,7 @@ export class DepositAddComponent implements OnInit {
       .replace(/^./, str => str.toUpperCase());
   }
   getInputType(key: string): string {
-    const textFields = ['merchantId', 'transactionId', 'status', 'type', 'accountName', 'upiId', 'mode', 'accountId']; // Adjust based on your needs
+    const textFields = ['merchantId', 'utrId', 'status', 'type', 'accountName', 'upiId', 'mode', 'accountId']; // Adjust based on your needs
     return textFields.includes(key) ? 'text' : 'number'; // You can add more logic to handle different types
   }
   public addTransaction = () => {
@@ -111,6 +114,7 @@ export class DepositAddComponent implements OnInit {
       if (data && data.success) {
         this.toastrService.showSuccess("Success!", data.message);
         this.loaderService.hideLoader();
+        this.successMessage = "Request completed successfully. You can now close this page!"
         this.cancel();
       } else {
         this.loaderService.hideLoader();
@@ -123,7 +127,6 @@ export class DepositAddComponent implements OnInit {
     }
     this.loaderService.showLoader();
     let updatedData = this.mergeAdditionalFields(this.depositForm.value, this.depositFields);
-    // updatedData = this.mergeAdditionalFields(updatedData, [this.merchantData]);
     updatedData['merchantId'] = this.id;
     this.transactionService.addTransaction(updatedData, success, failure)
   }
@@ -150,14 +153,14 @@ export class DepositAddComponent implements OnInit {
         }
       } else {
         this.toastrService.showError('Error!', data.message)
-        this.utilService.goto('/404')
+        this.errorMessage = "Something went wrong with the page, please contact your administrator!";
       }
       this.loaderService.hideLoader();
     }
     let failure = (error: any) => {
       this.loaderService.hideLoader();
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching merchant.')
-      this.utilService.goto('/404')
+      this.errorMessage = "Something went wrong with the page, please contact your administrator!";
     }
     this.loaderService.showLoader();
     this.merchantService.getById({ merchantId: id, for: "public", get: 'bankDeposits' }, success, failure)

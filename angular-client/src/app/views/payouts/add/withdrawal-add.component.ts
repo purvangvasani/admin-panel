@@ -26,6 +26,9 @@ export class WithdrawalAddComponent implements OnInit {
   public merchantData: any = null;
   public withdrawalFields: any = [];
   public id: any;
+  public errorMessage: any = "";
+  public successMessage: any = "";
+
   constructor(
     private fb: FormBuilder,
     private toastrService: ToastService,
@@ -67,6 +70,7 @@ export class WithdrawalAddComponent implements OnInit {
       if (data && data.success) {
         this.toastrService.showSuccess("Success!", data.message);
         this.loaderService.hideLoader();
+        this.successMessage = "Request completed successfully. You can now close this page!"
         this.cancel();
       } else {
         this.loaderService.hideLoader();
@@ -104,14 +108,16 @@ export class WithdrawalAddComponent implements OnInit {
         }
       } else {
         this.toastrService.showError('Error!', data.message);
-        this.utilService.goto('/404');
+        this.errorMessage = "Something went wrong with the page, please contact your administrator!";
+        // this.utilService.goto('/404');
       }
       this.loaderService.hideLoader();
     }
     let failure = (error: any) => {
       this.loaderService.hideLoader();
       this.toastrService.showError('Error!', error.error && error.error?.errors?.msg ? error.error.errors.msg : 'Error while fetching merchant.')
-      this.utilService.goto('/404');
+      this.errorMessage = "Something went wrong with the page, please contact your administrator!";
+      // this.utilService.goto('/404');
     }
     this.loaderService.showLoader();
     this.merchantService.getById({ merchantId: id, for: "public", get: 'bankDeposits' }, success, failure)
