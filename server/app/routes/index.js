@@ -25,23 +25,37 @@ module.exports = function (app) {
     swaggerDefinition: {
       openapi: '3.0.0',
       info: {
-        title: 'Your API Title',
+        title: 'TransactioPayments API Docs',
         version: '1.0.0',
         description: 'API Documentation',
       },
       servers: [
         {
+          url: 'http://transactiopayments.com/#', // Adjust to your server URL
+        },
+        {
+          url: 'http://40.172.24.48:3000'
+        },
+        {
           url: 'http://localhost:3000', // Adjust to your server URL
         },
       ],
     },
-    apis: ['./app/routes/*.js'], // Path to the API docs
   };
 
-  const swaggerDocs = swaggerJsDoc(swaggerOptions);
+  const swaggerDocs = swaggerJsDoc({
+    swaggerDefinition: swaggerOptions,
+    apis: ['./app/routes/*.js'], // Path to your API documentation files
+  });
 
+  // Serve Swagger documentation with custom options to hide "Try it out"
+  const swaggerUiOptions = {
+    swaggerOptions: {
+      supportedSubmitMethods: []  // This disables the "Try it out" button
+    }
+  };
   // Serve Swagger UI
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, swaggerUiOptions));
 
   // Serve swagger.json
   app.get('/swagger.json', (req, res) => {
