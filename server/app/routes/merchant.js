@@ -330,35 +330,6 @@ module.exports = function (router) {
   *     tags: [Merchant]
   *     security:
   *       - bearerAuth: []
-  *     parameters:
-  *       - name: merchantName
-  *         in: query
-  *         required: true
-  *         description: The name of the merchant to be added
-  *         schema:
-  *           type: string
-  *           example: "KuberKey"
-  *       - name: userId
-  *         in: query
-  *         required: true
-  *         description: The ID of the user adding the merchant
-  *         schema:
-  *           type: string
-  *           example: "QQUXX"
-  *       - name: accountId
-  *         in: query
-  *         required: true
-  *         description: The ID of the associated account
-  *         schema:
-  *           type: string
-  *           example: "QQAD_27"
-  *       - name: mode
-  *         in: query
-  *         required: true
-  *         description: The mode of the merchant (e.g., UPI, card, etc.)
-  *         schema:
-  *           type: string
-  *           example: "upi"
   *     requestBody:
   *       required: true
   *       content:
