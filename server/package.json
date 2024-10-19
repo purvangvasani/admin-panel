@@ -55,6 +55,8 @@
         "pm2": "^5.4.2",
         "request-ip": "^2.2.0",
         "sjcl": "^1.0.7",
+        "swagger-jsdoc": "^6.2.8",
+        "swagger-ui-express": "^5.0.1",
         "trim-request": "^1.0.6",
         "uuid": "^8.3.2",
         "validator": "^13.11.0"
