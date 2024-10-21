@@ -22,7 +22,7 @@ module.exports = () => {
         if (process.env.NODE_ENV !== 'test') {
           // Prints initialization
           console.log('****************************')
-          console.log('*    Starting Transactionpayents Server')
+          console.log('*    Starting TransactioPayments Server')
           console.log(`*    Port: ${process.env.PORT || 3000}`)
           console.log(`*    NODE_ENV: ${process.env.NODE_ENV}`)
           console.log(`*    Database: MongoDB`)

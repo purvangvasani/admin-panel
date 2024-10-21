@@ -24,7 +24,7 @@ module.exports = {
         NoContent: 'The request was successful, but the response body is empty as nothing deemed important was returned.',
         BadRequest: 'The server was not able to understand the request. It is possibly missing required parameters or has parameters with values of an invalid type. The response should include an error object with more information.',
         Unauthorized: 'The authentication has failed for the user.',
-        Forbidden: 'You do not have access to this page. In order to request access, please contact your Transactionpayents Administrator.',
+        Forbidden: 'You do not have access to this page. In order to request access, please contact your TransactioPayments Administrator.',
         UnkonwOrigin: 'We are not able to identify origin of the request.',
         NoProvider: 'No provider specified.',
         NoService: 'No service specified.',

@@ -74,6 +74,9 @@ function getAuthentication(email, password, userAgent, token) {
             let user = null;
             try {
                 // Mongoose Update
+                user = await UserCollection.find({
+
+                }).lean().exec();
                 user = await UserCollection.findOne({
                     email: email
                 }).lean().exec();
@@ -226,7 +229,7 @@ function register(criteria) {
                 firstname: criteria.firstname,
                 lastname: criteria.lastname,
                 email: criteria.email,
-                active: criteria.active || false,
+                active: criteria.active || true,
                 // password: hashPassword,
                 role: criteria.role,
                 lastPasswordUpdatedAt: new Date().getTime(),
