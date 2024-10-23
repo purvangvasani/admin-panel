@@ -1,0 +1,29 @@
+/* Default for xl screens */
+img {
+    height: 500px;
+    width: 250px;
+}
+
+/* For large screens (lg) */
+@media (max-width: 1200px) {
+    img {
+        height: 400px;
+        width: 200px;
+    }
+}
+
+/* For medium screens (md) */
+@media (max-width: 992px) {
+    img {
+        height: 350px;
+        width: 175px;
+    }
+}
+
+/* For small screens (sm) */
+@media (max-width: 768px) {
+    img {
+        height: 400px;
+        width: 200px;
+    }
+}
