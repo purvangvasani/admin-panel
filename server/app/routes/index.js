@@ -31,13 +31,7 @@ module.exports = function (app) {
       },
       servers: [
         {
-          url: 'http://transactiopayments.com/#', // Adjust to your server URL
-        },
-        {
-          url: 'http://40.172.24.48:3000'
-        },
-        {
-          url: 'http://localhost:3000', // Adjust to your server URL
+          url: 'http://40.172.24.48:3000/'
         },
       ],
     },
