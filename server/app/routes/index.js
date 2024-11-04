@@ -31,8 +31,11 @@ module.exports = function (app) {
       },
       servers: [
         {
-          url: 'http://40.172.24.48:3000/'
+          url: 'http://40.172.24.48:3000'
         },
+        {
+          url: 'http://transactiopayments.com/'
+        }
       ],
     },
   };
